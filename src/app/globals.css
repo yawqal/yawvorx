@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+@layer base {
+  html { background: #07080b; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
+  h1, h2, h3 { @apply font-display tracking-tight; }
+  ::selection { background: rgba(139, 92, 246, 0.45); }
+  :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; border-radius: 6px; }
+}
+
+@layer components {
+  .surface { @apply rounded-2xl border border-line bg-obsidian-900/80 shadow-depth; }
+  .surface-hover { @apply transition duration-200 hover:border-cyan/40 hover:shadow-glow; }
+  .text-gradient { @apply bg-gradient-to-r from-cyan via-cyan-soft to-violet-soft bg-clip-text text-transparent; }
+  .bg-aurora {
+    background:
+      radial-gradient(60% 50% at 15% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
+      radial-gradient(55% 45% at 90% 10%, rgba(139, 92, 246, 0.16), transparent 70%);
+  }
+}
+
+/* Logo + intro motion */
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+
+.logo-draw path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1s ease forwards; }
+.logo-draw path:nth-child(2) { animation-delay: 0.25s; }
+.logo-draw path:nth-child(3) { animation-delay: 0.5s; }
+.rise { opacity: 0; animation: rise 0.7s ease forwards; }
+
+/* If JavaScript is unavailable, the intro still removes itself. */
+.intro-overlay { animation: introOut 0.5s ease 3.6s forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; transition-duration: 0.001ms !important; }
+  .logo-draw path { stroke-dashoffset: 0; }
+  .rise { opacity: 1; }
+  .intro-overlay { display: none; }
+}
