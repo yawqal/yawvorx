@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 export type CartItem = {
   key: string; slug: string; name: string; variantId?: string; variantLabel?: string;
+  variantId?: string; currency: "ETB" | "USD";
   unitPrice: number; qty: number; type: "digital" | "physical"; maxQty: number; currency: "ETB" | "USD";
 };
 
