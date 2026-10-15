@@ -1,0 +1,23 @@
+YAWVOREX step 4: shop reads from database, secure checkout, order tracking
+
+NEW files (create):
+  src/lib/products-db.ts
+  src/components/shop/TrackForm.tsx
+  src/app/track/page.tsx
+
+CHANGED files (replace whole file):
+  src/data/products.ts
+  src/lib/format.ts
+  src/config/site.ts
+  src/components/cart/CartProvider.tsx
+  src/components/cart/CartView.tsx
+  src/components/cards/Cards.tsx
+  src/components/shop/AddToCart.tsx
+  src/components/forms/CheckoutForm.tsx
+  src/components/forms/PreparedMessage.tsx
+  src/app/page.tsx
+  src/app/shop/page.tsx
+  src/app/shop/[slug]/page.tsx
+
+NOT TESTED: no Node packages or internet were available when this was written, so it has not been built or run.
+Database migrations 005a, 005b and 005c must already be applied (they are).
