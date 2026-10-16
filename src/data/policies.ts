@@ -9,9 +9,9 @@ export const policies: Policy[] = [
     { h: "Sharing and retention", p: ["[Describe which services process your data, such as hosting and database providers, and how long you keep records.]"] },
     { h: "Your choices", p: ["[Explain how people can request access, correction, or deletion, and which contact to use.]"] },
   ]},
-  { slug: "terms", path: "/terms", title: "Terms and Conditions", summary: "The rules for using the website and buying from YAWVOREX.", sections: [
+  { slug: "terms", path: "/terms", title: "Terms and Conditions", summary: "The rules for using the website and buying from Zika Go.", sections: [
     { h: "Using the website", p: ["By using this website you agree to use it lawfully and not to attempt unauthorised access."] },
-    { h: "Services and orders", p: ["Project requests and product orders are not final until YAWVOREX confirms them. [Add your acceptance process.]"] },
+    { h: "Services and orders", p: ["Project requests and product orders are not final until Zika Go confirms them. [Add your acceptance process.]"] },
     { h: "Pricing and payment", p: ["Prices are shown in the store currency. Manual payments are confirmed only after verification by an administrator."] },
     { h: "Liability and governing law", p: ["[Add your limitation of liability and governing law with legal guidance. Business registration details: add if applicable.]"] },
   ]},

@@ -20,8 +20,8 @@ export function PreparedMessage({ title, message, subject, saved = false }: { ti
     <Card className="space-y-4" >
       <div className="flex flex-wrap items-center gap-2"><h2 className="text-xl font-semibold">{title}</h2>{saved ? <Badge tone="ok">Order saved</Badge> : <Badge tone="warn">Not saved yet</Badge>}</div>
       <p className="text-ink-mute">{saved
-        ? "Your order is saved. To speed things up, you can also send this message to YAWVOREX through one of the channels below."
-        : "Database saving is not connected in this version. To send this to YAWVOREX, copy the message and send it through one of the channels below."}</p>
+        ? "Your order is saved. To speed things up, you can also send this message to Zika Go through one of the channels below."
+        : "Database saving is not connected in this version. To send this to Zika Go, copy the message and send it through one of the channels below."}</p>
       <pre className="whitespace-pre-wrap break-words rounded-xl border border-line bg-obsidian-800 p-4 text-sm">{message}</pre>
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Button onClick={copy}>{copied ? "Copied" : "Copy message"}</Button>

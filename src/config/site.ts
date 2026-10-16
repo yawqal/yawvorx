@@ -1,10 +1,14 @@
 // SINGLE PLACE for business details. Edit here (or via .env values) instead of hunting through files.
 
 export const siteConfig = {
-  name: "YAWVOREX",
+  name: "Zika Go",
   tagline: "Beyond Digital. Beyond Ordinary.",
-  description:
-    "YAWVOREX is a premium digital technology and creative studio: web experiences, creative solutions, and products.",
+  description: "Modern E-Commerce, Digital Technology & Creative Services Platform",
+  colors: {
+    primary: "#06B6D4",
+    secondary: "#8B5CF6",
+    background: "#090A0F",
+  },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   currency: "USD", // configurable later from the admin panel
   // Shown to customers choosing manual payment. Write your real instructions in .env or here.

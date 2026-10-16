@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: `${siteConfig.name} | ${siteConfig.tagline}`, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
-  openGraph: { title: siteConfig.name, description: siteConfig.tagline, siteName: siteConfig.name, type: "website" },
+  openGraph: { title: siteConfig.name, description: siteConfig.description, siteName: siteConfig.name, type: "website" },
 };
 
-export const viewport: Viewport = { themeColor: "#07080B", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: siteConfig.colors.background, width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

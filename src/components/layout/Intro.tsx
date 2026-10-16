@@ -30,7 +30,7 @@ export function Intro() {
   if (!show) return null;
 
   return (
-    <div className="intro-overlay bg-aurora fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian px-6 text-center" role="dialog" aria-label="YAWVOREX intro">
+    <div className="intro-overlay bg-aurora fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian px-6 text-center" role="dialog" aria-label="Zika Go intro">
       <LogoMark size={96} animated />
       <p className="rise mt-6 font-display text-2xl font-semibold tracking-[0.3em]" style={{ animationDelay: "0.9s" }}>{siteConfig.name}</p>
       <p className="rise mt-3 text-ink-mute" style={{ animationDelay: "1.3s" }}>{siteConfig.tagline}</p>

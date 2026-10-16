@@ -37,12 +37,12 @@ export default async function Home() {
             <Button href="/services">Explore Services</Button>
             <Button href="/portfolio" variant="secondary">View Portfolio</Button>
             <Button href="/shop" variant="secondary">Shop Products</Button>
-            <Button href="/hire" variant="ghost">Hire YAWVOREX</Button>
+            <Button href="/hire" variant="ghost">Hire Zika Go</Button>
           </div>
         </Container>
       </div>
 
-      <Section title="Services" intro="What YAWVOREX can build and create for you.">
+      <Section title="Services" intro="What Zika Go can build and create for you.">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{services.slice(0, 6).map((s) => <ServiceCard key={s.slug} s={s} />)}</div>
         <div className="mt-6"><Button href="/services" variant="secondary">See all services</Button></div>
       </Section>
@@ -53,13 +53,13 @@ export default async function Home() {
       </Section>
 
       {products.length > 0 && (
-        <Section title="Featured products" intro="Digital and physical products from YAWVOREX.">
+        <Section title="Featured products" intro="Digital and physical products from Zika Go.">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{products.slice(0, 3).map((p) => <ProductCard key={p.slug} p={p} />)}</div>
           <div className="mt-6"><Button href="/shop" variant="secondary">Visit the shop</Button></div>
         </Section>
       )}
 
-      <Section title="Why choose YAWVOREX">
+      <Section title="Why choose Zika Go">
         <div className="grid gap-5 sm:grid-cols-2">{why.map((w) => (
           <Card key={w.t}><h3 className="text-lg font-semibold">{w.t}</h3><p className="mt-2 text-ink-mute">{w.d}</p></Card>
         ))}</div>
@@ -74,7 +74,7 @@ export default async function Home() {
       <Section title="Start a project">
         <Card className="bg-aurora flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-lg">Have an idea or a product to launch? Tell us what you need and how to reach you.</p>
-          <div className="flex flex-col gap-3 sm:flex-row"><Button href="/hire">Hire YAWVOREX</Button><Button href="/contact" variant="secondary">Contact Us</Button></div>
+          <div className="flex flex-col gap-3 sm:flex-row"><Button href="/hire">Hire Zika Go</Button><Button href="/contact" variant="secondary">Contact Us</Button></div>
         </Card>
         <ul className="mt-6 flex flex-wrap gap-x-5">
           {socialLinks().map((s) => <li key={s.name}><a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block py-2 text-ink-mute hover:text-ink">{s.name}</a></li>)}

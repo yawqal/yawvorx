@@ -22,7 +22,7 @@ export function HireForm({ defaultService = "" }: { defaultService?: string }) {
     if (Object.keys(found).length) return;
     const svc = services.find((s) => s.slug === v.service)?.title ?? v.service;
     setMessage(joinLines([
-      "New project request (YAWVOREX)", `Name: ${v.name.trim()}`, `Contact (${v.contactMethod}): ${v.contactValue.trim()}`,
+      "New project request (Zika Go)", `Name: ${v.name.trim()}`, `Contact (${v.contactMethod}): ${v.contactValue.trim()}`,
       `Service: ${svc}`, `Budget: ${v.budget}`, v.deadline && `Deadline: ${v.deadline}`, v.reference.trim() && `Reference: ${v.reference.trim()}`,
       BLANK, v.description.trim(),
     ]));

@@ -5,7 +5,7 @@
 :root { color-scheme: dark; }
 
 @layer base {
-  html { background: #07080b; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { background: #090a0f; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
   h1, h2, h3 { @apply font-display tracking-tight; }
   ::selection { background: rgba(139, 92, 246, 0.45); }
@@ -18,7 +18,7 @@
   .text-gradient { @apply bg-gradient-to-r from-cyan via-cyan-soft to-violet-soft bg-clip-text text-transparent; }
   .bg-aurora {
     background:
-      radial-gradient(60% 50% at 15% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
+      radial-gradient(60% 50% at 15% 0%, rgba(6, 182, 212, 0.14), transparent 70%),
       radial-gradient(55% 45% at 90% 10%, rgba(139, 92, 246, 0.16), transparent 70%);
   }
 }

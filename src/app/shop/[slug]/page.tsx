@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
           <Card className="mt-6 text-sm text-ink-mute">
             <h2 className="font-semibold text-ink">{p.type === "digital" ? "Digital delivery" : "Shipping"}</h2>
             <p className="mt-1">{p.type === "digital"
-              ? "Access is provided after payment is confirmed by YAWVOREX. The secure download system is added in a later phase."
+              ? "Access is provided after payment is confirmed by Zika Go. The secure download system is added in a later phase."
               : "Delivery details and any shipping cost are confirmed when your order is reviewed."}</p>
             <p className="mt-2">Ordering: add to cart, check out, and send your order request. Orders are confirmed manually.</p>
           </Card>

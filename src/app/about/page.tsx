@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
-export const metadata: Metadata = { title: "About", description: "About YAWVOREX, a premium digital technology and creative studio." };
+export const metadata: Metadata = { title: "About", description: "About Zika Go, a modern e-commerce, digital technology, and creative services platform." };
 
 // EDITABLE CONTENT: change the text below. Add real background only when it is true and approved.
 const mission = "To make premium digital work accessible: websites, creative content, and products built with care.";
@@ -31,7 +31,7 @@ export default function About() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{values.map((v) => <Card key={v.t}><h3 className="font-semibold">{v.t}</h3><p className="mt-2 text-sm text-ink-mute">{v.d}</p></Card>)}</div>
       </Section>
       <Section title="Our approach" intro="We combine creative direction with careful engineering: designs are planned for phones first, built with accessible, maintainable code, and tested before they reach you.">
-        <Button href="/hire">Hire YAWVOREX</Button>
+        <Button href="/hire">Hire Zika Go</Button>
       </Section>
     </>
   );

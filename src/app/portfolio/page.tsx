@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/Badge";
 import { PortfolioBrowser } from "@/components/portfolio/PortfolioBrowser";
 import { projects } from "@/data/portfolio";
 
-export const metadata: Metadata = { title: "Portfolio", description: "Sample concepts showing the YAWVOREX approach to web, branding, video, and photo work." };
+export const metadata: Metadata = { title: "Portfolio", description: "Sample concepts showing the Zika Go approach to web, branding, video, and photo work." };
 
 export default function Portfolio() {
   return (

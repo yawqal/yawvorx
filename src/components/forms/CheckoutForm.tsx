@@ -65,7 +65,7 @@ export function CheckoutForm() {
           <h2 className="text-xl font-semibold">Order received</h2>
           <p className="mt-2 text-ink-mute">Order reference: <span className="font-display text-ink">{placed.order_ref}</span></p>
           <p className="text-ink-mute">Total: <span className="font-display text-ink">{formatMoney(placed.total, placed.currency)}</span></p>
-          <p className="mt-2 text-sm text-ink-mute">Your order is waiting for review. It is confirmed only after YAWVOREX verifies your payment.</p>
+          <p className="mt-2 text-sm text-ink-mute">Your order is waiting for review. It is confirmed only after Zika Go verifies your payment.</p>
         </Card>
         {placed.guest_token ? (
           <Card>
@@ -82,10 +82,10 @@ export function CheckoutForm() {
             <p className="text-ink-mute">This order was already placed, so the tracking code cannot be shown again. If you saved it, use it on the <Link href={`/track?ref=${encodeURIComponent(placed.order_ref)}`} className="underline">Track order</Link> page, or contact us with your order reference.</p>
           </Card>
         )}
-        <PreparedMessage title="Send your order to YAWVOREX" message={placed.message} subject={`Order ${placed.order_ref}`} saved />
+        <PreparedMessage title="Send your order to Zika Go" message={placed.message} subject={`Order ${placed.order_ref}`} saved />
         {placed.manual && (
           <Card><h2 className="text-lg font-semibold">Manual payment</h2>
-            <p className="mt-2 text-ink-mute">{isConfigured(pay) ? pay : "Payment instructions will be sent by YAWVOREX after your order is reviewed."}</p>
+            <p className="mt-2 text-ink-mute">{isConfigured(pay) ? pay : "Payment instructions will be sent by Zika Go after your order is reviewed."}</p>
             <p className="mt-2 text-sm text-ink-mute">Never send card numbers, CVVs, or passwords.</p></Card>
         )}
         <Button variant="ghost" href="/shop">Continue shopping</Button>
@@ -131,7 +131,7 @@ export function CheckoutForm() {
       if (error || !data) { setFail(friendly(error?.message ?? "")); return; }
       const res = data as { order_ref: string; guest_token?: string; total: number; currency: string; duplicate?: boolean };
       const message = joinLines([
-        "New order (YAWVOREX)", `Order reference: ${res.order_ref}`, ...lines, `Total: ${formatMoney(Number(res.total), res.currency)}`, BLANK,
+        "New order (Zika Go)", `Order reference: ${res.order_ref}`, ...lines, `Total: ${formatMoney(Number(res.total), res.currency)}`, BLANK,
         `Name: ${v.name.trim()}`, `Phone: ${v.phone.trim()}`, v.email.trim() && `Email: ${v.email.trim()}`,
         needsAddress && `Delivery: ${v.address.trim()}, ${v.city.trim()}, ${v.country.trim()}`,
         `Method: ${v.method}`, v.notes.trim() && `Notes: ${v.notes.trim()}`,
@@ -162,7 +162,7 @@ export function CheckoutForm() {
         </>)}
         <Select label="Ordering method" name="method" value={v.method} onChange={change} error={errors.method}>{METHODS.map((m) => <option key={m}>{m}</option>)}</Select>
         <Textarea label="Notes (optional)" name="notes" rows={3} value={v.notes} onChange={change} />
-        <p className="text-sm text-ink-mute">Never send card numbers, CVVs, or passwords. YAWVOREX does not collect them.</p>
+        <p className="text-sm text-ink-mute">Never send card numbers, CVVs, or passwords. Zika Go does not collect them.</p>
         {fail && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{fail}</p>}
         <Button type="submit" className="w-full sm:w-auto" loading={busy} disabled={busy}>Place order request</Button>
       </form>
