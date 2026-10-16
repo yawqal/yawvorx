@@ -45,13 +45,13 @@ export function ProductCard({ p }: { p: Product }) {
     <Link href={`/shop/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
       <Art seed={p.name.length} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Badge tone="demo">Demo product</Badge>
+        {p.isDemo && <Badge tone="demo">Demo product</Badge>}
         <Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge>
       </div>
       <h3 className="mt-3 text-lg font-semibold">{p.name}</h3>
       <p className="mt-1 text-sm text-ink-mute">{p.category}</p>
       <div className="mt-3 flex items-center justify-between">
-        <span className="font-display text-lg">{formatMoney(p.price)}</span>
+        <span className="font-display text-lg">{formatMoney(p.price, p.currency)}</span>
         <span className={`text-sm ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
       </div>
     </Link>
