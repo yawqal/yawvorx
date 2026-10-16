@@ -1,9 +1,9 @@
 import { siteConfig } from "@/config/site";
 
-export function formatMoney(amount: number): string {
+export function formatMoney(amount: number, currency: string = siteConfig.currency): string {
   try {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: siteConfig.currency }).format(amount);
+    return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
   } catch {
-    return `${siteConfig.currency} ${amount.toFixed(2)}`;
+    return `${currency} ${amount.toFixed(2)}`;
   }
 }
