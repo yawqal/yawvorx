@@ -5,7 +5,7 @@ import { ServiceCard, ProjectCard, ProductCard } from "@/components/cards/Cards"
 import { siteConfig, socialLinks } from "@/config/site";
 import { services } from "@/data/services";
 import { projects } from "@/data/portfolio";
-import { products } from "@/data/products";
+import { getProducts } from "@/lib/products-db";
 
 const why = [
   { t: "One studio, many disciplines", d: "Design, development, media, and e-commerce under one roof, so your project stays consistent." },
@@ -21,7 +21,10 @@ const steps = [
   { t: "Deliver", d: "Final files or the launched project are handed over." },
 ];
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const products = await getProducts();
   return (
     <>
       <div className="bg-aurora">
@@ -49,10 +52,12 @@ export default function Home() {
         <div className="mt-6"><Button href="/portfolio" variant="secondary">View portfolio</Button></div>
       </Section>
 
-      <Section title="Featured products" intro="Demonstration listings. Real products are added through the admin panel.">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{products.slice(0, 3).map((p) => <ProductCard key={p.slug} p={p} />)}</div>
-        <div className="mt-6"><Button href="/shop" variant="secondary">Visit the shop</Button></div>
-      </Section>
+      {products.length > 0 && (
+        <Section title="Featured products" intro="Digital and physical products from YAWVOREX.">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{products.slice(0, 3).map((p) => <ProductCard key={p.slug} p={p} />)}</div>
+          <div className="mt-6"><Button href="/shop" variant="secondary">Visit the shop</Button></div>
+        </Section>
+      )}
 
       <Section title="Why choose YAWVOREX">
         <div className="grid gap-5 sm:grid-cols-2">{why.map((w) => (
