@@ -3,7 +3,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 export type CartItem = {
   key: string; slug: string; name: string; variantId?: string; variantLabel?: string;
-  variantId?: string; currency: "ETB" | "USD";
   unitPrice: number; qty: number; type: "digital" | "physical"; maxQty: number; currency: "ETB" | "USD";
 };
 
@@ -13,7 +12,6 @@ const STORAGE_KEY = "yvx-cart-v2";
 function sanitize(raw: unknown): CartItem[] {
   if (!Array.isArray(raw)) return [];
   return raw.filter((i): i is CartItem =>
-    (i?.currency === "ETB" || i?.currency === "USD") &&
     !!i && typeof i.key === "string" && typeof i.slug === "string" && typeof i.name === "string" &&
     Number.isFinite(i.unitPrice) && i.unitPrice >= 0 && Number.isInteger(i.maxQty) && i.maxQty >= 1 &&
     Number.isInteger(i.qty) && i.qty >= 1 && i.qty <= i.maxQty && (i.type === "digital" || i.type === "physical") &&
