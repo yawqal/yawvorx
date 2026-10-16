@@ -4,24 +4,31 @@ export const siteConfig = {
   name: "Zika Go",
   tagline: "Beyond Digital. Beyond Ordinary.",
   description: "Modern E-Commerce, Digital Technology & Creative Services Platform",
+  url: "https://yawvorx-xzyn-yawvorx.vercel.app",
+  ogImage: "/og.png",
+  links: {
+    github: "https://github.com/yawqal/yawvorx",
+  },
   colors: {
     primary: "#06B6D4",
     secondary: "#8B5CF6",
     background: "#090A0F",
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  currency: "USD", // configurable later from the admin panel
-  // Shown to customers choosing manual payment. Write your real instructions in .env or here.
-  manualPaymentInstructions: process.env.NEXT_PUBLIC_MANUAL_PAYMENT_INSTRUCTIONS ?? "REPLACE_WITH_PAYMENT_INSTRUCTIONS",
-  contact: {
-    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "REPLACE_WITH_VALID_EMAIL",
-    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "REPLACE_WITH_COUNTRY_CODE_AND_NUMBER",
+  socialLinks: {
+    github: "https://github.com/yawqal/yawvorx",
+    telegram: "https://t.me",
+    whatsapp: "https://wa.me",
+    email: "mailto:contact@zikago.com",
   },
-  socials: {
-    telegram: "Yawvorx",
-    tiktok: "yawvorx",
-    facebook: "yawvorx",
-    instagram: "yawvorx",
+  whatsappLink: "https://wa.me",
+  emailLink: "mailto:contact@zikago.com",
+  isConfigured: true,
+  currency: "USD",
+  manualPaymentInstructions:
+    process.env.NEXT_PUBLIC_MANUAL_PAYMENT_INSTRUCTIONS ?? "REPLACE_WITH_PAYMENT_INSTRUCTIONS",
+  contact: {
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "contact@zikago.com",
+    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "REPLACE_WITH_COUNTRY_CODE_AND_NUMBER",
   },
   nav: [
     { href: "/", label: "Home" },
@@ -34,18 +41,18 @@ export const siteConfig = {
   ],
 } as const;
 
+export type SiteConfig = typeof siteConfig;
+export const siteName = siteConfig.name;
+
 /** A value counts as "set" only when it is not empty and not a REPLACE_ placeholder. */
 export function isConfigured(value?: string): boolean {
   return !!value && !value.startsWith("REPLACE_");
 }
 
 export function socialLinks() {
-  const s = siteConfig.socials;
   return [
-    { name: "Telegram", handle: `@${s.telegram}`, href: `https://t.me/${s.telegram}` },
-    { name: "TikTok", handle: `@${s.tiktok}`, href: `https://www.tiktok.com/@${s.tiktok}` },
-    { name: "Facebook", handle: `@${s.facebook}`, href: `https://www.facebook.com/${s.facebook}` },
-    { name: "Instagram", handle: `@${s.instagram}`, href: `https://www.instagram.com/${s.instagram}` },
+    { name: "Telegram", handle: "Telegram", href: siteConfig.socialLinks.telegram },
+    { name: "GitHub", handle: "GitHub", href: siteConfig.socialLinks.github },
   ];
 }
 
