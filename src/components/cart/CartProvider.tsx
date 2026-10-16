@@ -2,12 +2,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 export type CartItem = {
-  key: string; slug: string; name: string; variantLabel?: string;
-  currency: "ETB" | "USD";
-  unitPrice: number; qty: number; type: "digital" | "physical"; maxQty: number;
+  key: string; slug: string; name: string; variantId?: string; variantLabel?: string;
+  variantId?: string; currency: "ETB" | "USD";
+  unitPrice: number; qty: number; type: "digital" | "physical"; maxQty: number; currency: "ETB" | "USD";
 };
 
-const STORAGE_KEY = "yvx-cart-v1";
+const STORAGE_KEY = "yvx-cart-v2";
 
 // Cart data lives in the browser, so it is untrusted: re-check its shape when loading.
 function sanitize(raw: unknown): CartItem[] {
@@ -16,12 +16,13 @@ function sanitize(raw: unknown): CartItem[] {
     (i?.currency === "ETB" || i?.currency === "USD") &&
     !!i && typeof i.key === "string" && typeof i.slug === "string" && typeof i.name === "string" &&
     Number.isFinite(i.unitPrice) && i.unitPrice >= 0 && Number.isInteger(i.maxQty) && i.maxQty >= 1 &&
-    Number.isInteger(i.qty) && i.qty >= 1 && i.qty <= i.maxQty && (i.type === "digital" || i.type === "physical")
+    Number.isInteger(i.qty) && i.qty >= 1 && i.qty <= i.maxQty && (i.type === "digital" || i.type === "physical") &&
+    (i.currency === "ETB" || i.currency === "USD") && (i.variantId === undefined || typeof i.variantId === "string")
   ).slice(0, 50);
 }
 
 type Ctx = {
-  items: CartItem[]; ready: boolean; count: number; subtotal: number;
+  items: CartItem[]; ready: boolean; count: number; subtotal: number; currency: "ETB" | "USD" | null;
   add: (item: Omit<CartItem, "qty">, qty?: number) => void;
   setQty: (key: string, qty: number) => void;
   remove: (key: string) => void; clear: () => void;
@@ -59,6 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     items, ready, add, setQty, remove, clear,
     count: items.reduce((n, i) => n + i.qty, 0),
     subtotal: items.reduce((n, i) => n + i.qty * i.unitPrice, 0),
+    currency: items[0]?.currency ?? null,
   }), [items, ready, add, setQty, remove, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
