@@ -7,18 +7,20 @@ import { Art } from "@/components/ui/Art";
 import { Card } from "@/components/ui/Card";
 import { ProductCard } from "@/components/cards/Cards";
 import { AddToCart } from "@/components/shop/AddToCart";
-import { availability, getProduct, products } from "@/data/products";
+import { availability } from "@/data/products";
+import { getProductBySlug, getProducts } from "@/lib/products-db";
 
-export function generateStaticParams() { return products.map((p) => ({ slug: p.slug })); }
+export const dynamic = "force-dynamic";
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const p = getProduct(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const p = await getProductBySlug(params.slug);
   return p ? { title: p.name, description: p.description } : { title: "Product not found" };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const p = getProduct(params.slug);
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const p = await getProductBySlug(params.slug);
   if (!p) notFound();
+  const products = await getProducts();
   const a = availability(p);
   const related = products.filter((x) => x.slug !== p.slug && x.category === p.category).concat(products.filter((x) => x.slug !== p.slug && x.category !== p.category)).slice(0, 3);
 
@@ -28,7 +30,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       <div className="mt-4 grid gap-8 lg:grid-cols-2">
         <Art seed={p.name.length} />
         <div>
-          <div className="flex flex-wrap gap-2"><Badge tone="demo">Demo product</Badge><Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
+          <div className="flex flex-wrap gap-2">{p.isDemo && <Badge tone="demo">Demo product</Badge>}<Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
           <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">{p.name}</h1>
           <p className="mt-1 text-ink-mute">{p.category}</p>
           <p className="mt-4 text-ink-mute">{p.description}</p>
