@@ -19,11 +19,12 @@ export default async function Admin() {
   }
 
   const [
-    productsResult, categoriesResult, variantsResult, ordersResult, ...countResults
+    productsResult, categoriesResult, variantsResult, digitalFilesResult, ordersResult, ...countResults
   ] = await Promise.all([
     supabase.from("products").select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published").order("created_at", { ascending: false }).limit(200),
     supabase.from("categories").select("id,name,slug").order("name"),
     supabase.from("product_variants").select("id,product_id,label,stock").order("sort_order"),
+    supabase.from("digital_files").select("id,product_id,variant_id,storage_path,file_name").order("created_at"),
     supabase.from("orders").select("id,order_ref,customer_name,customer_email,status,payment_status,currency,total,created_at,payment_method").order("created_at", { ascending: false }).limit(100),
     ...ORDER_STATUSES.map((status) => supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", status)),
   ]);
@@ -40,7 +41,7 @@ export default async function Admin() {
   }
   const counts = Object.fromEntries(ORDER_STATUSES.map((status, index) => [status, countResults[index].count ?? 0]));
   const errors = [
-    productsResult.error, categoriesResult.error, variantsResult.error, ordersResult.error, itemsResult.error,
+    productsResult.error, categoriesResult.error, variantsResult.error, digitalFilesResult.error, ordersResult.error, itemsResult.error,
     ...countResults.map((result) => result.error),
   ].filter(Boolean).map((error) => error?.message);
 
@@ -54,6 +55,7 @@ export default async function Admin() {
           products={productsResult.data ?? []}
           categories={categoriesResult.data ?? []}
           variants={variantsResult.data ?? []}
+          digitalFiles={digitalFilesResult.data ?? []}
           orders={(ordersResult.data ?? []).map((order) => ({ ...order, items: items.get(order.id) ?? [] }))}
           counts={counts}
           loadError={errors.length ? `Some admin data could not be loaded: ${errors.join("; ")}` : undefined}

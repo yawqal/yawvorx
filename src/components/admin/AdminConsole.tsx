@@ -14,6 +14,7 @@ type Product = {
 };
 type Category = { id: number; name: string; slug: string };
 type Variant = { id: string; product_id: string; label: string; stock: number | null };
+type DigitalFile = { id: string; product_id: string; variant_id: string | null; storage_path: string; file_name: string };
 type Item = { product_name: string; quantity: number; unit_price: number; variant_label: string | null };
 type Order = {
   id: string; order_ref: string; customer_name: string; customer_email: string; status: string;
@@ -25,7 +26,7 @@ type ProductDraft = {
   stock: string; image_url: string; category_id: string; product_type: string; is_demo: boolean; is_published: boolean;
 };
 
-type Props = { products: Product[]; categories: Category[]; variants: Variant[]; orders: Order[]; counts: Record<string, number>; loadError?: string };
+type Props = { products: Product[]; categories: Category[]; variants: Variant[]; digitalFiles: DigitalFile[]; orders: Order[]; counts: Record<string, number>; loadError?: string };
 type Payload = Record<string, string | number | boolean | null>;
 
 const inputClass = "w-full min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 py-2.5 text-base text-ink";
@@ -38,7 +39,7 @@ function blankProduct(categoryId = ""): ProductDraft {
   return { id: "", name: "", slug: "", description: "", price: "", currency: "ETB", stock: "0", image_url: "", category_id: categoryId, product_type: "physical", is_demo: false, is_published: false };
 }
 
-export function AdminConsole({ products, categories, variants, orders, counts, loadError }: Props) {
+export function AdminConsole({ products, categories, variants, digitalFiles, orders, counts, loadError }: Props) {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -87,7 +88,7 @@ export function AdminConsole({ products, categories, variants, orders, counts, l
         <h2 className="mb-4 text-2xl font-semibold">Products and stock</h2>
         <Card>
           <h3 className="text-lg font-semibold">Add product</h3>
-          <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} onSave={send} busy={busy} />
+          <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} digitalFiles={[]} onSave={send} busy={busy} />
         </Card>
         <div className="mt-4 space-y-4">
           {products.map((product) => (
@@ -102,7 +103,7 @@ export function AdminConsole({ products, categories, variants, orders, counts, l
                 ...product, description: product.description ?? "", image_url: product.image_url ?? "",
                 price: String(product.price), stock: String(product.stock),
                 category_id: product.category_id === null ? "" : String(product.category_id),
-              }} onSave={send} busy={busy} />
+              }} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
               {variants.filter((v) => v.product_id === product.id).length > 0 && (
                 <div className="mt-5 border-t border-line pt-4">
                   <h4 className="font-medium">Variant stock</h4>
@@ -175,31 +176,57 @@ export function AdminConsole({ products, categories, variants, orders, counts, l
   );
 }
 
-function ProductEditor({ categories, initial, onSave, busy }: {
-  categories: Category[]; initial: ProductDraft;
+function ProductEditor({ categories, initial, digitalFiles, onSave, busy }: {
+  categories: Category[]; initial: ProductDraft; digitalFiles: DigitalFile[];
   onSave: (values: Payload) => Promise<boolean>; busy: boolean;
 }) {
   const [values, setValues] = useState({ ...blankProduct(), ...initial });
   const set = (key: string, value: string | boolean) => setValues((current) => ({ ...current, [key]: value }));
   return (
-    <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => {
+    <>
+      <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => {
+        event.preventDefault();
+        void onSave({ ...values, action: "save_product", price: Number(values.price), stock: Number(values.stock), category_id: values.category_id || null });
+      }}>
+        <Input label="Name" value={values.name} onChange={(event) => set("name", event.target.value)} required />
+        <Input label="Slug" value={values.slug} onChange={(event) => set("slug", event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
+        <Textarea label="Description" value={values.description} onChange={(event) => set("description", event.target.value)} />
+        <Input label="Image URL" type="url" value={values.image_url ?? ""} onChange={(event) => set("image_url", event.target.value)} />
+        <Input label="Price" type="number" min="0" step="0.01" value={values.price} onChange={(event) => set("price", event.target.value)} required />
+        <Select label="Currency" value={values.currency} onChange={(event) => set("currency", event.target.value)}><option>ETB</option><option>USD</option></Select>
+        <Input label="Stock" type="number" min="0" step="1" value={values.stock} onChange={(event) => set("stock", event.target.value)} required />
+        <Select label="Category" value={values.category_id ?? ""} onChange={(event) => set("category_id", event.target.value)}>
+          <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+        </Select>
+        <Select label="Product type" value={values.product_type} onChange={(event) => set("product_type", event.target.value)}><option value="physical">Physical</option><option value="digital">Digital</option></Select>
+        <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> Demo product</label>
+        <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> Active / published</label>
+        <Button type="submit" loading={busy}>{values.id ? "Save product" : "Create product"}</Button>
+      </form>
+      {values.id && values.product_type === "digital" && (
+        <div className="mt-4 space-y-3 border-t border-line pt-4">
+          <p className="text-sm text-ink-mute">Upload the file to the private digital-files bucket separately, then save its relative storage path here.</p>
+          {digitalFiles.map((file) => <DigitalFileEditor key={file.id} productId={values.id} file={file} onSave={onSave} busy={busy} />)}
+          <DigitalFileEditor productId={values.id} onSave={onSave} busy={busy} />
+        </div>
+      )}
+    </>
+  );
+}
+
+function DigitalFileEditor({ productId, file, onSave, busy }: {
+  productId: string; file?: DigitalFile; onSave: (values: Payload) => Promise<boolean>; busy: boolean;
+}) {
+  const [fileName, setFileName] = useState(file?.file_name ?? "");
+  const [storagePath, setStoragePath] = useState(file?.storage_path ?? "");
+  return (
+    <form className="grid gap-3 sm:grid-cols-2" onSubmit={(event) => {
       event.preventDefault();
-      void onSave({ ...values, action: "save_product", price: Number(values.price), stock: Number(values.stock), category_id: values.category_id || null });
+      void onSave({ action: "save_digital_file", id: file?.id ?? null, product_id: productId, file_name: fileName, storage_path: storagePath });
     }}>
-      <Input label="Name" value={values.name} onChange={(event) => set("name", event.target.value)} required />
-      <Input label="Slug" value={values.slug} onChange={(event) => set("slug", event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
-      <Textarea label="Description" value={values.description} onChange={(event) => set("description", event.target.value)} />
-      <Input label="Image URL" type="url" value={values.image_url ?? ""} onChange={(event) => set("image_url", event.target.value)} />
-      <Input label="Price" type="number" min="0" step="0.01" value={values.price} onChange={(event) => set("price", event.target.value)} required />
-      <Select label="Currency" value={values.currency} onChange={(event) => set("currency", event.target.value)}><option>ETB</option><option>USD</option></Select>
-      <Input label="Stock" type="number" min="0" step="1" value={values.stock} onChange={(event) => set("stock", event.target.value)} required />
-      <Select label="Category" value={values.category_id ?? ""} onChange={(event) => set("category_id", event.target.value)}>
-        <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-      </Select>
-      <Select label="Product type" value={values.product_type} onChange={(event) => set("product_type", event.target.value)}><option value="physical">Physical</option><option value="digital">Digital</option></Select>
-      <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> Demo product</label>
-      <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> Active / published</label>
-      <Button type="submit" loading={busy}>{values.id ? "Save product" : "Create product"}</Button>
+      <Input label="File name shown to customer" value={fileName} maxLength={255} onChange={(event) => setFileName(event.target.value)} required />
+      <Input label="Private storage path" value={storagePath} maxLength={500} onChange={(event) => setStoragePath(event.target.value)} placeholder="products/example/file.zip" required />
+      <Button type="submit" variant="secondary" loading={busy}>{file ? "Update file reference" : "Attach file reference"}</Button>
     </form>
   );
 }

@@ -121,6 +121,32 @@ export async function POST(request: Request) {
     return logError ? fail(`Stock saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
   }
 
+  if (action === "save_digital_file") {
+    const id = typeof body.id === "string" ? body.id : null;
+    const productId = text(body.product_id, 80);
+    const fileName = text(body.file_name, 255);
+    const storagePath = text(body.storage_path, 500);
+    const variantId = typeof body.variant_id === "string" && body.variant_id ? body.variant_id : null;
+    if (!productId || !fileName || !storagePath || storagePath.startsWith("/") || storagePath.includes("\\") ||
+        storagePath.split("/").some((segment) => !segment || segment === "." || segment === "..")) {
+      return fail("Enter a file name and a valid relative path in the private digital-files bucket.");
+    }
+    const { data: product, error: productError } = await supabase.from("products")
+      .select("id,product_type").eq("id", productId).maybeSingle();
+    if (productError || !product) return fail(productError?.message ?? "Product not found.", 404);
+    if (product.product_type !== "digital") return fail("Only digital products can have downloadable files.");
+    const values = {
+      product_id: productId, variant_id: variantId, storage_bucket: "digital-files",
+      storage_path: storagePath, file_name: fileName,
+    };
+    const result = id
+      ? await supabase.from("digital_files").update(values).eq("id", id).eq("product_id", productId).select("id").maybeSingle()
+      : await supabase.from("digital_files").insert(values).select("id").single();
+    if (result.error || !result.data) return fail(result.error?.message ?? "Digital file reference was not saved.");
+    const logError = await audit(supabase, actor.id, id ? "digital_file.updated" : "digital_file.attached", "digital_file", result.data.id, { product_id: productId, storage_path: storagePath });
+    return logError ? fail(`File reference saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
   if (action === "change_order_status") {
     const id = text(body.id, 80);
     const next = text(body.status, 30);

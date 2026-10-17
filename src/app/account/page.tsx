@@ -11,6 +11,7 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { AddressBook } from "@/components/account/AddressBook";
 import { Wishlist } from "@/components/account/Wishlist";
 import { ServiceRequests } from "@/components/account/ServiceRequests";
+import { DigitalDownloads } from "@/components/account/DigitalDownloads";
 import { requireUser, isCurrentUserAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
@@ -37,6 +38,11 @@ export default async function Account() {
     supabase.from("products").select("id,name,slug").eq("is_published", true).order("name"),
     supabase.from("service_requests").select("id,service_type,details,status,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
   ]);
+  const orderIds = (ordersRes.data ?? []).map((order) => order.id);
+  const digitalItemsRes = orderIds.length
+    ? await supabase.from("order_items").select("order_id,product_type").in("order_id", orderIds)
+    : { data: [], error: null };
+  const digitalOrderIds = new Set((digitalItemsRes.data ?? []).filter((item) => item.product_type === "digital").map((item) => item.order_id));
   const wishlistProductIds = (wishlistRes.data ?? []).map((item) => item.product_id);
   const savedProductsRes = wishlistProductIds.length
     ? await supabase.from("products").select("id,name,slug").in("id", wishlistProductIds)
@@ -48,7 +54,7 @@ export default async function Account() {
   });
   const dataErrors = [
     profileRes.error, ordersRes.error, addressesRes.error, wishlistRes.error, productsRes.error,
-    requestsRes.error, savedProductsRes.error,
+    requestsRes.error, savedProductsRes.error, digitalItemsRes.error,
   ].filter(Boolean).map((error) => error?.message);
   const orders = ordersRes.data ?? [];
 
@@ -116,7 +122,15 @@ export default async function Account() {
             : <ServiceRequests userId={user.id} initialName={profileRes.data?.display_name ?? ""} initialEmail={user.email ?? ""} requests={requestsRes.data ?? []} />}
         </section>
 
-        <section id="downloads"><h2 className="mb-3 text-2xl font-semibold">Downloads</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Secure downloads will appear here after the digital-products phase is configured.</p></Card></section>
+        <section id="downloads">
+          <h2 className="mb-4 text-2xl font-semibold">Downloads</h2>
+          {orders.filter((order) => order.payment_status === "paid" && digitalOrderIds.has(order.id)).length > 0
+            ? <div className="space-y-3">{orders.filter((order) => order.payment_status === "paid" && digitalOrderIds.has(order.id)).map((order) => <Card key={order.id}>
+              <h3 className="font-semibold">{order.order_ref}</h3><p className="text-sm text-ink-mute">Verified paid order</p>
+              <DigitalDownloads orderId={order.id} />
+            </Card>)}</div>
+            : <Card><p className="text-ink-mute">No eligible digital downloads. Links become available after payment is verified.</p></Card>}
+        </section>
         <section id="support"><h2 className="mb-3 text-2xl font-semibold">Support tickets</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Support conversations are not available yet.</p></Card></section>
         <section id="notifications"><h2 className="mb-3 text-2xl font-semibold">Notifications</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">You have no in-app notifications yet.</p></Card></section>
 
