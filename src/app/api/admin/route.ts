@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { isMissingDualPriceColumns } from "@/lib/products-db";
 
 const ADMIN_ACTIONS = new Set([
   "save_product", "deactivate_product", "save_category", "save_service", "deactivate_service",
   "save_project", "deactivate_project", "update_request_status", "support_reply", "support_status",
-  "save_variant_stock", "save_digital_file", "change_order_status", "add_order_note", "review_payment",
+  "save_variant_stock", "save_digital_file", "change_order_status", "add_order_note", "review_payment", "moderate_review",
 ]);
 
 const ORDER_TRANSITIONS: Record<string, string[]> = {
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
   if (id !== undefined && (typeof id !== "string" || id.length > 80 || !/^[A-Za-z0-9_-]+$/.test(id))) {
     return fail("The record id is invalid.");
   }
-  for (const flag of ["is_demo", "is_published"]) {
+  for (const flag of ["is_demo", "is_published", "is_hidden"]) {
     if (body[flag] !== undefined && typeof body[flag] !== "boolean") return fail(`The ${flag.replace("_", " ")} value must be true or false.`);
   }
 
@@ -123,6 +124,31 @@ export async function POST(request: Request) {
         (categoryId !== null && (!Number.isInteger(categoryId) || categoryId < 1))) {
       return fail("Check the product fields and try again.");
     }
+    const hasDualPriceInput = body.price_etb !== undefined || body.price_usd !== undefined;
+    const parseDualPrice = (value: unknown): number | null | undefined => {
+      if (value === null || value === "") return null;
+      if (typeof value !== "number" && (typeof value !== "string" || !/^\d+(?:\.\d{1,2})?$/.test(value.trim()))) return undefined;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) && parsed >= 0 && parsed <= 9_999_999_999.99 ? parsed : undefined;
+    };
+    const priceETB = parseDualPrice(body.price_etb);
+    const priceUSD = parseDualPrice(body.price_usd);
+    if (hasDualPriceInput && (priceETB === undefined || priceUSD === undefined ||
+        ((priceETB === null) !== (priceUSD === null)))) {
+      return fail("Enter both dual prices, or leave both blank.");
+    }
+    let dualPriceValues: { price_etb?: number | null; price_usd?: number | null } = {};
+    if (hasDualPriceInput) {
+      const probe = await supabase.from("products").select("price_etb,price_usd").limit(1);
+      if (isMissingDualPriceColumns(probe.error)) {
+        if (priceETB !== null || priceUSD !== null) return fail("Dual-price columns are not installed; review the pricing proposal first.", 409);
+      } else if (probe.error) {
+        console.error("Could not check dual-price columns", probe.error);
+        return fail("Product pricing configuration could not be checked.", 500);
+      } else {
+        dualPriceValues = { price_etb: priceETB ?? null, price_usd: priceUSD ?? null };
+      }
+    }
     const values = {
       name, slug, description, price, currency, stock,
       image_url: imageUrl || null,
@@ -130,6 +156,7 @@ export async function POST(request: Request) {
       product_type: productType,
       is_demo: body.is_demo === true,
       is_published: body.is_published === true,
+      ...dualPriceValues,
     };
     const result = recordId
       ? await supabase.from("products").update(values).eq("id", recordId).select("id").maybeSingle()
@@ -395,6 +422,16 @@ export async function POST(request: Request) {
     const warning = await audit(supabase, actor.id, `payment.${status}`, "orders", id,
       { payment_status: status === "verified" ? "paid" : order.payment_status, reference: reference || null, note: note || null },
       { payment_status: order.payment_status, manual_payment_status: payment?.status ?? null }, note || null);
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
+  }
+
+  if (action === "moderate_review") {
+    const reviewId = text(id, 80);
+    if (!reviewId || typeof body.is_hidden !== "boolean") return fail("A review id and hidden true/false value are required.");
+    const { data, error } = await supabase.from("product_reviews")
+      .update({ is_hidden: body.is_hidden }).eq("id", reviewId).select("id").maybeSingle();
+    if (error || !data) return fail("The review could not be updated. Confirm the product reviews SQL has been applied.", error ? 500 : 404);
+    const warning = await audit(supabase, actor.id, body.is_hidden ? "product_review.hidden" : "product_review.unhidden", "product_reviews", reviewId, { is_hidden: body.is_hidden });
     return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 

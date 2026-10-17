@@ -51,7 +51,10 @@ export function ProductCard({ p }: { p: Product }) {
       <h3 className="mt-3 text-lg font-semibold">{p.name}</h3>
       <p className="mt-1 text-sm text-ink-mute">{p.category}</p>
       <div className="mt-3 flex items-center justify-between">
-        <span className="font-display text-lg">{formatMoney(p.price, p.currency)}</span>
+        {typeof p.priceETB === "number" && Number.isFinite(p.priceETB) &&
+        typeof p.priceUSD === "number" && Number.isFinite(p.priceUSD)
+          ? <span className="font-display text-sm">{formatMoney(p.priceETB, "ETB")} · {formatMoney(p.priceUSD, "USD")}</span>
+          : <span className="font-display text-lg">{formatMoney(p.price, p.currency)}</span>}
         <span className={`text-sm ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
       </div>
     </Link>

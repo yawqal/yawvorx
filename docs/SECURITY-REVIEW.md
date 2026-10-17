@@ -6,7 +6,7 @@ The application sets `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Poli
 
 Content Security Policy is currently emitted as `Content-Security-Policy-Report-Only` so production behavior is not broken while violations are observed. The policy allows the configured Supabase origin (or `*.supabase.co` if no URL is configured), Supabase websockets, and Vercel's `vercel.live` origin. It includes Next.js inline script/style allowances and `unsafe-eval`; remove/tighten these only after validating the deployed app. It does not enforce restrictions until the header is changed to `Content-Security-Policy`.
 
-`POST /api/admin` is limited to 60 requests per IP per minute. Limits are held in process memory, so they reset on restart and are not shared between serverless instances/regions. This is basic abuse protection, not a distributed limit; use an edge/provider limiter for an enforceable production-wide quota. The route validates the JSON size, action, record IDs, flags, field lengths/types, and enumerated values.
+`POST /api/admin` is limited to 60 requests per IP per minute; `POST /api/reviews` is limited to 5 requests per IP per minute. Limits are held in process memory, so they reset on restart and are not shared between serverless instances/regions. This is basic abuse protection, not a distributed limit; use an edge/provider limiter for an enforceable production-wide quota. These routes validate the JSON size, action, record IDs, flags, field lengths/types, and enumerated values.
 
 ## Dependency audit
 

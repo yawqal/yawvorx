@@ -9,6 +9,10 @@ import { ProductCard } from "@/components/cards/Cards";
 import { AddToCart } from "@/components/shop/AddToCart";
 import { availability } from "@/data/products";
 import { getProductBySlug, getProducts } from "@/lib/products-db";
+import { getCurrentUser } from "@/lib/auth";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { ProductReviews } from "@/components/shop/ProductReviews";
+import { formatMoney } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +28,18 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const p = await getProductBySlug(params.slug);
   if (!p) notFound();
-  const products = await getProducts();
+  const [products, user] = await Promise.all([getProducts(), getCurrentUser()]);
+  const supabase = getSupabaseServerClient();
+  const reviewsResult = p.id && supabase
+    ? await supabase.from("product_reviews").select("id,rating,body,created_at")
+      .eq("product_id", p.id).order("created_at", { ascending: false }).limit(50)
+    : { data: [], error: null };
+  if (reviewsResult.error) console.error("Could not load product reviews:", reviewsResult.error.message);
+  const reviewRows = reviewsResult.data ?? [];
+  const visibleReviews = reviewRows;
+  const averageRating = visibleReviews.length
+    ? visibleReviews.reduce((sum, review) => sum + review.rating, 0) / visibleReviews.length
+    : null;
   const a = availability(p);
   const related = products.filter((x) => x.slug !== p.slug && x.category === p.category).concat(products.filter((x) => x.slug !== p.slug && x.category !== p.category)).slice(0, 3);
   const productJsonLd = {
@@ -33,15 +48,21 @@ export default async function ProductPage({ params }: { params: { slug: string }
     name: p.name,
     description: p.description,
     category: p.category,
-    offers: {
-      "@type": "Offer",
-      price: p.price.toFixed(2),
-      priceCurrency: p.currency,
-      availability: p.type === "digital" || (p.stock ?? 0) > 0
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      url: new URL(`/shop/${encodeURIComponent(p.slug)}`, process.env.NEXT_PUBLIC_SITE_URL ?? "https://yawvorx-xzyn-yawvorx.vercel.app").toString(),
-    },
+    offers: (() => {
+      const shared = {
+        "@type": "Offer",
+        availability: p.type === "digital" || (p.stock ?? 0) > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        url: new URL(`/shop/${encodeURIComponent(p.slug)}`, process.env.NEXT_PUBLIC_SITE_URL ?? "https://yawvorx-xzyn-yawvorx.vercel.app").toString(),
+      };
+      return typeof p.priceETB === "number" && typeof p.priceUSD === "number"
+        ? [
+          { ...shared, price: p.priceETB.toFixed(2), priceCurrency: "ETB" },
+          { ...shared, price: p.priceUSD.toFixed(2), priceCurrency: "USD" },
+        ]
+        : { ...shared, price: p.price.toFixed(2), priceCurrency: p.currency };
+    })(),
   };
 
   return (
@@ -55,6 +76,11 @@ export default async function ProductPage({ params }: { params: { slug: string }
           <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">{p.name}</h1>
           <p className="mt-1 text-ink-mute">{p.category}</p>
           <p className="mt-4 text-ink-mute">{p.description}</p>
+          <p className="mt-5 font-display text-lg">
+            {typeof p.priceETB === "number" && typeof p.priceUSD === "number"
+              ? `${formatMoney(p.priceETB, "ETB")} · ${formatMoney(p.priceUSD, "USD")}`
+              : formatMoney(p.price, p.currency)}
+          </p>
           <div className="mt-6"><AddToCart product={p} /></div>
           <Card className="mt-6 text-sm text-ink-mute">
             <h2 className="font-semibold text-ink">{p.type === "digital" ? "Digital delivery" : "Shipping"}</h2>
@@ -69,6 +95,15 @@ export default async function ProductPage({ params }: { params: { slug: string }
         <section className="mt-14"><h2 className="text-2xl font-semibold">Related products</h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div></section>
       )}
+      {reviewsResult.error
+        ? <section className="mt-14 border-t border-line pt-8"><h2 className="text-2xl font-semibold">Customer reviews</h2><p className="mt-2 text-sm text-ink-mute">Reviews are not available until the owner applies the product reviews SQL proposal.</p></section>
+        : p.id && <ProductReviews
+          productId={p.id}
+          productSlug={p.slug}
+          reviews={visibleReviews}
+          average={averageRating}
+          signedIn={!!user}
+        />}
     </Container>
   );
 }
