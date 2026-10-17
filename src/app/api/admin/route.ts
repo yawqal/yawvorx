@@ -3,11 +3,12 @@ import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { isMissingDualPriceColumns } from "@/lib/products-db";
+import { randomBytes } from "node:crypto";
 
 const ADMIN_ACTIONS = new Set([
   "save_product", "deactivate_product", "save_category", "save_service", "deactivate_service",
   "save_project", "deactivate_project", "update_request_status", "support_reply", "support_status",
-  "save_variant_stock", "save_digital_file", "change_order_status", "add_order_note", "review_payment", "moderate_review",
+  "save_variant_stock", "save_digital_file", "change_order_status", "add_order_note", "review_payment", "moderate_review", "review_vendor",
 ]);
 
 const ORDER_TRANSITIONS: Record<string, string[]> = {
@@ -432,6 +433,61 @@ export async function POST(request: Request) {
       .update({ is_hidden: body.is_hidden }).eq("id", reviewId).select("id").maybeSingle();
     if (error || !data) return fail("The review could not be updated. Confirm the product reviews SQL has been applied.", error ? 500 : 404);
     const warning = await audit(supabase, actor.id, body.is_hidden ? "product_review.hidden" : "product_review.unhidden", "product_reviews", reviewId, { is_hidden: body.is_hidden });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
+  }
+
+  if (action === "review_vendor") {
+    const applicationId = text(id, 80);
+    const status = text(body.status, 20);
+    if (!applicationId || !["pending", "approved", "rejected"].includes(String(status))) {
+      return fail("A vendor application id and valid review status are required.");
+    }
+    const { data: application, error: readError } = await supabase.from("vendor_applications")
+      .select("id,user_id,status,referral_code").eq("id", applicationId).maybeSingle();
+    if (readError || !application) return fail("Vendor application could not be found. Confirm the vendor SQL proposal is installed.", readError ? 500 : 404);
+    const reviewedAt = new Date().toISOString();
+    const { error: updateError } = await supabase.from("vendor_applications").update({
+      status, reviewed_by: actor.id, reviewed_at: reviewedAt,
+    }).eq("id", applicationId);
+    if (updateError) return fail("Vendor application status could not be updated.", 500);
+
+    if (status === "approved") {
+      let referralCode = application.referral_code as string | null;
+      if (referralCode) {
+        const { data, error } = await supabase.from("affiliate_codes").select("id").eq("code", referralCode).maybeSingle();
+        if (error) return fail("Application approved, but the referral code could not be checked. Retry the review.", 500);
+        if (!data) referralCode = null;
+      }
+      if (!referralCode) {
+        let created = false;
+        for (let attempt = 0; attempt < 3 && !created; attempt += 1) {
+          const code = randomBytes(5).toString("hex").toUpperCase();
+          const { error } = await supabase.from("affiliate_codes").insert({
+            code, is_active: false,
+          });
+          if (!error) {
+            referralCode = code;
+            created = true;
+          }
+          else if (error.code !== "23505") {
+            console.error("Affiliate code creation failed", { applicationId, error });
+            return fail("Application approved, but the referral code could not be created. Retry the review.", 500);
+          }
+        }
+        if (!created) return fail("Application approved, but a unique referral code could not be created. Retry the review.", 500);
+        const { error } = await supabase.from("vendor_applications")
+          .update({ referral_code: referralCode }).eq("id", applicationId);
+        if (error) return fail("Application approved, but its referral code could not be linked. Retry the review.", 500);
+      }
+      const { error } = await supabase.from("affiliate_codes").update({ is_active: true }).eq("code", referralCode);
+      if (error) return fail("Application approved, but the referral code could not be activated. Retry the review.", 500);
+    } else {
+      if (application.referral_code) {
+        const { error } = await supabase.from("affiliate_codes").update({ is_active: false }).eq("code", application.referral_code);
+        if (error) return fail("Application status changed, but its referral code could not be deactivated.", 500);
+      }
+    }
+    const warning = await audit(supabase, actor.id, "vendor_application.reviewed", "vendor_applications", applicationId, { status });
     return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 

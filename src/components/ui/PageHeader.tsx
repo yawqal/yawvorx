@@ -1,6 +1,6 @@
 import { Container } from "./Container";
 
-export function PageHeader({ title, intro, children }: { title: string; intro?: string; children?: React.ReactNode }) {
+export function PageHeader({ title, intro, children }: { title: React.ReactNode; intro?: React.ReactNode; children?: React.ReactNode }) {
   return (
     <div className="bg-aurora border-b border-line">
       <Container className="py-12 sm:py-16">

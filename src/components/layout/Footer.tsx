@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { Container } from "@/components/ui/Container";
 import { siteConfig, socialLinks, whatsappLink, emailLink } from "@/config/site";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 const legal = [
   { href: "/privacy", label: "Privacy Policy" },
@@ -14,6 +17,7 @@ const legal = [
 export function Footer() {
   const wa = whatsappLink();
   const mail = emailLink();
+  const { t } = useLanguage();
   return (
     <footer className="mt-10 border-t border-line bg-obsidian-900 pb-[env(safe-area-inset-bottom)]">
       <Container className="grid gap-10 py-12 md:grid-cols-4">
@@ -24,16 +28,16 @@ export function Footer() {
         </div>
 
         <div>
-          <h2 className="text-base font-semibold">Explore</h2>
+          <h2 className="text-base font-semibold">{t("Explore")}</h2>
           <ul className="mt-3 space-y-1">
             {siteConfig.nav.map((l) => (
-              <li key={l.href}><Link href={l.href} className="inline-block py-1.5 text-ink-mute hover:text-ink">{l.label}</Link></li>
+              <li key={l.href}><Link href={l.href} className="inline-block py-1.5 text-ink-mute hover:text-ink">{t(l.label)}</Link></li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h2 className="text-base font-semibold">Connect</h2>
+          <h2 className="text-base font-semibold">{t("Connect")}</h2>
           <ul className="mt-3 space-y-1">
             {socialLinks().map((s) => (
               <li key={s.name}>
@@ -54,7 +58,7 @@ export function Footer() {
           <p>© {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
           <ul className="flex flex-wrap gap-x-4">
             {legal.map((l) => (
-              <li key={l.href}><Link href={l.href} className="inline-block py-1.5 hover:text-ink">{l.label}</Link></li>
+              <li key={l.href}><Link href={l.href} className="inline-block py-1.5 hover:text-ink">{t(l.label)}</Link></li>
             ))}
           </ul>
         </Container>

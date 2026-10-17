@@ -24,8 +24,9 @@ export default async function Admin() {
   const dualProductsResult = await supabase.from("products")
     .select("id,name,slug,description,price,price_etb,price_usd,currency,stock,image_url,category_id,product_type,is_demo,is_published")
     .order("created_at", { ascending: false }).limit(200);
-  const dualPricingAvailable = !isMissingDualPriceColumns(dualProductsResult.error);
-  const productsResult = dualPricingAvailable ? dualProductsResult : await supabase.from("products")
+  const missingDualPriceColumns = isMissingDualPriceColumns(dualProductsResult.error);
+  const dualPricingAvailable = dualProductsResult.error === null;
+  const productsResult = !missingDualPriceColumns ? dualProductsResult : await supabase.from("products")
       .select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published")
       .order("created_at", { ascending: false }).limit(200);
   const [
@@ -81,6 +82,7 @@ export default async function Admin() {
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/audit">Audit log</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/reviews">Product reviews</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendors">Vendors and affiliates</Link>
         </nav>
         <AdminConsole
           products={productsResult.data ?? []}

@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { ShopBrowser } from "@/components/shop/ShopBrowser";
 import { getProductCategories, getProducts } from "@/lib/products-db";
+import { TranslatedText } from "@/components/i18n/LanguageProvider";
 
 export const metadata: Metadata = { title: "Shop", description: "Digital and physical products from YAWVOREX." };
 export const dynamic = "force-dynamic";
@@ -19,10 +20,10 @@ export default async function Shop({ searchParams }: { searchParams: { q?: strin
   ]);
   return (
     <>
-      <PageHeader title="Shop" intro="Digital and physical products. Orders are confirmed by YAWVOREX before processing.">
+      <PageHeader title={<TranslatedText value="Shop" />} intro={<TranslatedText value="Digital and physical products from YAWVOREX. Orders are confirmed by YAWVOREX before processing." />}>
         {products.some((p) => p.isDemo) && <Badge tone="demo">Demo catalog</Badge>}
       </PageHeader>
-      <Section title="Products"><ShopBrowser products={products} categories={categories} search={search} selectedCategory={category} /></Section>
+      <Section title={<TranslatedText value="Products" />}><ShopBrowser products={products} categories={categories} search={search} selectedCategory={category} /></Section>
     </>
   );
 }

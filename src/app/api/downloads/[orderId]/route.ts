@@ -28,8 +28,23 @@ export async function GET(_request: Request, { params }: { params: { orderId: st
     .in("product_id", productIds);
   if (filesError) return NextResponse.json({ error: "Could not load digital file references." }, { status: 500 });
 
-  const eligible = (files ?? []).filter((file) => items?.some((item) =>
+  const purchasedFiles = (files ?? []).filter((file) => items?.some((item) =>
     item.product_id === file.product_id && (!file.variant_id || item.variant_id === file.variant_id)));
+  const eligible = purchasedFiles.filter((file) =>
+    file.storage_bucket === "digital-files" &&
+    typeof file.storage_path === "string" &&
+    file.storage_path.length > 0 &&
+    file.storage_path.length <= 500 &&
+    !file.storage_path.startsWith("/") &&
+    !file.storage_path.includes("\\") &&
+    file.storage_path.split("/").every((segment) => segment.length > 0 && segment !== "." && segment !== "..") &&
+    typeof file.file_name === "string" &&
+    file.file_name.trim().length > 0 &&
+    file.file_name.length <= 255);
+  if (eligible.length !== purchasedFiles.length) {
+    console.error("Invalid digital file reference found for a verified order", { orderId: order.id });
+    return NextResponse.json({ error: "A digital file reference is invalid. Contact support." }, { status: 500 });
+  }
   if (eligible.length === 0) return NextResponse.json({ error: "No downloads are attached to this purchase." }, { status: 404 });
 
   const downloads = [];

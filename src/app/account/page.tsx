@@ -16,6 +16,8 @@ import { SupportTickets } from "@/components/account/SupportTickets";
 import { requireUser, isCurrentUserAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
+import { VendorApplication } from "@/components/account/VendorApplication";
+import { LanguageToggle, TranslatedText } from "@/components/i18n/LanguageProvider";
 
 export const metadata: Metadata = { title: "My account", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -30,6 +32,7 @@ export default async function Account() {
   }
   const [
     profileRes, ordersRes, admin, addressesRes, wishlistRes, productsRes, requestsRes, ticketsRes, notificationsRes,
+    vendorApplicationRes,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name, phone").eq("id", user.id).maybeSingle(),
     supabase.from("orders").select("id, order_ref, status, payment_status, total, currency, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
@@ -40,7 +43,12 @@ export default async function Account() {
     supabase.from("service_requests").select("id,service_type,details,status,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     supabase.from("support_tickets").select("id,subject,status,created_at").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(50),
     supabase.from("notifications").select("id,title,body,href,read_at,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
+    supabase.from("vendor_applications").select("business_name,contact_value,description,status,admin_note,referral_code").eq("user_id", user.id).maybeSingle(),
   ]);
+  const affiliateCodeRes = vendorApplicationRes.data?.referral_code
+    ? await supabase.from("affiliate_codes").select("code,is_active")
+      .eq("code", vendorApplicationRes.data.referral_code).eq("is_active", true).maybeSingle()
+    : { data: null, error: null };
   const orderIds = (ordersRes.data ?? []).map((order) => order.id);
   const digitalItemsRes = orderIds.length
     ? await supabase.from("order_items").select("order_id,product_type").in("order_id", orderIds)
@@ -74,7 +82,7 @@ export default async function Account() {
 
   return (
     <>
-      <PageHeader title="My account" intro={user.email ?? undefined}>
+      <PageHeader title={<TranslatedText value="My account" />} intro={user.email ?? undefined}>
         {admin && <Badge tone="info">Administrator</Badge>}
       </PageHeader>
       <Container className="space-y-10 py-10">
@@ -83,16 +91,16 @@ export default async function Account() {
         </p>}
 
         <section id="overview">
-          <h2 className="mb-4 text-2xl font-semibold">Overview</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Overview" /></h2>
           <div className="grid gap-4 sm:grid-cols-3">
-            <Card><p className="text-sm text-ink-mute">Orders</p><p className="mt-1 font-display text-2xl">{orders.length}</p></Card>
+            <Card><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-1 font-display text-2xl">{orders.length}</p></Card>
             <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-1 font-display text-2xl">{addressesRes.data?.length ?? 0}</p></Card>
             <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-1 font-display text-2xl">{wishlist.length}</p></Card>
           </div>
         </section>
 
         <section id="orders">
-          <h2 className="mb-4 text-2xl font-semibold">My orders</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="My orders" /></h2>
           {ordersRes.error ? <p role="alert" className="text-red-300">Orders could not be loaded: {ordersRes.error.message}</p> : orders.length === 0 ? (
             <EmptyState title="No orders yet" description="Orders you place while signed in will appear here." action={{ label: "Visit the shop", href: "/shop" }} />
           ) : (
@@ -109,7 +117,7 @@ export default async function Account() {
         </section>
 
         <section id="profile">
-          <h2 className="mb-4 text-2xl font-semibold">Profile</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Profile" /></h2>
           <Card>
             {profileRes.error && <p role="alert" className="mb-3 text-red-300">Profile could not be loaded: {profileRes.error.message}</p>}
             <ProfileForm userId={user.id} fullName={profileRes.data?.display_name ?? ""} phone={profileRes.data?.phone ?? ""} />
@@ -117,27 +125,27 @@ export default async function Account() {
         </section>
 
         <section id="addresses">
-          <h2 className="mb-4 text-2xl font-semibold">Addresses</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Addresses" /></h2>
           {addressesRes.error ? <p role="alert" className="text-red-300">Addresses could not be loaded: {addressesRes.error.message}</p>
             : <AddressBook initial={addressesRes.data ?? []} />}
         </section>
 
         <section id="wishlist">
-          <h2 className="mb-4 text-2xl font-semibold">Wishlist</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Wishlist" /></h2>
           {wishlistRes.error || productsRes.error || savedProductsRes.error
             ? <p role="alert" className="text-red-300">Wishlist could not be loaded. Confirm the customer dashboard SQL has been applied.</p>
             : <Wishlist choices={productsRes.data ?? []} saved={wishlist} />}
         </section>
 
         <section id="service-requests">
-          <h2 className="mb-4 text-2xl font-semibold">Service requests</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Service requests" /></h2>
           {requestsRes.error
             ? <p role="alert" className="text-red-300">Service requests could not be loaded: {requestsRes.error.message}</p>
             : <ServiceRequests userId={user.id} initialName={profileRes.data?.display_name ?? ""} initialEmail={user.email ?? ""} requests={requestsRes.data ?? []} />}
         </section>
 
         <section id="downloads">
-          <h2 className="mb-4 text-2xl font-semibold">Downloads</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Downloads" /></h2>
           {orders.filter((order) => order.payment_status === "paid" && digitalOrderIds.has(order.id)).length > 0
             ? <div className="space-y-3">{orders.filter((order) => order.payment_status === "paid" && digitalOrderIds.has(order.id)).map((order) => <Card key={order.id}>
               <h3 className="font-semibold">{order.order_ref}</h3><p className="text-sm text-ink-mute">Verified paid order</p>
@@ -146,13 +154,13 @@ export default async function Account() {
             : <Card><p className="text-ink-mute">No eligible digital downloads. Links become available after payment is verified.</p></Card>}
         </section>
         <section id="support">
-          <h2 className="mb-4 text-2xl font-semibold">Support tickets</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Support tickets" /></h2>
           {ticketsRes.error || ticketMessagesRes.error
             ? <p role="alert" className="text-red-300">Support tickets could not be loaded. Confirm the notifications/support SQL has been applied.</p>
             : <SupportTickets userId={user.id} tickets={supportTickets} />}
         </section>
         <section id="notifications">
-          <h2 className="mb-4 text-2xl font-semibold">Notifications</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Notifications" /></h2>
           {notificationsRes.error ? <p role="alert" className="text-red-300">Notifications could not be loaded: {notificationsRes.error.message}</p> : (
             <div className="space-y-3">
               {(notificationsRes.data ?? []).map((notice) => <Card key={notice.id}>
@@ -167,18 +175,28 @@ export default async function Account() {
         </section>
 
         <section id="security">
-          <h2 className="mb-4 text-2xl font-semibold">Security</h2>
+          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Security" /></h2>
           <Card className="flex flex-wrap items-center gap-3">
             <Link href="/forgot-password" className="inline-flex min-h-[44px] items-center rounded-xl border border-line px-4 text-ink-mute underline">Change password by email</Link>
             <SignOutButton />
           </Card>
         </section>
-        <section id="settings"><h2 className="mb-3 text-2xl font-semibold">Settings</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Additional account preferences are not available yet.</p></Card></section>
-        <section id="language"><h2 className="mb-3 text-2xl font-semibold">Language</h2><Card><p>English</p><p className="mt-1 text-sm text-ink-mute">Language selection is coming soon.</p></Card></section>
+        <section id="vendor">
+          <h2 className="mb-3 text-2xl font-semibold">Vendor application</h2>
+          {vendorApplicationRes.error
+            ? <p role="alert" className="text-amber-300">Vendor applications are not configured yet. The owner must review the vendor SQL proposal.</p>
+            : <VendorApplication
+              application={vendorApplicationRes.data}
+              activeReferralCode={affiliateCodeRes.data?.is_active ? affiliateCodeRes.data.code : null}
+              referralTrackingAvailable={!affiliateCodeRes.error}
+            />}
+        </section>
+        <section id="settings"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Settings" /></h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Additional account preferences are not available yet.</p></Card></section>
+        <section id="language"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Language" /></h2><Card className="flex items-center justify-between gap-3"><p>Choose English or Amharic for the navigation, footer, shop filters, and account headings.</p><LanguageToggle /></Card></section>
 
         <div className="flex flex-wrap gap-3">
           {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
-          <Button href="/shop" variant="ghost">Continue shopping</Button>
+          <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
         </div>
       </Container>
     </>

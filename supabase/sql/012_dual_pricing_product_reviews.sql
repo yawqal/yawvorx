@@ -32,7 +32,7 @@ create index if not exists yvx_product_reviews_public_idx
 alter table public.product_reviews enable row level security;
 revoke all on public.product_reviews from anon, authenticated;
 grant select (id, product_id, rating, body, is_hidden, created_at) on public.product_reviews to anon, authenticated;
-grant insert on public.product_reviews to authenticated;
+grant insert (product_id, user_id, rating, body) on public.product_reviews to authenticated;
 grant update (is_hidden) on public.product_reviews to authenticated;
 
 drop policy if exists "yvx: public read visible product reviews" on public.product_reviews;
@@ -45,6 +45,7 @@ create policy "yvx: verified buyers write one product review" on public.product_
   for insert to authenticated
   with check (
     user_id = (select auth.uid())
+    and not is_hidden
     and exists (
       select 1
       from public.orders o
