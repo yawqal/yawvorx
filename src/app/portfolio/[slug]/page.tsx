@@ -5,22 +5,26 @@ import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { Art } from "@/components/ui/Art";
 import { Button } from "@/components/ui/Button";
-import { getProject, projects } from "@/data/portfolio";
+import { getPublicProject } from "@/lib/portfolio-db";
 
-export function generateStaticParams() { return projects.map((p) => ({ slug: p.slug })); }
+export const dynamic = "force-dynamic";
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const p = getProject(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const { project: p } = await getPublicProject(params.slug);
   return p ? { title: p.title, description: p.summary } : { title: "Project not found" };
 }
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const p = getProject(params.slug);
+export default async function ProjectPage({ params }: { params: { slug: string } }) {
+  const { project: p, usingFallback } = await getPublicProject(params.slug);
   if (!p) notFound();
   return (
     <Container className="max-w-3xl py-12">
       <Link href="/portfolio" className="inline-block py-2 text-ink-mute hover:text-ink">Back to portfolio</Link>
-      <div className="mt-4 flex flex-wrap gap-2"><Badge tone="demo">Sample concept, not client work</Badge><Badge>{p.category}</Badge>{p.tags.map((t) => <Badge key={t}>{t}</Badge>)}</div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {p.isDemo !== false && <Badge tone="demo">Sample concept, not client work</Badge>}
+        {usingFallback && <Badge tone="demo">Static fallback</Badge>}
+        <Badge>{p.category}</Badge>{p.tags.map((t) => <Badge key={t}>{t}</Badge>)}
+      </div>
       <h1 className="mt-4 text-3xl font-semibold sm:text-5xl">{p.title}</h1>
       <Art seed={p.slug.length} className="mt-6" />
       <h2 className="mt-8 text-xl font-semibold">Brief</h2><p className="mt-2 text-ink-mute">{p.brief}</p>

@@ -1,7 +1,7 @@
 // SAMPLE CONCEPTS ONLY. These are NOT client work. Replace with real projects (Phase 4 moves this to the database).
 export type Project = {
-  slug: string; title: string; category: "Web" | "Branding" | "Video" | "Photo";
-  tags: string[]; summary: string; brief: string; approach: string; deliverables: string[]; liveUrl?: string;
+  slug: string; title: string; category: string;
+  tags: string[]; summary: string; brief: string; approach: string; deliverables: string[]; liveUrl?: string; isDemo?: boolean;
 };
 
 export const projectCategories = ["Web", "Branding", "Video", "Photo"] as const;
