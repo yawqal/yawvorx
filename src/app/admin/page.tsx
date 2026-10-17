@@ -6,6 +6,7 @@ import { AdminConsole } from "@/components/admin/AdminConsole";
 import { ContentManagement } from "@/components/admin/ContentManagement";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -69,6 +70,10 @@ export default async function Admin() {
         <Badge tone="ok">Admin verified by the database</Badge>
       </PageHeader>
       <Container className="py-10">
+        <nav aria-label="Admin tools" className="mb-8 flex flex-wrap gap-3">
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/audit">Audit log</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
+        </nav>
         <AdminConsole
           products={productsResult.data ?? []}
           categories={categoriesResult.data ?? []}

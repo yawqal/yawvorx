@@ -14,7 +14,11 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const p = await getProductBySlug(params.slug);
-  return p ? { title: p.name, description: p.description } : { title: "Product not found" };
+  return p ? {
+    title: p.name,
+    description: p.description,
+    openGraph: { title: p.name, description: p.description, type: "website" },
+  } : { title: "Product not found", description: "This product could not be found." };
 }
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
@@ -23,9 +27,26 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const products = await getProducts();
   const a = availability(p);
   const related = products.filter((x) => x.slug !== p.slug && x.category === p.category).concat(products.filter((x) => x.slug !== p.slug && x.category !== p.category)).slice(0, 3);
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.description,
+    category: p.category,
+    offers: {
+      "@type": "Offer",
+      price: p.price.toFixed(2),
+      priceCurrency: p.currency,
+      availability: p.type === "digital" || (p.stock ?? 0) > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: new URL(`/shop/${encodeURIComponent(p.slug)}`, process.env.NEXT_PUBLIC_SITE_URL ?? "https://yawvorx-xzyn-yawvorx.vercel.app").toString(),
+    },
+  };
 
   return (
     <Container className="py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c") }} />
       <Link href="/shop" className="inline-block py-2 text-ink-mute hover:text-ink">Back to shop</Link>
       <div className="mt-4 grid gap-8 lg:grid-cols-2">
         <Art seed={p.name.length} />
