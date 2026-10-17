@@ -53,9 +53,9 @@ export function AdminConsole({ products, categories, variants, digitalFiles, ord
       const response = await fetch("/api/admin", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values),
       });
-      const result = await response.json() as { error?: string };
+      const result = await response.json() as { error?: string; warning?: string };
       if (!response.ok) { setMessage(result.error ?? "The action failed."); return false; }
-      setMessage("Saved.");
+      setMessage(result.warning ?? "Saved.");
       router.refresh();
       return true;
     } catch {

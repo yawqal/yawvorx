@@ -36,14 +36,31 @@ async function audit(
   supabase: NonNullable<ReturnType<typeof getSupabaseServerClient>>,
   actorId: string,
   action: string,
-  entity: string,
-  entityId: string,
-  details: Record<string, string | number | boolean | null>,
-) {
-  const { error } = await supabase.from("audit_log").insert({
-    actor_id: actorId, action, entity, entity_id: entityId, details,
-  });
-  return error;
+  tableName: string,
+  recordId: string,
+  newData: Record<string, string | number | boolean | null>,
+  oldData: Record<string, string | number | boolean | null> | null = null,
+  reason: string | null = null,
+): Promise<string | null> {
+  try {
+    const { error } = await supabase.from("audit_log").insert({
+      actor: actorId,
+      action,
+      table_name: tableName,
+      record_id: recordId,
+      old_data: oldData,
+      new_data: newData,
+      reason,
+    });
+    if (error) {
+      console.error("Audit log insert failed", { action, tableName, recordId, error });
+      return "The action succeeded, but the audit log could not be written.";
+    }
+    return null;
+  } catch (error) {
+    console.error("Audit log insert failed", { action, tableName, recordId, error });
+    return "The action succeeded, but the audit log could not be written.";
+  }
 }
 
 export async function POST(request: Request) {
@@ -94,9 +111,8 @@ export async function POST(request: Request) {
       ? await supabase.from("products").update(values).eq("id", id).select("id").maybeSingle()
       : await supabase.from("products").insert(values).select("id").single();
     if (result.error || !result.data) return fail(result.error?.message ?? "Product was not saved.", 400);
-    const logError = await audit(supabase, actor.id, id ? "product.updated" : "product.created", "product", result.data.id, { name, slug });
-    if (logError) return fail(`Product saved, but audit logging failed: ${logError.message}`, 500);
-    return NextResponse.json({ ok: true, id: result.data.id });
+    const warning = await audit(supabase, actor.id, id ? "product.updated" : "product.created", "products", result.data.id, { name, slug });
+    return NextResponse.json({ ok: true, id: result.data.id, ...(warning ? { warning } : {}) });
   }
 
   if (action === "deactivate_product") {
@@ -104,8 +120,8 @@ export async function POST(request: Request) {
     if (!id) return fail("A product id is required.");
     const { error } = await supabase.from("products").update({ is_published: false }).eq("id", id);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "product.deactivated", "product", id, {});
-    return logError ? fail(`Product deactivated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "product.deactivated", "products", id, { is_published: false });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "save_category") {
@@ -118,8 +134,8 @@ export async function POST(request: Request) {
       ? await supabase.from("categories").update({ name, slug }).eq("id", id).select("id").maybeSingle()
       : await supabase.from("categories").insert({ name, slug }).select("id").single();
     if (result.error || !result.data) return fail(result.error?.message ?? "Category was not saved.");
-    const logError = await audit(supabase, actor.id, id ? "category.updated" : "category.created", "category", String(result.data.id), { name, slug });
-    return logError ? fail(`Category saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, id ? "category.updated" : "category.created", "categories", String(result.data.id), { name, slug });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "save_service") {
@@ -135,8 +151,8 @@ export async function POST(request: Request) {
       ? await supabase.from("services").update(values).eq("id", id).select("id").maybeSingle()
       : await supabase.from("services").insert(values).select("id").single();
     if (result.error || !result.data) return fail(result.error?.message ?? "Service was not saved.");
-    const logError = await audit(supabase, actor.id, id ? "service.updated" : "service.created", "service", result.data.id, { title, slug });
-    return logError ? fail(`Service saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, id ? "service.updated" : "service.created", "services", result.data.id, { title, slug });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "deactivate_service") {
@@ -144,8 +160,8 @@ export async function POST(request: Request) {
     if (!id) return fail("A service id is required.");
     const { error } = await supabase.from("services").update({ is_published: false }).eq("id", id);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "service.deactivated", "service", id, {});
-    return logError ? fail(`Service deactivated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "service.deactivated", "services", id, { is_published: false });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "save_project") {
@@ -177,8 +193,8 @@ export async function POST(request: Request) {
       ? await supabase.from("portfolio_projects").update(values).eq("id", id).select("id").maybeSingle()
       : await supabase.from("portfolio_projects").insert(values).select("id").single();
     if (result.error || !result.data) return fail(result.error?.message ?? "Portfolio project was not saved.");
-    const logError = await audit(supabase, actor.id, id ? "portfolio.updated" : "portfolio.created", "portfolio_project", result.data.id, { title, slug });
-    return logError ? fail(`Project saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, id ? "portfolio.updated" : "portfolio.created", "portfolio_projects", result.data.id, { title, slug });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "deactivate_project") {
@@ -186,8 +202,8 @@ export async function POST(request: Request) {
     if (!id) return fail("A project id is required.");
     const { error } = await supabase.from("portfolio_projects").update({ is_published: false }).eq("id", id);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "portfolio.deactivated", "portfolio_project", id, {});
-    return logError ? fail(`Project deactivated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "portfolio.deactivated", "portfolio_projects", id, { is_published: false });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "update_request_status") {
@@ -199,8 +215,8 @@ export async function POST(request: Request) {
     if (!REQUEST_TRANSITIONS[serviceRequest.status]?.includes(next)) return fail("That service request status transition is not allowed.");
     const { error } = await supabase.from("service_requests").update({ status: next }).eq("id", id);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "service_request.status_changed", "service_request", id, { from: serviceRequest.status, to: next });
-    return logError ? fail(`Request updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "service_request.status_changed", "service_requests", id, { status: next }, { status: serviceRequest.status });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "support_reply") {
@@ -217,8 +233,8 @@ export async function POST(request: Request) {
       user_id: ticket.user_id, title: "Support replied", body: `There is a new reply on "${ticket.subject}".`, href: "/account#support",
     });
     if (notificationError) return fail(`Reply sent, but the customer notification could not be saved: ${notificationError.message}`, 500);
-    const logError = await audit(supabase, actor.id, "support.reply_sent", "support_ticket", id, {});
-    return logError ? fail(`Reply sent, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "support.reply_sent", "support_tickets", id, { reply_added: true }, { status: ticket.status });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "support_status") {
@@ -239,8 +255,8 @@ export async function POST(request: Request) {
       user_id: ticket.user_id, title: "Support ticket updated", body: `"${ticket.subject}" is now ${next.replace(/_/g, " ")}.`, href: "/account#support",
     });
     if (notificationError) return fail(`Ticket updated, but the customer notification could not be saved: ${notificationError.message}`, 500);
-    const logError = await audit(supabase, actor.id, "support.status_changed", "support_ticket", id, { from: ticket.status, to: next });
-    return logError ? fail(`Ticket updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "support.status_changed", "support_tickets", id, { status: next }, { status: ticket.status });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "save_variant_stock") {
@@ -250,8 +266,8 @@ export async function POST(request: Request) {
     if (!id || !productId || !Number.isInteger(stock) || stock < 0) return fail("Enter a valid variant stock quantity.");
     const { error } = await supabase.from("product_variants").update({ stock }).eq("id", id).eq("product_id", productId);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "variant.stock_updated", "product_variant", id, { stock });
-    return logError ? fail(`Stock saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "variant.stock_updated", "product_variants", id, { stock });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "save_digital_file") {
@@ -276,8 +292,8 @@ export async function POST(request: Request) {
       ? await supabase.from("digital_files").update(values).eq("id", id).eq("product_id", productId).select("id").maybeSingle()
       : await supabase.from("digital_files").insert(values).select("id").single();
     if (result.error || !result.data) return fail(result.error?.message ?? "Digital file reference was not saved.");
-    const logError = await audit(supabase, actor.id, id ? "digital_file.updated" : "digital_file.attached", "digital_file", result.data.id, { product_id: productId, storage_path: storagePath });
-    return logError ? fail(`File reference saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, id ? "digital_file.updated" : "digital_file.attached", "digital_files", result.data.id, { product_id: productId, storage_path: storagePath });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "change_order_status") {
@@ -289,8 +305,8 @@ export async function POST(request: Request) {
     if (!ORDER_TRANSITIONS[order.status]?.includes(next)) return fail("That order status transition is not allowed.");
     const { error } = await supabase.from("orders").update({ status: next }).eq("id", id);
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "order.status_changed", "order", id, { from: order.status, to: next });
-    return logError ? fail(`Order updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "order.status_changed", "orders", id, { status: next }, { status: order.status });
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "add_order_note") {
@@ -303,8 +319,8 @@ export async function POST(request: Request) {
       order_id: id, from_status: order.status, to_status: order.status, changed_by: actor.id, note,
     });
     if (error) return fail(error.message);
-    const logError = await audit(supabase, actor.id, "order.note_added", "order", id, {});
-    return logError ? fail(`Note saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, "order.note_added", "orders", id, { note }, { status: order.status }, note);
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   if (action === "review_payment") {
@@ -341,8 +357,10 @@ export async function POST(request: Request) {
       const { error } = await supabase.from("orders").update({ payment_status: "paid" }).eq("id", id);
       if (error) return fail(`Payment marked verified, but order payment status was not updated: ${error.message}`, 500);
     }
-    const logError = await audit(supabase, actor.id, `payment.${status}`, "order", id, { reference: reference || null, note: note || null });
-    return logError ? fail(`Payment reviewed, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+    const warning = await audit(supabase, actor.id, `payment.${status}`, "orders", id,
+      { payment_status: status === "verified" ? "paid" : order.payment_status, reference: reference || null, note: note || null },
+      { payment_status: order.payment_status, manual_payment_status: payment?.status ?? null }, note || null);
+    return NextResponse.json({ ok: true, ...(warning ? { warning } : {}) });
   }
 
   return fail("Unknown admin action.");
