@@ -37,7 +37,6 @@ export async function POST(request: Request) {
     business_name: businessName,
     contact_value: contact,
     description,
-    status: "pending",
   });
   if (error?.code === "23505") {
     return NextResponse.json({ error: "You already have a vendor application on file." }, { status: 409 });
