@@ -10,11 +10,23 @@ const ORDER_TRANSITIONS: Record<string, string[]> = {
   completed: [],
   cancelled: [],
 };
+const REQUEST_TRANSITIONS: Record<string, string[]> = {
+  new: ["reviewing", "rejected"],
+  reviewing: ["in_progress", "rejected"],
+  in_progress: ["completed", "rejected"],
+  completed: [],
+  rejected: [],
+};
 
 const text = (value: unknown, max: number): string | null =>
   typeof value === "string" && value.trim().length > 0 && value.trim().length <= max
     ? value.trim()
     : null;
+const stringList = (value: unknown, maxItems: number, maxLength: number): string[] | null => {
+  const items = typeof value === "string" ? value.split(/\r?\n/) : value;
+  if (!Array.isArray(items) || items.length > maxItems || items.some((item) => typeof item !== "string" || item.trim().length > maxLength)) return null;
+  return items.map((item) => item.trim()).filter(Boolean);
+};
 
 function fail(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
@@ -108,6 +120,87 @@ export async function POST(request: Request) {
     if (result.error || !result.data) return fail(result.error?.message ?? "Category was not saved.");
     const logError = await audit(supabase, actor.id, id ? "category.updated" : "category.created", "category", String(result.data.id), { name, slug });
     return logError ? fail(`Category saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "save_service") {
+    const id = typeof body.id === "string" ? body.id : null;
+    const title = text(body.title, 120);
+    const slugRaw = text(body.slug, 100)?.toLowerCase() ?? "";
+    const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugRaw) ? slugRaw : null;
+    const description = typeof body.description === "string" && body.description.length <= 3000 ? body.description.trim() : null;
+    const deliverables = stringList(body.deliverables, 30, 200);
+    if (!title || !slug || description === null || !deliverables) return fail("Check the service fields and try again.");
+    const values = { title, slug, description, deliverables, is_published: body.is_published === true };
+    const result = id
+      ? await supabase.from("services").update(values).eq("id", id).select("id").maybeSingle()
+      : await supabase.from("services").insert(values).select("id").single();
+    if (result.error || !result.data) return fail(result.error?.message ?? "Service was not saved.");
+    const logError = await audit(supabase, actor.id, id ? "service.updated" : "service.created", "service", result.data.id, { title, slug });
+    return logError ? fail(`Service saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "deactivate_service") {
+    const id = text(body.id, 80);
+    if (!id) return fail("A service id is required.");
+    const { error } = await supabase.from("services").update({ is_published: false }).eq("id", id);
+    if (error) return fail(error.message);
+    const logError = await audit(supabase, actor.id, "service.deactivated", "service", id, {});
+    return logError ? fail(`Service deactivated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "save_project") {
+    const id = typeof body.id === "string" ? body.id : null;
+    const title = text(body.title, 120);
+    const slugRaw = text(body.slug, 100)?.toLowerCase() ?? "";
+    const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugRaw) ? slugRaw : null;
+    const category = typeof body.category === "string" && body.category.length <= 80 ? body.category.trim() || null : null;
+    const summary = typeof body.summary === "string" && body.summary.length <= 1000 ? body.summary.trim() : null;
+    const brief = typeof body.brief === "string" && body.brief.length <= 4000 ? body.brief.trim() : null;
+    const approach = typeof body.approach === "string" && body.approach.length <= 4000 ? body.approach.trim() : null;
+    const deliverables = stringList(body.deliverables, 30, 200);
+    const tags = stringList(body.tags, 30, 60);
+    const liveUrlValue = typeof body.live_url === "string" ? body.live_url.trim() : "";
+    const liveUrl = liveUrlValue ? text(liveUrlValue, 1000) : null;
+    const coverImagePathValue = typeof body.cover_image_path === "string" ? body.cover_image_path.trim() : "";
+    const coverImagePath = coverImagePathValue ? text(coverImagePathValue, 500) : null;
+    if (!title || !slug || category === null || summary === null || brief === null || approach === null || !deliverables || !tags ||
+        (liveUrlValue && (!liveUrl || !/^https?:\/\//i.test(liveUrl))) ||
+        (coverImagePathValue && (!coverImagePath || coverImagePath.startsWith("/") || coverImagePath.includes("..")))) {
+      return fail("Check the portfolio fields and try again.");
+    }
+    const values = {
+      title, slug, category, summary, brief, approach, deliverables, tags,
+      live_url: liveUrl, cover_image_path: coverImagePath,
+      is_demo: body.is_demo === true, is_published: body.is_published === true,
+    };
+    const result = id
+      ? await supabase.from("portfolio_projects").update(values).eq("id", id).select("id").maybeSingle()
+      : await supabase.from("portfolio_projects").insert(values).select("id").single();
+    if (result.error || !result.data) return fail(result.error?.message ?? "Portfolio project was not saved.");
+    const logError = await audit(supabase, actor.id, id ? "portfolio.updated" : "portfolio.created", "portfolio_project", result.data.id, { title, slug });
+    return logError ? fail(`Project saved, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "deactivate_project") {
+    const id = text(body.id, 80);
+    if (!id) return fail("A project id is required.");
+    const { error } = await supabase.from("portfolio_projects").update({ is_published: false }).eq("id", id);
+    if (error) return fail(error.message);
+    const logError = await audit(supabase, actor.id, "portfolio.deactivated", "portfolio_project", id, {});
+    return logError ? fail(`Project deactivated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "update_request_status") {
+    const id = text(body.id, 80);
+    const next = text(body.status, 30);
+    if (!id || !next) return fail("A request id and status are required.");
+    const { data: serviceRequest, error: readError } = await supabase.from("service_requests").select("id,status").eq("id", id).maybeSingle();
+    if (readError || !serviceRequest) return fail(readError?.message ?? "Service request not found.", 404);
+    if (!REQUEST_TRANSITIONS[serviceRequest.status]?.includes(next)) return fail("That service request status transition is not allowed.");
+    const { error } = await supabase.from("service_requests").update({ status: next }).eq("id", id);
+    if (error) return fail(error.message);
+    const logError = await audit(supabase, actor.id, "service_request.status_changed", "service_request", id, { from: serviceRequest.status, to: next });
+    return logError ? fail(`Request updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
   }
 
   if (action === "save_variant_stock") {

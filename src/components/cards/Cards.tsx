@@ -31,7 +31,7 @@ export function ProjectCard({ p }: { p: Project }) {
     <Link href={`/portfolio/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
       <Art seed={seed} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Badge tone="demo">Sample concept</Badge><Badge>{p.category}</Badge>
+        {p.isDemo !== false && <Badge tone="demo">Sample concept</Badge>}<Badge>{p.category}</Badge>
       </div>
       <h3 className="mt-3 text-lg font-semibold">{p.title}</h3>
       <p className="mt-1 text-ink-mute">{p.summary}</p>

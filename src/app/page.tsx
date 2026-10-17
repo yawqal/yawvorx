@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ServiceCard, ProjectCard, ProductCard } from "@/components/cards/Cards";
 import { siteConfig, socialLinks } from "@/config/site";
-import { services } from "@/data/services";
-import { projects } from "@/data/portfolio";
 import { getProducts } from "@/lib/products-db";
+import { getPublicServices } from "@/lib/services-db";
+import { getPublicProjects } from "@/lib/portfolio-db";
 
 const why = [
   { t: "One studio, many disciplines", d: "Design, development, media, and e-commerce under one roof, so your project stays consistent." },
@@ -24,7 +24,9 @@ const steps = [
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const products = await getProducts();
+  const [{ items: services }, { items: projects }, products] = await Promise.all([
+    getPublicServices(), getPublicProjects(), getProducts(),
+  ]);
   return (
     <>
       <div className="bg-aurora">

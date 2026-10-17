@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { AdminConsole } from "@/components/admin/AdminConsole";
+import { ContentManagement } from "@/components/admin/ContentManagement";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -19,13 +20,17 @@ export default async function Admin() {
   }
 
   const [
-    productsResult, categoriesResult, variantsResult, digitalFilesResult, ordersResult, ...countResults
+    productsResult, categoriesResult, variantsResult, digitalFilesResult, ordersResult,
+    servicesResult, projectsResult, requestsResult, ...countResults
   ] = await Promise.all([
     supabase.from("products").select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published").order("created_at", { ascending: false }).limit(200),
     supabase.from("categories").select("id,name,slug").order("name"),
     supabase.from("product_variants").select("id,product_id,label,stock").order("sort_order"),
     supabase.from("digital_files").select("id,product_id,variant_id,storage_path,file_name").order("created_at"),
     supabase.from("orders").select("id,order_ref,customer_name,customer_email,status,payment_status,currency,total,created_at,payment_method").order("created_at", { ascending: false }).limit(100),
+    supabase.from("services").select("id,slug,title,description,deliverables,is_published").order("created_at", { ascending: false }),
+    supabase.from("portfolio_projects").select("id,slug,title,category,summary,brief,approach,deliverables,tags,live_url,cover_image_path,is_demo,is_published").order("created_at", { ascending: false }),
+    supabase.from("service_requests").select("id,customer_name,customer_email,service_type,details,status,created_at,contact_method,contact_value").order("created_at", { ascending: false }).limit(100),
     ...ORDER_STATUSES.map((status) => supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", status)),
   ]);
 
@@ -41,7 +46,8 @@ export default async function Admin() {
   }
   const counts = Object.fromEntries(ORDER_STATUSES.map((status, index) => [status, countResults[index].count ?? 0]));
   const errors = [
-    productsResult.error, categoriesResult.error, variantsResult.error, digitalFilesResult.error, ordersResult.error, itemsResult.error,
+    productsResult.error, categoriesResult.error, variantsResult.error, digitalFilesResult.error, ordersResult.error,
+    servicesResult.error, projectsResult.error, requestsResult.error, itemsResult.error,
     ...countResults.map((result) => result.error),
   ].filter(Boolean).map((error) => error?.message);
 
@@ -58,6 +64,12 @@ export default async function Admin() {
           digitalFiles={digitalFilesResult.data ?? []}
           orders={(ordersResult.data ?? []).map((order) => ({ ...order, items: items.get(order.id) ?? [] }))}
           counts={counts}
+          loadError={errors.length ? `Some admin data could not be loaded: ${errors.join("; ")}` : undefined}
+        />
+        <ContentManagement
+          services={servicesResult.data ?? []}
+          projects={projectsResult.data ?? []}
+          requests={requestsResult.data ?? []}
           loadError={errors.length ? `Some admin data could not be loaded: ${errors.join("; ")}` : undefined}
         />
       </Container>
