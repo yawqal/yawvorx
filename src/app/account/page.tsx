@@ -12,6 +12,7 @@ import { AddressBook } from "@/components/account/AddressBook";
 import { Wishlist } from "@/components/account/Wishlist";
 import { ServiceRequests } from "@/components/account/ServiceRequests";
 import { DigitalDownloads } from "@/components/account/DigitalDownloads";
+import { SupportTickets } from "@/components/account/SupportTickets";
 import { requireUser, isCurrentUserAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
@@ -28,7 +29,7 @@ export default async function Account() {
     return <><PageHeader title="My account" /><Container className="py-10"><p role="alert" className="text-red-300">Account data is not available because the database is not configured.</p></Container></>;
   }
   const [
-    profileRes, ordersRes, admin, addressesRes, wishlistRes, productsRes, requestsRes,
+    profileRes, ordersRes, admin, addressesRes, wishlistRes, productsRes, requestsRes, ticketsRes, notificationsRes,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name, phone").eq("id", user.id).maybeSingle(),
     supabase.from("orders").select("id, order_ref, status, payment_status, total, currency, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
@@ -37,12 +38,25 @@ export default async function Account() {
     supabase.from("wishlist_items").select("id,product_id").eq("user_id", user.id).order("created_at", { ascending: false }),
     supabase.from("products").select("id,name,slug").eq("is_published", true).order("name"),
     supabase.from("service_requests").select("id,service_type,details,status,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
+    supabase.from("support_tickets").select("id,subject,status,created_at").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(50),
+    supabase.from("notifications").select("id,title,body,href,read_at,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
   ]);
   const orderIds = (ordersRes.data ?? []).map((order) => order.id);
   const digitalItemsRes = orderIds.length
     ? await supabase.from("order_items").select("order_id,product_type").in("order_id", orderIds)
     : { data: [], error: null };
   const digitalOrderIds = new Set((digitalItemsRes.data ?? []).filter((item) => item.product_type === "digital").map((item) => item.order_id));
+  const ticketIds = (ticketsRes.data ?? []).map((ticket) => ticket.id);
+  const ticketMessagesRes = ticketIds.length
+    ? await supabase.from("support_messages").select("id,ticket_id,sender_id,body,created_at").in("ticket_id", ticketIds).order("created_at")
+    : { data: [], error: null };
+  const ticketMessages = new Map<string, { id: string; sender_id: string; body: string; created_at: string }[]>();
+  for (const message of ticketMessagesRes.data ?? []) {
+    const current = ticketMessages.get(message.ticket_id) ?? [];
+    current.push(message);
+    ticketMessages.set(message.ticket_id, current);
+  }
+  const supportTickets = (ticketsRes.data ?? []).map((ticket) => ({ ...ticket, messages: ticketMessages.get(ticket.id) ?? [] }));
   const wishlistProductIds = (wishlistRes.data ?? []).map((item) => item.product_id);
   const savedProductsRes = wishlistProductIds.length
     ? await supabase.from("products").select("id,name,slug").in("id", wishlistProductIds)
@@ -54,7 +68,7 @@ export default async function Account() {
   });
   const dataErrors = [
     profileRes.error, ordersRes.error, addressesRes.error, wishlistRes.error, productsRes.error,
-    requestsRes.error, savedProductsRes.error, digitalItemsRes.error,
+    requestsRes.error, savedProductsRes.error, digitalItemsRes.error, ticketsRes.error, ticketMessagesRes.error, notificationsRes.error,
   ].filter(Boolean).map((error) => error?.message);
   const orders = ordersRes.data ?? [];
 
@@ -131,8 +145,26 @@ export default async function Account() {
             </Card>)}</div>
             : <Card><p className="text-ink-mute">No eligible digital downloads. Links become available after payment is verified.</p></Card>}
         </section>
-        <section id="support"><h2 className="mb-3 text-2xl font-semibold">Support tickets</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Support conversations are not available yet.</p></Card></section>
-        <section id="notifications"><h2 className="mb-3 text-2xl font-semibold">Notifications</h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">You have no in-app notifications yet.</p></Card></section>
+        <section id="support">
+          <h2 className="mb-4 text-2xl font-semibold">Support tickets</h2>
+          {ticketsRes.error || ticketMessagesRes.error
+            ? <p role="alert" className="text-red-300">Support tickets could not be loaded. Confirm the notifications/support SQL has been applied.</p>
+            : <SupportTickets userId={user.id} tickets={supportTickets} />}
+        </section>
+        <section id="notifications">
+          <h2 className="mb-4 text-2xl font-semibold">Notifications</h2>
+          {notificationsRes.error ? <p role="alert" className="text-red-300">Notifications could not be loaded: {notificationsRes.error.message}</p> : (
+            <div className="space-y-3">
+              {(notificationsRes.data ?? []).map((notice) => <Card key={notice.id}>
+                <div className="flex items-center gap-2"><h3 className="font-semibold">{notice.title}</h3>{!notice.read_at && <Badge tone="info">New</Badge>}</div>
+                {notice.body && <p className="mt-1 text-sm text-ink-mute">{notice.body}</p>}
+                <p className="mt-1 text-xs text-ink-mute">{new Date(notice.created_at).toLocaleString()}</p>
+                {notice.href?.startsWith("/") && !notice.href.startsWith("//") && <Link href={notice.href} className="mt-2 inline-block text-sm text-cyan-soft underline">Open</Link>}
+              </Card>)}
+              {notificationsRes.data?.length === 0 && <Card><p className="text-ink-mute">No notifications yet. New support replies will appear here and in the navigation bell.</p></Card>}
+            </div>
+          )}
+        </section>
 
         <section id="security">
           <h2 className="mb-4 text-2xl font-semibold">Security</h2>

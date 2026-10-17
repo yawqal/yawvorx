@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useCart } from "@/components/cart/CartProvider";
+import { NotificationsBell } from "@/components/account/NotificationsBell";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -47,6 +48,7 @@ export function Navbar() {
 
         <div className="hidden items-center gap-2 lg:flex">
           <Button href="/cart" variant="ghost">{cartLabel}</Button>
+          {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost">{accountLabel}</Button>
           <Button href="/hire">Hire YAWVOREX</Button>
         </div>
@@ -84,7 +86,10 @@ export function Navbar() {
             <Button href="/cart" variant="secondary">{cartLabel}</Button>
             <Button href="/hire">Hire us</Button>
           </div>
-          <Button href={accountHref} variant="ghost" className="mt-3 w-full">{accountLabel}</Button>
+          <div className="mt-3 flex items-center justify-between">
+            {user && <NotificationsBell userId={user.id} />}
+            <Button href={accountHref} variant="ghost">{accountLabel}</Button>
+          </div>
         </div>
       )}
     </header>

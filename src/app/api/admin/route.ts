@@ -203,6 +203,46 @@ export async function POST(request: Request) {
     return logError ? fail(`Request updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
   }
 
+  if (action === "support_reply") {
+    const id = text(body.id, 80);
+    const message = text(body.message, 4000);
+    if (!id || !message) return fail("A support ticket id and reply are required.");
+    const { data: ticket, error: readError } = await supabase.from("support_tickets")
+      .select("id,user_id,status,subject").eq("id", id).maybeSingle();
+    if (readError || !ticket) return fail(readError?.message ?? "Support ticket not found.", 404);
+    if (ticket.status === "closed") return fail("Reopen the ticket before replying.");
+    const { error } = await supabase.from("support_messages").insert({ ticket_id: id, sender_id: actor.id, body: message });
+    if (error) return fail(error.message);
+    const { error: notificationError } = await supabase.from("notifications").insert({
+      user_id: ticket.user_id, title: "Support replied", body: `There is a new reply on "${ticket.subject}".`, href: "/account#support",
+    });
+    if (notificationError) return fail(`Reply sent, but the customer notification could not be saved: ${notificationError.message}`, 500);
+    const logError = await audit(supabase, actor.id, "support.reply_sent", "support_ticket", id, {});
+    return logError ? fail(`Reply sent, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
+  if (action === "support_status") {
+    const id = text(body.id, 80);
+    const next = text(body.status, 30);
+    if (!id || !next) return fail("A support ticket id and status are required.");
+    const { data: ticket, error: readError } = await supabase.from("support_tickets")
+      .select("id,user_id,status,subject").eq("id", id).maybeSingle();
+    if (readError || !ticket) return fail(readError?.message ?? "Support ticket not found.", 404);
+    const allowed: Record<string, string[]> = { open: ["in_progress", "closed"], in_progress: ["open", "closed"], closed: ["open"] };
+    if (!allowed[ticket.status]?.includes(next)) return fail("That support ticket status transition is not allowed.");
+    const now = new Date().toISOString();
+    const { error } = await supabase.from("support_tickets").update({
+      status: next, closed_at: next === "closed" ? now : null,
+    }).eq("id", id);
+    if (error) return fail(error.message);
+    const { error: notificationError } = await supabase.from("notifications").insert({
+      user_id: ticket.user_id, title: "Support ticket updated", body: `"${ticket.subject}" is now ${next.replace(/_/g, " ")}.`, href: "/account#support",
+    });
+    if (notificationError) return fail(`Ticket updated, but the customer notification could not be saved: ${notificationError.message}`, 500);
+    const logError = await audit(supabase, actor.id, "support.status_changed", "support_ticket", id, { from: ticket.status, to: next });
+    return logError ? fail(`Ticket updated, but audit logging failed: ${logError.message}`, 500) : NextResponse.json({ ok: true });
+  }
+
   if (action === "save_variant_stock") {
     const id = text(body.id, 80);
     const productId = text(body.product_id, 80);

@@ -21,7 +21,7 @@ export default async function Admin() {
 
   const [
     productsResult, categoriesResult, variantsResult, digitalFilesResult, ordersResult,
-    servicesResult, projectsResult, requestsResult, ...countResults
+    servicesResult, projectsResult, requestsResult, ticketsResult, ...countResults
   ] = await Promise.all([
     supabase.from("products").select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published").order("created_at", { ascending: false }).limit(200),
     supabase.from("categories").select("id,name,slug").order("name"),
@@ -31,6 +31,7 @@ export default async function Admin() {
     supabase.from("services").select("id,slug,title,description,deliverables,is_published").order("created_at", { ascending: false }),
     supabase.from("portfolio_projects").select("id,slug,title,category,summary,brief,approach,deliverables,tags,live_url,cover_image_path,is_demo,is_published").order("created_at", { ascending: false }),
     supabase.from("service_requests").select("id,customer_name,customer_email,service_type,details,status,created_at,contact_method,contact_value").order("created_at", { ascending: false }).limit(100),
+    supabase.from("support_tickets").select("id,user_id,subject,status,created_at").order("updated_at", { ascending: false }).limit(100),
     ...ORDER_STATUSES.map((status) => supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", status)),
   ]);
 
@@ -38,16 +39,27 @@ export default async function Admin() {
   const itemsResult = orderIds.length
     ? await supabase.from("order_items").select("order_id,product_name,quantity,unit_price,variant_label").in("order_id", orderIds)
     : { data: [], error: null };
+  const ticketIds = (ticketsResult.data ?? []).map((ticket) => ticket.id);
+  const ticketMessagesResult = ticketIds.length
+    ? await supabase.from("support_messages").select("id,ticket_id,sender_id,body,created_at").in("ticket_id", ticketIds).order("created_at")
+    : { data: [], error: null };
   const items = new Map<string, { product_name: string; quantity: number; unit_price: number; variant_label: string | null }[]>();
   for (const item of itemsResult.data ?? []) {
     const current = items.get(item.order_id) ?? [];
     current.push(item);
     items.set(item.order_id, current);
   }
+  const ticketMessages = new Map<string, { id: string; sender_id: string; body: string; created_at: string }[]>();
+  for (const message of ticketMessagesResult.data ?? []) {
+    const current = ticketMessages.get(message.ticket_id) ?? [];
+    current.push(message);
+    ticketMessages.set(message.ticket_id, current);
+  }
+  const supportTickets = (ticketsResult.data ?? []).map((ticket) => ({ ...ticket, messages: ticketMessages.get(ticket.id) ?? [] }));
   const counts = Object.fromEntries(ORDER_STATUSES.map((status, index) => [status, countResults[index].count ?? 0]));
   const errors = [
     productsResult.error, categoriesResult.error, variantsResult.error, digitalFilesResult.error, ordersResult.error,
-    servicesResult.error, projectsResult.error, requestsResult.error, itemsResult.error,
+    servicesResult.error, projectsResult.error, requestsResult.error, ticketsResult.error, itemsResult.error, ticketMessagesResult.error,
     ...countResults.map((result) => result.error),
   ].filter(Boolean).map((error) => error?.message);
 
@@ -70,6 +82,7 @@ export default async function Admin() {
           services={servicesResult.data ?? []}
           projects={projectsResult.data ?? []}
           requests={requestsResult.data ?? []}
+          tickets={supportTickets}
           loadError={errors.length ? `Some admin data could not be loaded: ${errors.join("; ")}` : undefined}
         />
       </Container>

@@ -16,6 +16,8 @@ type RequestRow = {
   id: string; customer_name: string; customer_email: string; service_type: string; details: string;
   status: string; created_at: string; contact_method: string | null; contact_value: string | null;
 };
+type SupportMessage = { id: string; sender_id: string; body: string; created_at: string };
+type SupportTicket = { id: string; user_id: string; subject: string; status: string; created_at: string; messages: SupportMessage[] };
 type Payload = Record<string, string | boolean | null>;
 
 const REQUEST_TRANSITIONS: Record<string, string[]> = {
@@ -23,8 +25,8 @@ const REQUEST_TRANSITIONS: Record<string, string[]> = {
   in_progress: ["completed", "rejected"], completed: [], rejected: [],
 };
 
-export function ContentManagement({ services, projects, requests, loadError }: {
-  services: ServiceRow[]; projects: ProjectRow[]; requests: RequestRow[]; loadError?: string;
+export function ContentManagement({ services, projects, requests, tickets, loadError }: {
+  services: ServiceRow[]; projects: ProjectRow[]; requests: RequestRow[]; tickets: SupportTicket[]; loadError?: string;
 }) {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
@@ -100,7 +102,55 @@ export function ContentManagement({ services, projects, requests, loadError }: {
           </Card>)}
         </div>
       </section>
+
+      <section>
+        <h3 className="mb-4 text-2xl font-semibold">Support inbox</h3>
+        {tickets.length === 0 && <p className="text-ink-mute">No support tickets have been submitted.</p>}
+        <div className="space-y-3">
+          {tickets.map((ticket) => <SupportInboxTicket key={ticket.id} ticket={ticket} onSave={send} busy={busy} />)}
+        </div>
+      </section>
     </div>
+  );
+}
+
+function SupportInboxTicket({ ticket, onSave, busy }: {
+  ticket: SupportTicket; onSave: (values: Payload) => Promise<boolean>; busy: boolean;
+}) {
+  const [reply, setReply] = useState("");
+  const statuses: Record<string, string[]> = {
+    open: ["in_progress", "closed"], in_progress: ["open", "closed"], closed: ["open"],
+  };
+  return (
+    <Card>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div><h4 className="font-semibold">{ticket.subject}</h4><p className="text-xs text-ink-mute">Customer {ticket.user_id} · {new Date(ticket.created_at).toLocaleString()}</p></div>
+        <span className="capitalize text-cyan-soft">{ticket.status.replace(/_/g, " ")}</span>
+      </div>
+      <ol className="mt-4 space-y-3">
+        {ticket.messages.map((message) => <li key={message.id} className="rounded-xl border border-line p-3">
+          <p className="text-xs text-ink-mute">{message.sender_id === ticket.user_id ? "Customer" : "Admin"} · {new Date(message.created_at).toLocaleString()}</p>
+          <p className="mt-1 whitespace-pre-wrap">{message.body}</p>
+        </li>)}
+      </ol>
+      <div className="mt-4 flex flex-wrap items-end gap-3">
+        {statuses[ticket.status]?.length > 0 && <label className="text-sm text-ink-mute">Status
+          <select className="mt-1 min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-ink" defaultValue="" disabled={busy} onChange={(event) => {
+            if (event.target.value) void onSave({ action: "support_status", id: ticket.id, status: event.target.value });
+            event.target.value = "";
+          }}>
+            <option value="">Choose</option>{statuses[ticket.status].map((status) => <option key={status}>{status}</option>)}
+          </select>
+        </label>}
+        {ticket.status !== "closed" && <form className="flex min-w-0 flex-1 gap-2" onSubmit={(event) => {
+          event.preventDefault();
+          void onSave({ action: "support_reply", id: ticket.id, message: reply }).then((ok) => { if (ok) setReply(""); });
+        }}>
+          <Textarea label="Reply to customer" value={reply} onChange={(event) => setReply(event.target.value)} maxLength={4000} required />
+          <Button type="submit" loading={busy}>Reply</Button>
+        </form>}
+      </div>
+    </Card>
   );
 }
 
