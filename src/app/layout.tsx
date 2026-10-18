@@ -7,6 +7,8 @@ import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { Intro } from "@/components/layout/Intro";
+import { LanguageProvider } from "@/components/i18n/LanguageProvider";
+import { ReferralCapture } from "@/components/affiliates/ReferralCapture";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -24,14 +26,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-lg focus:bg-cyan focus:px-4 focus:py-2 focus:text-obsidian">
           Skip to content
         </a>
-        <AuthProvider>
-        <CartProvider>
-          <Intro />
-          <Navbar />
-          <main id="main">{children}</main>
-          <Footer />
-        </CartProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Intro />
+              <ReferralCapture />
+              <Navbar />
+              <main id="main">{children}</main>
+              <Footer />
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

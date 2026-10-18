@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input, Select, Textarea } from "@/components/ui/Field";
+import { formatMoney } from "@/lib/format";
 
 type Product = {
   id: string; name: string; slug: string; description: string; price: number; currency: string;
+  price_etb?: number | null; price_usd?: number | null;
   stock: number; image_url: string | null; category_id: number | null; product_type: string;
   is_demo: boolean; is_published: boolean;
 };
@@ -22,11 +24,11 @@ type Order = {
   items: Item[];
 };
 type ProductDraft = {
-  id: string; name: string; slug: string; description: string; price: string; currency: string;
+  id: string; name: string; slug: string; description: string; price: string; price_etb: string; price_usd: string; currency: string;
   stock: string; image_url: string; category_id: string; product_type: string; is_demo: boolean; is_published: boolean;
 };
 
-type Props = { products: Product[]; categories: Category[]; variants: Variant[]; digitalFiles: DigitalFile[]; orders: Order[]; counts: Record<string, number>; loadError?: string };
+type Props = { products: Product[]; dualPricingAvailable: boolean; categories: Category[]; variants: Variant[]; digitalFiles: DigitalFile[]; orders: Order[]; counts: Record<string, number>; loadError?: string };
 type Payload = Record<string, string | number | boolean | null>;
 
 const inputClass = "w-full min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 py-2.5 text-base text-ink";
@@ -36,10 +38,10 @@ const transitions: Record<string, string[]> = {
 };
 
 function blankProduct(categoryId = ""): ProductDraft {
-  return { id: "", name: "", slug: "", description: "", price: "", currency: "ETB", stock: "0", image_url: "", category_id: categoryId, product_type: "physical", is_demo: false, is_published: false };
+  return { id: "", name: "", slug: "", description: "", price: "", price_etb: "", price_usd: "", currency: "ETB", stock: "0", image_url: "", category_id: categoryId, product_type: "physical", is_demo: false, is_published: false };
 }
 
-export function AdminConsole({ products, categories, variants, digitalFiles, orders, counts, loadError }: Props) {
+export function AdminConsole({ products, dualPricingAvailable, categories, variants, digitalFiles, orders, counts, loadError }: Props) {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -88,7 +90,7 @@ export function AdminConsole({ products, categories, variants, digitalFiles, ord
         <h2 className="mb-4 text-2xl font-semibold">Products and stock</h2>
         <Card>
           <h3 className="text-lg font-semibold">Add product</h3>
-          <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} digitalFiles={[]} onSave={send} busy={busy} />
+          <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} dualPricingAvailable={dualPricingAvailable} digitalFiles={[]} onSave={send} busy={busy} />
         </Card>
         <div className="mt-4 space-y-4">
           {products.map((product) => (
@@ -99,11 +101,17 @@ export function AdminConsole({ products, categories, variants, digitalFiles, ord
                 <Badge>{product.is_demo ? "Demo" : "Live"}</Badge>
                 <Badge>{product.is_published ? "Active" : "Inactive"}</Badge>
               </div>
+              <p className="mb-3 text-sm text-ink-mute">
+                {typeof product.price_etb === "number" && Number.isFinite(product.price_etb) &&
+                typeof product.price_usd === "number" && Number.isFinite(product.price_usd)
+                  ? `${formatMoney(product.price_etb, "ETB")} · ${formatMoney(product.price_usd, "USD")}`
+                  : `Current price: ${formatMoney(product.price, product.currency)}`}
+              </p>
               <ProductEditor categories={categories} initial={{
                 ...product, description: product.description ?? "", image_url: product.image_url ?? "",
-                price: String(product.price), stock: String(product.stock),
+                price: String(product.price), price_etb: String(product.price_etb ?? ""), price_usd: String(product.price_usd ?? ""), stock: String(product.stock),
                 category_id: product.category_id === null ? "" : String(product.category_id),
-              }} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
+              }} dualPricingAvailable={dualPricingAvailable} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
               {variants.filter((v) => v.product_id === product.id).length > 0 && (
                 <div className="mt-5 border-t border-line pt-4">
                   <h4 className="font-medium">Variant stock</h4>
@@ -176,8 +184,8 @@ export function AdminConsole({ products, categories, variants, digitalFiles, ord
   );
 }
 
-function ProductEditor({ categories, initial, digitalFiles, onSave, busy }: {
-  categories: Category[]; initial: ProductDraft; digitalFiles: DigitalFile[];
+function ProductEditor({ categories, initial, dualPricingAvailable, digitalFiles, onSave, busy }: {
+  categories: Category[]; initial: ProductDraft; dualPricingAvailable: boolean; digitalFiles: DigitalFile[];
   onSave: (values: Payload) => Promise<boolean>; busy: boolean;
 }) {
   const [values, setValues] = useState({ ...blankProduct(), ...initial });
@@ -186,7 +194,12 @@ function ProductEditor({ categories, initial, digitalFiles, onSave, busy }: {
     <>
       <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => {
         event.preventDefault();
-        void onSave({ ...values, action: "save_product", price: Number(values.price), stock: Number(values.stock), category_id: values.category_id || null });
+        void onSave({
+          ...values, action: "save_product", price: Number(values.price), stock: Number(values.stock),
+          category_id: values.category_id || null,
+          price_etb: values.price_etb.trim() ? Number(values.price_etb) : null,
+          price_usd: values.price_usd.trim() ? Number(values.price_usd) : null,
+        });
       }}>
         <Input label="Name" value={values.name} onChange={(event) => set("name", event.target.value)} required />
         <Input label="Slug" value={values.slug} onChange={(event) => set("slug", event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
@@ -194,6 +207,10 @@ function ProductEditor({ categories, initial, digitalFiles, onSave, busy }: {
         <Input label="Image URL" type="url" value={values.image_url ?? ""} onChange={(event) => set("image_url", event.target.value)} />
         <Input label="Price" type="number" min="0" step="0.01" value={values.price} onChange={(event) => set("price", event.target.value)} required />
         <Select label="Currency" value={values.currency} onChange={(event) => set("currency", event.target.value)}><option>ETB</option><option>USD</option></Select>
+        {dualPricingAvailable && <>
+          <Input label="Price in ETB (optional)" type="number" min="0" step="0.01" value={values.price_etb} onChange={(event) => set("price_etb", event.target.value)} hint="Enter both currency prices to display dual pricing." />
+          <Input label="Price in USD (optional)" type="number" min="0" step="0.01" value={values.price_usd} onChange={(event) => set("price_usd", event.target.value)} hint="Leave both blank to keep the current single price." />
+        </>}
         <Input label="Stock" type="number" min="0" step="1" value={values.stock} onChange={(event) => set("stock", event.target.value)} required />
         <Select label="Category" value={values.category_id ?? ""} onChange={(event) => set("category_id", event.target.value)}>
           <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}

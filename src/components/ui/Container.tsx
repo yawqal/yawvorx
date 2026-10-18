@@ -2,7 +2,7 @@ export function Container({ children, className = "" }: { children: React.ReactN
   return <div className={`mx-auto w-full max-w-6xl px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
-export function Section({ title, intro, children, id }: { title: string; intro?: string; children: React.ReactNode; id?: string }) {
+export function Section({ title, intro, children, id }: { title: React.ReactNode; intro?: React.ReactNode; children: React.ReactNode; id?: string }) {
   return (
     <section id={id} className="py-14 sm:py-20">
       <Container>

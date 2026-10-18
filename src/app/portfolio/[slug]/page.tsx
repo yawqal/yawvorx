@@ -11,7 +11,11 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { project: p } = await getPublicProject(params.slug);
-  return p ? { title: p.title, description: p.summary } : { title: "Project not found" };
+  return p ? {
+    title: p.title,
+    description: p.summary,
+    openGraph: { title: p.title, description: p.summary, type: "article" },
+  } : { title: "Project not found", description: "This portfolio project could not be found." };
 }
 
 export default async function ProjectPage({ params }: { params: { slug: string } }) {

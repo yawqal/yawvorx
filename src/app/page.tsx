@@ -6,6 +6,13 @@ import { siteConfig, socialLinks } from "@/config/site";
 import { getProducts } from "@/lib/products-db";
 import { getPublicServices } from "@/lib/services-db";
 import { getPublicProjects } from "@/lib/portfolio-db";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: { absolute: "ZIKA | Beyond Digital. Beyond Ordinary." },
+  description: "Modern e-commerce, digital technology, and creative services from ZIKA.",
+  openGraph: { title: "ZIKA", description: "Modern e-commerce, digital technology, and creative services from ZIKA.", type: "website" },
+};
 
 const why = [
   { t: "One studio, many disciplines", d: "Design, development, media, and e-commerce under one roof, so your project stays consistent." },

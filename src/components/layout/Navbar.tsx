@@ -8,15 +8,17 @@ import { siteConfig } from "@/config/site";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useCart } from "@/components/cart/CartProvider";
 import { NotificationsBell } from "@/components/account/NotificationsBell";
+import { LanguageToggle, useLanguage } from "@/components/i18n/LanguageProvider";
 
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { count } = useCart();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const accountHref = user ? "/account" : "/login";
-  const accountLabel = user ? "Account" : "Sign in";
-  const cartLabel = count > 0 ? `Cart (${count})` : "Cart";
+  const accountLabel = t(user ? "Account" : "Sign in");
+  const cartLabel = count > 0 ? `${t("Cart")} (${count})` : t("Cart");
 
   useEffect(() => setOpen(false), [pathname]); // close menu after navigating
   useEffect(() => {
@@ -40,7 +42,7 @@ export function Navbar() {
                 aria-current={active(l.href) ? "page" : undefined}
                 className={`rounded-lg px-3 py-2 text-sm transition ${active(l.href) ? "text-cyan-soft" : "text-ink-mute hover:text-ink"}`}
               >
-                {l.label}
+                {t(l.label)}
               </Link>
             </li>
           ))}
@@ -48,6 +50,7 @@ export function Navbar() {
 
         <div className="hidden items-center gap-2 lg:flex">
           <Button href="/cart" variant="ghost">{cartLabel}</Button>
+          <LanguageToggle />
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost">{accountLabel}</Button>
           <Button href="/hire">Hire YAWVOREX</Button>
@@ -77,7 +80,7 @@ export function Navbar() {
                   aria-current={active(l.href) ? "page" : undefined}
                   className={`flex min-h-[48px] items-center border-b border-line text-lg ${active(l.href) ? "text-cyan-soft" : "text-ink"}`}
                 >
-                  {l.label}
+                  {t(l.label)}
                 </Link>
               </li>
             ))}
@@ -87,6 +90,7 @@ export function Navbar() {
             <Button href="/hire">Hire us</Button>
           </div>
           <div className="mt-3 flex items-center justify-between">
+            <LanguageToggle />
             {user && <NotificationsBell userId={user.id} />}
             <Button href={accountHref} variant="ghost">{accountLabel}</Button>
           </div>

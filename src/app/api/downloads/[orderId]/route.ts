@@ -5,6 +5,9 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export async function GET(_request: Request, { params }: { params: { orderId: string } }) {
+  if (!/^[A-Za-z0-9_-]{1,80}$/.test(params.orderId)) {
+    return NextResponse.json({ error: "The order id is invalid." }, { status: 400 });
+  }
   const user = await requireUser(`/account/orders/${encodeURIComponent(params.orderId)}`);
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Downloads are not configured." }, { status: 503 });
@@ -25,15 +28,31 @@ export async function GET(_request: Request, { params }: { params: { orderId: st
     .in("product_id", productIds);
   if (filesError) return NextResponse.json({ error: "Could not load digital file references." }, { status: 500 });
 
-  const eligible = (files ?? []).filter((file) => items?.some((item) =>
+  const purchasedFiles = (files ?? []).filter((file) => items?.some((item) =>
     item.product_id === file.product_id && (!file.variant_id || item.variant_id === file.variant_id)));
+  const eligible = purchasedFiles.filter((file) =>
+    file.storage_bucket === "digital-files" &&
+    typeof file.storage_path === "string" &&
+    file.storage_path.length > 0 &&
+    file.storage_path.length <= 500 &&
+    !file.storage_path.startsWith("/") &&
+    !file.storage_path.includes("\\") &&
+    file.storage_path.split("/").every((segment) => segment.length > 0 && segment !== "." && segment !== "..") &&
+    typeof file.file_name === "string" &&
+    file.file_name.trim().length > 0 &&
+    file.file_name.length <= 255);
+  if (eligible.length !== purchasedFiles.length) {
+    console.error("Invalid digital file reference found for a verified order", { orderId: order.id });
+    return NextResponse.json({ error: "A digital file reference is invalid. Contact support." }, { status: 500 });
+  }
   if (eligible.length === 0) return NextResponse.json({ error: "No downloads are attached to this purchase." }, { status: 404 });
 
   const downloads = [];
   for (const file of eligible) {
     const { data, error } = await supabase.storage.from(file.storage_bucket).createSignedUrl(file.storage_path, 60);
     if (error || !data?.signedUrl) {
-      return NextResponse.json({ error: `Could not create a secure download link: ${error?.message ?? "No signed link was returned."}` }, { status: 500 });
+      console.error("Secure download link creation failed", { orderId: order.id, productId: file.product_id, error });
+      return NextResponse.json({ error: "Could not create a secure download link." }, { status: 500 });
     }
     downloads.push({ fileName: file.file_name, url: data.signedUrl });
   }

@@ -6,6 +6,8 @@ import { AdminConsole } from "@/components/admin/AdminConsole";
 import { ContentManagement } from "@/components/admin/ContentManagement";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { isMissingDualPriceColumns } from "@/lib/products-db";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -19,11 +21,18 @@ export default async function Admin() {
     return <><PageHeader title="Admin area"><Badge tone="ok">Admin verified</Badge></PageHeader><Container className="py-10"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
   }
 
+  const dualProductsResult = await supabase.from("products")
+    .select("id,name,slug,description,price,price_etb,price_usd,currency,stock,image_url,category_id,product_type,is_demo,is_published")
+    .order("created_at", { ascending: false }).limit(200);
+  const missingDualPriceColumns = isMissingDualPriceColumns(dualProductsResult.error);
+  const dualPricingAvailable = dualProductsResult.error === null;
+  const productsResult = !missingDualPriceColumns ? dualProductsResult : await supabase.from("products")
+      .select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published")
+      .order("created_at", { ascending: false }).limit(200);
   const [
-    productsResult, categoriesResult, variantsResult, digitalFilesResult, ordersResult,
+    categoriesResult, variantsResult, digitalFilesResult, ordersResult,
     servicesResult, projectsResult, requestsResult, ticketsResult, ...countResults
   ] = await Promise.all([
-    supabase.from("products").select("id,name,slug,description,price,currency,stock,image_url,category_id,product_type,is_demo,is_published").order("created_at", { ascending: false }).limit(200),
     supabase.from("categories").select("id,name,slug").order("name"),
     supabase.from("product_variants").select("id,product_id,label,stock").order("sort_order"),
     supabase.from("digital_files").select("id,product_id,variant_id,storage_path,file_name").order("created_at"),
@@ -69,8 +78,15 @@ export default async function Admin() {
         <Badge tone="ok">Admin verified by the database</Badge>
       </PageHeader>
       <Container className="py-10">
+        <nav aria-label="Admin tools" className="mb-8 flex flex-wrap gap-3">
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/audit">Audit log</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/reviews">Product reviews</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendors">Vendors and affiliates</Link>
+        </nav>
         <AdminConsole
           products={productsResult.data ?? []}
+          dualPricingAvailable={dualPricingAvailable}
           categories={categoriesResult.data ?? []}
           variants={variantsResult.data ?? []}
           digitalFiles={digitalFilesResult.data ?? []}
