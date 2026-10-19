@@ -9,6 +9,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useCart } from "@/components/cart/CartProvider";
 import { NotificationsBell } from "@/components/account/NotificationsBell";
 import { LanguageToggle, useLanguage } from "@/components/i18n/LanguageProvider";
+import { useCurrency } from "@/components/i18n/CurrencyProvider";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export function Navbar() {
   const { count } = useCart();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { currency, setCurrency } = useCurrency();
   const accountHref = user ? "/account" : "/login";
   const accountLabel = t(user ? "Account" : "Sign in");
   const cartLabel = count > 0 ? `${t("Cart")} (${count})` : t("Cart");
@@ -51,6 +53,21 @@ export function Navbar() {
         <div className="hidden items-center gap-2 lg:flex">
           <Button href="/cart" variant="ghost">{cartLabel}</Button>
           <LanguageToggle />
+          <div className="inline-flex min-h-11 items-center rounded-xl border border-line px-1 text-sm text-ink-mute">
+            {(["ETB", "USD"] as const).map((value, index) => (
+              <span key={value} className="inline-flex items-center">
+                {index > 0 && <span aria-hidden="true" className="px-1">|</span>}
+                <button
+                  type="button"
+                  className={`rounded-lg px-2 py-1 hover:text-ink ${currency === value ? "text-cyan-soft" : ""}`}
+                  aria-pressed={currency === value}
+                  onClick={() => setCurrency(value)}
+                >
+                  {value}
+                </button>
+              </span>
+            ))}
+          </div>
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost">{accountLabel}</Button>
           <Button href="/hire">Hire YAWVOREX</Button>
@@ -91,6 +108,21 @@ export function Navbar() {
           </div>
           <div className="mt-3 flex items-center justify-between">
             <LanguageToggle />
+            <div className="inline-flex min-h-11 items-center rounded-xl border border-line px-1 text-sm text-ink-mute">
+              {(["ETB", "USD"] as const).map((value, index) => (
+                <span key={value} className="inline-flex items-center">
+                  {index > 0 && <span aria-hidden="true" className="px-1">|</span>}
+                  <button
+                    type="button"
+                    className={`rounded-lg px-2 py-1 hover:text-ink ${currency === value ? "text-cyan-soft" : ""}`}
+                    aria-pressed={currency === value}
+                    onClick={() => setCurrency(value)}
+                  >
+                    {value}
+                  </button>
+                </span>
+              ))}
+            </div>
             {user && <NotificationsBell userId={user.id} />}
             <Button href={accountHref} variant="ghost">{accountLabel}</Button>
           </div>
