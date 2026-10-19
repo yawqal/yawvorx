@@ -8,6 +8,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { Intro } from "@/components/layout/Intro";
 import { LanguageProvider } from "@/components/i18n/LanguageProvider";
+import { CurrencyProvider } from "@/components/i18n/CurrencyProvider";
 import { ReferralCapture } from "@/components/affiliates/ReferralCapture";
 
 export const metadata: Metadata = {
@@ -27,15 +28,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <LanguageProvider>
-          <AuthProvider>
-            <CartProvider>
-              <Intro />
-              <ReferralCapture />
-              <Navbar />
-              <main id="main">{children}</main>
-              <Footer />
-            </CartProvider>
-          </AuthProvider>
+          <CurrencyProvider>
+            <AuthProvider>
+              <CartProvider>
+                <Intro />
+                <ReferralCapture />
+                <Navbar />
+                <main id="main">{children}</main>
+                <Footer />
+              </CartProvider>
+            </AuthProvider>
+          </CurrencyProvider>
         </LanguageProvider>
       </body>
     </html>

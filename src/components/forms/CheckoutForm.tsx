@@ -25,6 +25,14 @@ function newKey(): string {
 function friendly(message: string): string {
   const code = /YVX_[A-Z_]+/.exec(message)?.[0] ?? "";
   switch (code) {
+    case "YVX_INVALID_CURRENCY": return "Please choose ETB or USD.";
+    case "YVX_PRICE_UNAVAILABLE": return "This item is not available in the selected currency. Remove it or switch currency.";
+    case "YVX_VARIANT_DELTA_CURRENCY": return "This option is only available in the product's original currency.";
+    case "YVX_BAD_PRICE": return "This item's price is invalid. Please contact us.";
+    case "YVX_BAD_IDEMPOTENCY_KEY": return "Your order request expired. Please try again.";
+    case "YVX_INVALID_CUSTOMER": return "Please check your details and try again.";
+    case "YVX_INVALID_PAYMENT_METHOD": return "Please choose a valid payment method.";
+    case "YVX_SHIPPING_CURRENCY_UNSET": return "Shipping is not set up for this currency. Please contact us.";
     case "YVX_OUT_OF_STOCK": return "One of the items is out of stock, or fewer units are left than you asked for. Please lower the quantity or remove it from your cart.";
     case "YVX_PRODUCT_UNAVAILABLE":
     case "YVX_VARIANT_UNAVAILABLE": return "One of the items is no longer available. Please remove it from your cart and try again.";
@@ -122,6 +130,7 @@ export function CheckoutForm() {
       },
       p_idempotency_key: keyRef.current,
       p_payment_method: v.method.startsWith("Manual") ? "manual" : "whatsapp",
+      p_currency: items[0]?.currency ?? null,
     };
     const lines = items.map((i) => `- ${i.qty} x ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}`);
 
