@@ -9,8 +9,9 @@ import { getPublicProject } from "@/lib/portfolio-db";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { project: p } = await getPublicProject(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const { project: p } = await getPublicProject(slug);
   return p ? {
     title: p.title,
     description: p.summary,
@@ -18,8 +19,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   } : { title: "Project not found", description: "This portfolio project could not be found." };
 }
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
-  const { project: p, usingFallback } = await getPublicProject(params.slug);
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { project: p, usingFallback } = await getPublicProject(slug);
   if (!p) notFound();
   return (
     <Container className="max-w-3xl py-12">

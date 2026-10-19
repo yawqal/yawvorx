@@ -9,10 +9,11 @@ import { TranslatedText } from "@/components/i18n/LanguageProvider";
 export const metadata: Metadata = { title: "Shop", description: "Digital and physical products from YAWVOREX." };
 export const dynamic = "force-dynamic";
 
-export default async function Shop({ searchParams }: { searchParams: { q?: string; category?: string } }) {
-  const search = typeof searchParams.q === "string" ? searchParams.q.slice(0, 80) : "";
-  const category = typeof searchParams.category === "string" && /^[1-9]\d{0,14}$/.test(searchParams.category)
-    ? searchParams.category
+export default async function Shop({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {
+  const resolvedSearchParams = await searchParams;
+  const search = typeof resolvedSearchParams.q === "string" ? resolvedSearchParams.q.slice(0, 80) : "";
+  const category = typeof resolvedSearchParams.category === "string" && /^[1-9]\d{0,14}$/.test(resolvedSearchParams.category)
+    ? resolvedSearchParams.category
     : "";
   const [products, categories] = await Promise.all([
     getProducts({ search, categoryId: category }),

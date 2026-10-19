@@ -21,13 +21,14 @@ const statusMessage: Record<string, string> = {
   cancelled: "This order was cancelled.",
 };
 
-export default async function CustomerOrderDetail({ params }: { params: { id: string } }) {
-  const user = await requireUser(`/account/orders/${encodeURIComponent(params.id)}`);
+export default async function CustomerOrderDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const user = await requireUser(`/account/orders/${encodeURIComponent(id)}`);
   const supabase = getSupabaseServerClient();
   if (!supabase) notFound();
   const { data: order, error } = await supabase.from("orders")
     .select("id,order_ref,status,payment_status,payment_method,currency,subtotal,shipping_total,total,created_at")
-    .eq("id", params.id).eq("user_id", user.id).maybeSingle();
+    .eq("id", id).eq("user_id", user.id).maybeSingle();
   if (error || !order) notFound();
   const { data: items, error: itemsError } = await supabase.from("order_items")
     .select("product_name,quantity,unit_price,variant_label").eq("order_id", order.id);
