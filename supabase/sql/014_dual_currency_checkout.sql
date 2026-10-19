@@ -320,11 +320,11 @@ end;
 $function$;
 
 -- Grants: checkout RPC is public (guest checkout). The pricing helper is internal only.
-revoke all on function public.yvx_create_order(jsonb, jsonb, text, text, text) from public;
-grant execute on function public.yvx_create_order(jsonb, jsonb, text, text, text) to anon, authenticated, service_role;
+revoke all on function public.yvx_create_order(jsonb, jsonb, text, text, text) from public, anon, authenticated, service_role;
+grant execute on function public.yvx_create_order(jsonb, jsonb, text, text, text) to anon, authenticated;
 
-revoke all on function public.yvx_price_and_reserve(jsonb, text) from public, anon, authenticated;
-grant execute on function public.yvx_price_and_reserve(jsonb, text) to service_role;
+revoke all on function public.yvx_price_and_reserve(jsonb, text) from public, anon, authenticated, service_role;
+-- No grants on yvx_price_and_reserve: only yvx_create_order (security definer) calls it.
 
 commit;
 
