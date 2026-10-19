@@ -16,8 +16,9 @@ import { formatMoney } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const p = await getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = await getProductBySlug(slug);
   return p ? {
     title: p.name,
     description: p.description,
@@ -25,8 +26,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   } : { title: "Product not found", description: "This product could not be found." };
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const p = await getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const p = await getProductBySlug(slug);
   if (!p) notFound();
   const [products, user] = await Promise.all([getProducts(), getCurrentUser()]);
   const supabase = getSupabaseServerClient();

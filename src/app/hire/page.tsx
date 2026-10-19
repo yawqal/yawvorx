@@ -8,9 +8,10 @@ export const metadata: Metadata = { title: "Hire YAWVOREX", description: "Tell u
 
 export const dynamic = "force-dynamic";
 
-export default async function Hire({ searchParams }: { searchParams: { service?: string } }) {
+export default async function Hire({ searchParams }: { searchParams: Promise<{ service?: string }> }) {
+  const resolvedSearchParams = await searchParams;
   const { items } = await getPublicServices();
-  const requested = items.some((s) => s.slug === searchParams.service) ? searchParams.service : "";
+  const requested = items.some((s) => s.slug === resolvedSearchParams.service) ? resolvedSearchParams.service : "";
   return (
     <>
       <PageHeader title="Hire YAWVOREX" intro="Describe your project and choose how you want to be contacted." />

@@ -4,16 +4,17 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_request: Request, { params }: { params: { orderId: string } }) {
-  if (!/^[A-Za-z0-9_-]{1,80}$/.test(params.orderId)) {
+export async function GET(_request: Request, { params }: { params: Promise<{ orderId: string }> }) {
+  const { orderId } = await params;
+  if (!/^[A-Za-z0-9_-]{1,80}$/.test(orderId)) {
     return NextResponse.json({ error: "The order id is invalid." }, { status: 400 });
   }
-  const user = await requireUser(`/account/orders/${encodeURIComponent(params.orderId)}`);
+  const user = await requireUser(`/account/orders/${encodeURIComponent(orderId)}`);
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Downloads are not configured." }, { status: 503 });
 
   const { data: order, error: orderError } = await supabase.from("orders")
-    .select("id,payment_status").eq("id", params.orderId).eq("user_id", user.id).maybeSingle();
+    .select("id,payment_status").eq("id", orderId).eq("user_id", user.id).maybeSingle();
   if (orderError) return NextResponse.json({ error: "Could not verify order access." }, { status: 500 });
   if (!order || order.payment_status !== "paid") return NextResponse.json({ error: "No verified digital purchase was found." }, { status: 404 });
 

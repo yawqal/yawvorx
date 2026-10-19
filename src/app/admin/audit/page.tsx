@@ -14,12 +14,13 @@ const pageSize = 25;
 export default async function AuditLog({
   searchParams,
 }: {
-  searchParams: { action?: string; table_name?: string; page?: string };
+  searchParams: Promise<{ action?: string; table_name?: string; page?: string }>;
 }) {
   await requireAdmin();
-  const action = typeof searchParams.action === "string" ? searchParams.action.trim().slice(0, 100) : "";
-  const tableName = typeof searchParams.table_name === "string" ? searchParams.table_name.trim().slice(0, 100) : "";
-  const parsedPage = Number(typeof searchParams.page === "string" ? searchParams.page : "1");
+  const resolvedSearchParams = await searchParams;
+  const action = typeof resolvedSearchParams.action === "string" ? resolvedSearchParams.action.trim().slice(0, 100) : "";
+  const tableName = typeof resolvedSearchParams.table_name === "string" ? resolvedSearchParams.table_name.trim().slice(0, 100) : "";
+  const parsedPage = Number(typeof resolvedSearchParams.page === "string" ? resolvedSearchParams.page : "1");
   const page = Number.isSafeInteger(parsedPage) && parsedPage > 0 ? Math.min(parsedPage, 1_000_000) : 1;
   const supabase = getSupabaseServerClient();
   if (!supabase) {

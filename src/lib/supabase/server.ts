@@ -7,11 +7,11 @@ import { getSupabaseEnv } from "./config";
 export function getSupabaseServerClient() {
   const env = getSupabaseEnv();
   if (!env) return null;
-  const cookieStore = cookies();
   return createServerClient(env.url, env.key, {
     cookies: {
-      getAll: () => cookieStore.getAll(),
-      setAll(list: { name: string; value: string; options: CookieOptions }[]) {
+      getAll: async () => (await cookies()).getAll(),
+      async setAll(list: { name: string; value: string; options: CookieOptions }[]) {
+        const cookieStore = await cookies();
         try {
           list.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
         } catch {
