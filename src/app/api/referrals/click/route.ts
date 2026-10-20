@@ -40,13 +40,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Referral visit could not be recorded." }, { status: 503 });
   }
 
+  const { data: cookieDaysResult, error: cookieDaysError } = await supabase.rpc("yvx_referral_cookie_days");
+  const cookieDays = !cookieDaysError && typeof cookieDaysResult === "number" && Number.isInteger(cookieDaysResult)
+    ? Math.min(365, Math.max(1, cookieDaysResult))
+    : 30;
+
   const response = NextResponse.json({ ok: true });
   response.cookies.set("zika_ref", code, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 30,
+    maxAge: 60 * 60 * 24 * cookieDays,
   });
   return response;
 }

@@ -45,6 +45,8 @@ export default async function Account() {
     supabase.from("notifications").select("id,title,body,href,read_at,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     supabase.from("vendor_applications").select("business_name,contact_value,description,status,admin_note,referral_code").eq("user_id", user.id).maybeSingle(),
   ]);
+  const vendorProfileRes = await supabase.from("vendor_profiles").select("status")
+    .eq("user_id", user.id).maybeSingle();
   const affiliateCodeRes = vendorApplicationRes.data?.referral_code
     ? await supabase.from("affiliate_codes").select("code,is_active")
       .eq("code", vendorApplicationRes.data.referral_code).eq("is_active", true).maybeSingle()
@@ -76,7 +78,7 @@ export default async function Account() {
   });
   const dataErrors = [
     profileRes.error, ordersRes.error, addressesRes.error, wishlistRes.error, productsRes.error,
-    requestsRes.error, savedProductsRes.error, digitalItemsRes.error, ticketsRes.error, ticketMessagesRes.error, notificationsRes.error,
+    requestsRes.error, savedProductsRes.error, digitalItemsRes.error, ticketsRes.error, ticketMessagesRes.error, notificationsRes.error, vendorProfileRes.error,
   ].filter(Boolean).map((error) => error?.message);
   const orders = ordersRes.data ?? [];
 
@@ -196,6 +198,7 @@ export default async function Account() {
 
         <div className="flex flex-wrap gap-3">
           {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
+          {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary">My vendor products</Button>}
           <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
         </div>
       </Container>
