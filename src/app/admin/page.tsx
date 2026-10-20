@@ -83,6 +83,8 @@ export default async function Admin() {
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/reviews">Product reviews</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendors">Vendors and affiliates</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/settings">Marketplace settings</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendor-products">Vendor products</Link>
         </nav>
         <AdminConsole
           products={productsResult.data ?? []}
