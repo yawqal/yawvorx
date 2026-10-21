@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { recordAdminAudit } from "@/lib/admin-audit";
 
 export async function POST() {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
 
@@ -12,5 +13,12 @@ export async function POST() {
   if (typeof data !== "number" || !Number.isInteger(data)) {
     return NextResponse.json({ error: "Earnings sync returned an invalid count." }, { status: 500 });
   }
-  return NextResponse.json({ count: data });
+  const audit = await recordAdminAudit(supabase, {
+    actor: admin.id,
+    action: "earnings.sync",
+    table_name: "earnings_ledger",
+    record_id: null,
+    new_data: { count: data },
+  });
+  return NextResponse.json({ count: data, ...(audit.ok ? {} : { auditWarning: true }) });
 }

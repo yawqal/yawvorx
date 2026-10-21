@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { recordAdminAudit } from "@/lib/admin-audit";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -61,5 +62,12 @@ export async function POST(request: Request) {
     paid_by: admin.id,
   });
   if (insertError) return fail(`Payout could not be recorded: ${insertError.message}`, 500);
-  return NextResponse.json({ ok: true, message: "Payout recorded." });
+  const audit = await recordAdminAudit(supabase, {
+    actor: admin.id,
+    action: "payout.record",
+    table_name: "payouts",
+    record_id: null,
+    new_data: { beneficiary_user_id: beneficiaryId, currency, amount, method: "bank" },
+  });
+  return NextResponse.json({ ok: true, message: "Payout recorded.", ...(audit.ok ? {} : { auditWarning: true }) });
 }

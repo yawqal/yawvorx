@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { recordAdminAudit } from "@/lib/admin-audit";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function POST(request: Request) {
-  await requireAdmin();
+  const actor = await requireAdmin();
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Database is not configured." }, { status: 503 });
 
@@ -25,5 +26,12 @@ export async function POST(request: Request) {
     .eq("id", values.id).not("vendor_id", "is", null).select("id").maybeSingle();
   if (error) return NextResponse.json({ error: `Product review could not be saved: ${error.message}` }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Vendor product was not found." }, { status: 404 });
-  return NextResponse.json({ ok: true, message: `Product ${approvalStatus}.` });
+  const audit = await recordAdminAudit(supabase, {
+    actor: actor.id,
+    action: `vendor_product.${values.action}`,
+    table_name: "products",
+    record_id: values.id,
+    new_data: { approval_status: approvalStatus },
+  });
+  return NextResponse.json({ ok: true, message: `Product ${approvalStatus}.`, ...(audit.ok ? {} : { auditWarning: true }) });
 }
