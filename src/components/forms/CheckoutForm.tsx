@@ -9,7 +9,6 @@ import { EmptyState, LoadingState } from "@/components/ui/States";
 import { PreparedMessage } from "./PreparedMessage";
 import { formatMoney } from "@/lib/format";
 import { isConfigured, siteConfig } from "@/config/site";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { BLANK, joinLines, validateCheckout, type CheckoutValues, type Errors } from "@/lib/validation";
 
 const METHODS = ["WhatsApp-assisted ordering", "Manual payment (instructions after review)"];
@@ -116,8 +115,6 @@ export function CheckoutForm() {
     setErrors(found);
     if (Object.keys(found).length) return;
 
-    const supabase = getSupabaseBrowserClient();
-    if (!supabase) { setFail("Ordering is not available right now. Please contact us."); return; }
     if (!keyRef.current) keyRef.current = newKey();
 
     // Only product, option and quantity are sent. The server decides prices, stock and totals.
@@ -136,9 +133,14 @@ export function CheckoutForm() {
 
     setBusy(true);
     try {
-      const { data, error } = await supabase.rpc("yvx_create_order", payload);
-      if (error || !data) { setFail(friendly(error?.message ?? "")); return; }
-      const res = data as { order_ref: string; guest_token?: string; total: number; currency: string; duplicate?: boolean };
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json() as { data?: unknown; error?: string };
+      if (!response.ok || !result.data) { setFail(friendly(result.error ?? "")); return; }
+      const res = result.data as { order_ref: string; guest_token?: string; total: number; currency: string; duplicate?: boolean };
       const message = joinLines([
         "New order (YAWVOREX)", `Order reference: ${res.order_ref}`, ...lines, `Total: ${formatMoney(Number(res.total), res.currency)}`, BLANK,
         `Name: ${v.name.trim()}`, `Phone: ${v.phone.trim()}`, v.email.trim() && `Email: ${v.email.trim()}`,
