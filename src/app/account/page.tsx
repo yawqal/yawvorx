@@ -199,6 +199,7 @@ export default async function Account() {
         <div className="flex flex-wrap gap-3">
           {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
           {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary">My vendor products</Button>}
+          {(vendorProfileRes.data?.status === "active" || vendorApplicationRes.data?.status === "approved") && <Button href="/account/earnings" variant="secondary">My earnings</Button>}
           <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
         </div>
       </Container>
