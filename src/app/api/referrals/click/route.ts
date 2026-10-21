@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -45,6 +46,19 @@ export async function POST(request: Request) {
     ? Math.min(365, Math.max(1, cookieDaysResult))
     : 30;
 
+  const token = randomUUID();
+  let visitRecorded = false;
+  try {
+    const { error } = await supabase.from("referral_visits").insert({ token, affiliate_code: code });
+    if (error) {
+      console.error("Affiliate referral visit could not be recorded", { code, error });
+    } else {
+      visitRecorded = true;
+    }
+  } catch (error) {
+    console.error("Affiliate referral visit could not be recorded", { code, error });
+  }
+
   const response = NextResponse.json({ ok: true });
   response.cookies.set("zika_ref", code, {
     httpOnly: true,
@@ -53,5 +67,14 @@ export async function POST(request: Request) {
     path: "/",
     maxAge: 60 * 60 * 24 * cookieDays,
   });
+  if (visitRecorded) {
+    response.cookies.set("zika_vis", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * cookieDays,
+    });
+  }
   return response;
 }
