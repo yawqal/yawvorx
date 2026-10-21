@@ -33,7 +33,7 @@ export default async function VendorProductsPage() {
   }
 
   const [productsResult, categoriesResult] = await Promise.all([
-    supabase.from("products").select("id,name,slug,description,price,currency,price_etb,price_usd,stock,category_id,approval_status,created_at")
+    supabase.from("products").select("id,name,slug,description,price,currency,price_etb,price_usd,stock,category_id,image_url,approval_status,created_at")
       .eq("vendor_id", user.id).order("created_at", { ascending: false }),
     supabase.from("categories").select("id,name").order("name"),
   ]);
@@ -46,7 +46,7 @@ export default async function VendorProductsPage() {
     <>
       <PageHeader title="My vendor products" intro="Create and submit products for admin review. Approved products are published by an admin." />
       <Container className="py-10">
-        <VendorProductManager products={productsResult.data ?? []} categories={categoriesResult.data ?? []} />
+        <VendorProductManager vendorUserId={user.id} products={productsResult.data ?? []} categories={categoriesResult.data ?? []} />
       </Container>
     </>
   );

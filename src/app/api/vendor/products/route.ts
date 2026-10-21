@@ -8,7 +8,7 @@ type VendorSession = { supabase: SupabaseClient; userId: string };
 type SessionResult = { session: VendorSession; response?: never } | { session?: never; response: NextResponse };
 type ProductFields = {
   name: string; slug: string; description: string; price: number; currency: "ETB" | "USD";
-  price_etb: number | null; price_usd: number | null; stock: number; category_id: number | null;
+  price_etb: number | null; price_usd: number | null; stock: number; category_id: number | null; image_url?: string | null;
 };
 
 async function getActiveVendor(): Promise<SessionResult> {
@@ -23,8 +23,8 @@ async function getActiveVendor(): Promise<SessionResult> {
   return { session: { supabase, userId: authData.user.id } };
 }
 
-function parseFields(body: Record<string, unknown>): ProductFields | string {
-  const allowed = new Set(["name", "slug", "description", "price", "currency", "price_etb", "price_usd", "stock", "category_id"]);
+function parseFields(body: Record<string, unknown>, userId: string): ProductFields | string {
+  const allowed = new Set(["name", "slug", "description", "price", "currency", "price_etb", "price_usd", "stock", "category_id", "image_url"]);
   if (Object.keys(body).some((key) => !allowed.has(key))) return "Only product fields may be submitted.";
   if (typeof body.name !== "string" || !body.name.trim() || body.name.trim().length > 120) return "Name is required and must be at most 120 characters.";
   if (typeof body.slug !== "string" || body.slug.length > 100 || !SLUG.test(body.slug)) return "Slug must use lowercase letters, numbers, and single hyphens.";
@@ -55,9 +55,32 @@ function parseFields(body: Record<string, unknown>): ProductFields | string {
   const priceETB = parseDual(body.price_etb);
   const priceUSD = parseDual(body.price_usd);
   if (priceETB === undefined || priceUSD === undefined || ((priceETB === null) !== (priceUSD === null))) return "Enter both dual prices, or leave both blank.";
+  let imageUrl: string | null | undefined;
+  if (body.image_url !== undefined) {
+    if (body.image_url === null || body.image_url === "") {
+      imageUrl = null;
+    } else if (typeof body.image_url !== "string") {
+      return "Image URL must be a valid public product image URL.";
+    } else {
+      try {
+        const image = new URL(body.image_url);
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        if (!supabaseUrl) return "Product image URL cannot be verified.";
+        const supabaseOrigin = new URL(supabaseUrl);
+        if (image.protocol !== "https:" || image.hostname !== supabaseOrigin.hostname ||
+            !image.pathname.startsWith(`/storage/v1/object/public/product-images/${userId}/`)) {
+          return "Image URL must point to your own public product-images folder.";
+        }
+        imageUrl = image.toString();
+      } catch {
+        return "Image URL must be a valid public product image URL.";
+      }
+    }
+  }
   return {
     name: body.name.trim(), slug: body.slug, description: body.description.trim(), price,
     currency: body.currency, price_etb: priceETB, price_usd: priceUSD, stock: stockValue, category_id: categoryId,
+    ...(imageUrl !== undefined ? { image_url: imageUrl } : {}),
   };
 }
 
@@ -88,7 +111,7 @@ export async function POST(request: Request) {
   if (result.response) return result.response;
   const body = await readBody(request);
   if (body instanceof NextResponse) return body;
-  const fields = parseFields(body);
+  const fields = parseFields(body, result.session.userId);
   if (typeof fields === "string") return NextResponse.json({ error: fields }, { status: 400 });
   const categoryCheck = await validCategory(result.session.supabase, fields.category_id);
   if (categoryCheck.error) return NextResponse.json({ error: categoryCheck.error }, { status: 500 });
@@ -130,7 +153,7 @@ export async function PATCH(request: Request) {
   }
   if (body.action !== undefined) return NextResponse.json({ error: "Action must be submit or omitted when editing." }, { status: 400 });
   const { id, ...input } = body;
-  const fields = parseFields(input);
+  const fields = parseFields(input, result.session.userId);
   if (typeof fields === "string") return NextResponse.json({ error: fields }, { status: 400 });
   const categoryCheck = await validCategory(result.session.supabase, fields.category_id);
   if (categoryCheck.error) return NextResponse.json({ error: categoryCheck.error }, { status: 500 });
