@@ -12,7 +12,8 @@ import { getProductBySlug, getProducts } from "@/lib/products-db";
 import { getCurrentUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { ProductReviews } from "@/components/shop/ProductReviews";
-import { formatMoney } from "@/lib/format";
+import { ProductPrice } from "@/components/shop/ProductPrice";
+import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: p.name,
     description: p.description,
     openGraph: { title: p.name, description: p.description, type: "website" },
+    alternates: { canonical: canonicalUrl(`/shop/${encodeURIComponent(p.slug)}`) },
   } : { title: "Product not found", description: "This product could not be found." };
 }
 
@@ -50,6 +52,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: p.name,
     description: p.description,
     category: p.category,
+    ...(p.image_url ? { image: p.image_url } : {}),
     offers: (() => {
       const shared = {
         "@type": "Offer",
@@ -78,11 +81,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">{p.name}</h1>
           <p className="mt-1 text-ink-mute">{p.category}</p>
           <p className="mt-4 text-ink-mute">{p.description}</p>
-          <p className="mt-5 font-display text-lg">
-            {typeof p.priceETB === "number" && typeof p.priceUSD === "number"
-              ? `${formatMoney(p.priceETB, "ETB")} · ${formatMoney(p.priceUSD, "USD")}`
-              : formatMoney(p.price, p.currency)}
-          </p>
+          <p className="mt-5"><ProductPrice product={p} className="font-display text-lg" /></p>
           <div className="mt-6"><AddToCart product={p} /></div>
           <Card className="mt-6 text-sm text-ink-mute">
             <h2 className="font-semibold text-ink">{p.type === "digital" ? "Digital delivery" : "Shipping"}</h2>

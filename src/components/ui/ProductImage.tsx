@@ -1,4 +1,5 @@
 import { Art } from "@/components/ui/Art";
+import Image from "next/image";
 
 export function ProductImage({ src, alt, className = "" }: {
   src: string | null | undefined;
@@ -8,7 +9,8 @@ export function ProductImage({ src, alt, className = "" }: {
   if (typeof src === "string" && src.length > 0 && src.startsWith("https://")) {
     return (
       <div className={`relative aspect-[16/10] overflow-hidden rounded-xl border border-line ${className}`}>
-        <img src={src} alt={alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+        <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" unoptimized
+          className="object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     );
   }

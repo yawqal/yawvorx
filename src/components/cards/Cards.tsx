@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Art } from "@/components/ui/Art";
 import { ProductImage } from "@/components/ui/ProductImage";
-import { formatMoney } from "@/lib/format";
+import { ProductPrice } from "@/components/shop/ProductPrice";
 import { availability, type Product } from "@/data/products";
 import type { Project } from "@/data/portfolio";
 import type { Service } from "@/data/services";
 
-export function ServiceCard({ s, full = false }: { s: Service; full?: boolean }) {
+export function ServiceCard({ s, full = false, icon }: { s: Service; full?: boolean; icon?: React.ReactNode }) {
   return (
-    <Card interactive className="flex h-full flex-col" >
+    <Card interactive className="flex h-full flex-col">
+      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">{icon}</div>}
       <h3 id={s.slug} className="text-lg font-semibold">{s.title}</h3>
       <p className="mt-2 text-ink-mute">{s.description}</p>
       <ul className="mt-4 space-y-1.5 text-sm text-ink-mute">
@@ -32,7 +33,7 @@ export function ProjectCard({ p }: { p: Project }) {
     <Link href={`/portfolio/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
       <Art seed={seed} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        {p.isDemo !== false && <Badge tone="demo">Sample concept</Badge>}<Badge>{p.category}</Badge>
+        {p.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{p.category}</Badge>
       </div>
       <h3 className="mt-3 text-lg font-semibold">{p.title}</h3>
       <p className="mt-1 text-ink-mute">{p.summary}</p>
@@ -43,7 +44,7 @@ export function ProjectCard({ p }: { p: Project }) {
 export function ProductCard({ p }: { p: Product }) {
   const a = availability(p);
   return (
-    <Link href={`/shop/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
+    <Link href={`/shop/${p.slug}`} className="surface surface-hover group block overflow-hidden p-3 sm:p-4">
       <ProductImage src={p.image_url} alt={p.name} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {p.isDemo && <Badge tone="demo">Demo product</Badge>}
@@ -52,10 +53,7 @@ export function ProductCard({ p }: { p: Product }) {
       <h3 className="mt-3 text-lg font-semibold">{p.name}</h3>
       <p className="mt-1 text-sm text-ink-mute">{p.category}</p>
       <div className="mt-3 flex items-center justify-between">
-        {typeof p.priceETB === "number" && Number.isFinite(p.priceETB) &&
-        typeof p.priceUSD === "number" && Number.isFinite(p.priceUSD)
-          ? <span className="font-display text-sm">{formatMoney(p.priceETB, "ETB")} · {formatMoney(p.priceUSD, "USD")}</span>
-          : <span className="font-display text-lg">{formatMoney(p.price, p.currency)}</span>}
+        <ProductPrice product={p} className="font-display text-lg" />
         <span className={`text-sm ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
       </div>
     </Link>

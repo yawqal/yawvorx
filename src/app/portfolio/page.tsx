@@ -4,8 +4,9 @@ import { Section } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { PortfolioBrowser } from "@/components/portfolio/PortfolioBrowser";
 import { getPublicProjects } from "@/lib/portfolio-db";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Portfolio", description: "Sample concepts showing the YAWVOREX approach to web, branding, video, and photo work." };
+export const metadata: Metadata = { title: "Portfolio", description: "Sample concepts showing the YAWVOREX approach to web, branding, video, and photo work.", alternates: { canonical: canonicalUrl("/portfolio") } };
 
 export const dynamic = "force-dynamic";
 

@@ -3,8 +3,9 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { faqs } from "@/data/faq";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "FAQ", description: "Answers about YAWVOREX services, orders, payments, delivery, and returns." };
+export const metadata: Metadata = { title: "FAQ", description: "Answers about YAWVOREX services, orders, payments, delivery, and returns.", alternates: { canonical: canonicalUrl("/faq") } };
 
 export default function Faq() {
   const groups = Array.from(new Set(faqs.map((f) => f.group)));

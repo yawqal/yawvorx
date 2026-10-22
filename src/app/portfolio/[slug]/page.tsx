@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Art } from "@/components/ui/Art";
 import { Button } from "@/components/ui/Button";
 import { getPublicProject } from "@/lib/portfolio-db";
+import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: p.title,
     description: p.summary,
     openGraph: { title: p.title, description: p.summary, type: "article" },
+    alternates: { canonical: canonicalUrl(`/portfolio/${encodeURIComponent(p.slug)}`) },
   } : { title: "Project not found", description: "This portfolio project could not be found." };
 }
 

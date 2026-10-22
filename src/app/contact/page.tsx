@@ -5,8 +5,9 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { emailLink, siteConfig, socialLinks, whatsappLink } from "@/config/site";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Contact", description: "Contact YAWVOREX through Telegram, TikTok, Facebook, Instagram, and more." };
+export const metadata: Metadata = { title: "Contact", description: "Contact YAWVOREX through Telegram, TikTok, Facebook, Instagram, and more.", alternates: { canonical: canonicalUrl("/contact") } };
 
 export default function Contact() {
   const wa = whatsappLink();

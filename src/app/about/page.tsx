@@ -4,8 +4,9 @@ import { Section } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "About", description: "About YAWVOREX, a premium digital technology and creative studio." };
+export const metadata: Metadata = { title: "About", description: "About YAWVOREX, a premium digital technology and creative studio.", alternates: { canonical: canonicalUrl("/about") } };
 
 // EDITABLE CONTENT: change the text below. Add real background only when it is true and approved.
 const mission = "To make premium digital work accessible: websites, creative content, and products built with care.";
