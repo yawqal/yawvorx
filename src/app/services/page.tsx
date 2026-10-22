@@ -4,8 +4,9 @@ import { Section } from "@/components/ui/Container";
 import { ServiceCard } from "@/components/cards/Cards";
 import { Badge } from "@/components/ui/Badge";
 import { getPublicServices } from "@/lib/services-db";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Services", description: "Website design and development, graphic design, branding, video and photo editing, e-commerce, and creative digital services." };
+export const metadata: Metadata = { title: "Services", description: "Website design and development, graphic design, branding, video and photo editing, e-commerce, and creative digital services.", alternates: { canonical: canonicalUrl("/services") } };
 
 export const dynamic = "force-dynamic";
 

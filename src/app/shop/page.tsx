@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/Badge";
 import { ShopBrowser } from "@/components/shop/ShopBrowser";
 import { getProductCategories, getProducts } from "@/lib/products-db";
 import { TranslatedText } from "@/components/i18n/LanguageProvider";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Shop", description: "Digital and physical products from YAWVOREX." };
+export const metadata: Metadata = { title: "Shop", description: "Digital and physical products from YAWVOREX.", alternates: { canonical: canonicalUrl("/shop") } };
 export const dynamic = "force-dynamic";
 
 export default async function Shop({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {

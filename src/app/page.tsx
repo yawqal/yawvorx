@@ -9,11 +9,13 @@ import { getPublicProjects } from "@/lib/portfolio-db";
 import type { Metadata } from "next";
 import { Camera, Code2, Palette, PanelsTopLeft, ShoppingBag, Video } from "lucide-react";
 import Link from "next/link";
+import { canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: { absolute: "ZIKA | Beyond Digital. Beyond Ordinary." },
+  title: "Home",
   description: "Modern e-commerce, digital technology, and creative services from ZIKA.",
   openGraph: { title: "ZIKA", description: "Modern e-commerce, digital technology, and creative services from ZIKA.", type: "website" },
+  alternates: { canonical: canonicalUrl("/") },
 };
 
 const why = [
@@ -47,6 +49,13 @@ export default async function Home() {
   ]);
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "ZIKA by YAWVOREX",
+        url: canonicalUrl("/"),
+        description: siteConfig.description,
+      }).replace(/</g, "\\u003c") }} />
       <div className="bg-aurora relative overflow-hidden">
         <Container className="home-reveal relative py-20 sm:py-32">
           <p className="mb-5 text-sm font-medium uppercase tracking-[0.2em] text-cyan">ZIKA by YAWVOREX</p>

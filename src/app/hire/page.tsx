@@ -3,8 +3,9 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Container } from "@/components/ui/Container";
 import { HireForm } from "@/components/forms/HireForm";
 import { getPublicServices } from "@/lib/services-db";
+import { canonicalUrl } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Hire YAWVOREX", description: "Tell us about your project and how to reach you." };
+export const metadata: Metadata = { title: "Hire YAWVOREX", description: "Tell us about your project and how to reach you.", alternates: { canonical: canonicalUrl("/hire") } };
 
 export const dynamic = "force-dynamic";
 

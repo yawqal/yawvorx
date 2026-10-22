@@ -12,10 +12,11 @@ import { CurrencyProvider } from "@/components/i18n/CurrencyProvider";
 import { ReferralCapture } from "@/components/affiliates/ReferralCapture";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: { default: `${siteConfig.name} | ${siteConfig.tagline}`, template: `%s | ${siteConfig.name}` },
+  ...(process.env.NEXT_PUBLIC_SITE_URL ? { metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL) } : {}),
+  title: { default: `ZIKA by YAWVOREX | ${siteConfig.tagline}`, template: "%s | ZIKA by YAWVOREX" },
   description: siteConfig.description,
-  openGraph: { title: siteConfig.name, description: siteConfig.tagline, siteName: siteConfig.name, type: "website" },
+  openGraph: { title: "ZIKA by YAWVOREX", description: siteConfig.description, siteName: "ZIKA by YAWVOREX", type: "website" },
+  twitter: { card: "summary_large_image", title: "ZIKA by YAWVOREX", description: siteConfig.description },
 };
 
 export const viewport: Viewport = { themeColor: "#07080B", width: "device-width", initialScale: 1 };

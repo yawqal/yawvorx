@@ -13,6 +13,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { ProductReviews } from "@/components/shop/ProductReviews";
 import { ProductPrice } from "@/components/shop/ProductPrice";
+import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: p.name,
     description: p.description,
     openGraph: { title: p.name, description: p.description, type: "website" },
+    alternates: { canonical: canonicalUrl(`/shop/${encodeURIComponent(p.slug)}`) },
   } : { title: "Product not found", description: "This product could not be found." };
 }
 
@@ -50,6 +52,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     name: p.name,
     description: p.description,
     category: p.category,
+    ...(p.image_url ? { image: p.image_url } : {}),
     offers: (() => {
       const shared = {
         "@type": "Offer",
