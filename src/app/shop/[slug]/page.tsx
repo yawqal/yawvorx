@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
-import { ProductImage } from "@/components/ui/ProductImage";
 import { Card } from "@/components/ui/Card";
 import { ProductCard } from "@/components/cards/Cards";
 import { AddToCart } from "@/components/shop/AddToCart";
@@ -12,7 +11,7 @@ import { getProductBySlug, getProducts } from "@/lib/products-db";
 import { getCurrentUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { ProductReviews } from "@/components/shop/ProductReviews";
-import { ProductPrice } from "@/components/shop/ProductPrice";
+import { ProductGallery } from "@/components/shop/ProductGallery";
 import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -74,20 +73,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <Container className="py-8 sm:py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c") }} />
       <Link href="/shop" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink-mute transition hover:text-ink"><span aria-hidden="true">←</span> Back to shop</Link>
-      <div className="mt-5 grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-        <div className="lg:sticky lg:top-24">
-          <ProductImage src={p.image_url} alt={p.name} className="rounded-2xl" />
-        </div>
-        <div className="surface p-5 sm:p-8">
+      <div className="mt-6 grid items-start gap-8 lg:grid-cols-[1.08fr_.92fr] lg:gap-14">
+        <div className="lg:sticky lg:top-24"><ProductGallery images={p.image_urls?.length ? p.image_urls : p.image_url ? [p.image_url] : []} name={p.name} /></div>
+        <div className="min-w-0 pt-2 lg:pt-5">
           <div className="flex flex-wrap gap-2">{p.isDemo && <Badge tone="demo">Demo product</Badge>}<Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
-          <h1 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">{p.name}</h1>
-          <p className="mt-2 text-sm text-ink-mute">{p.category}</p>
-          <p className="mt-5 whitespace-pre-line leading-relaxed text-ink-mute">{p.description}</p>
-          <div className="mt-6 border-t border-line pt-5">
-            <ProductPrice product={p} className="font-display text-xl font-semibold" />
-          </div>
-          <div className="mt-5"><AddToCart product={p} /></div>
-          <Card className="mt-6 bg-obsidian-800/70 text-sm leading-relaxed text-ink-mute">
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">{p.category}</p>
+          <h1 className="mt-3 text-3xl font-semibold leading-[1.08] tracking-tight sm:text-4xl lg:text-5xl">{p.name}</h1>
+          <p className="mt-5 whitespace-pre-line text-base leading-relaxed text-ink-mute">{p.description}</p>
+          <div className="mt-7 border-y border-line py-6"><AddToCart product={p} /></div>
+          <Card className="mt-6 bg-obsidian-900/70 text-sm leading-relaxed text-ink-mute">
             <h2 className="font-semibold text-ink">{p.type === "digital" ? "Digital delivery" : "Shipping"}</h2>
             <p className="mt-1">{p.type === "digital"
               ? "After your payment is verified by YAWVOREX, secure download links are available in your account."
@@ -97,8 +91,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
       {related.length > 0 && (
-        <section className="mt-14"><h2 className="text-2xl font-semibold">Related products</h2>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div></section>
+        <section className="mt-16 border-t border-line pt-10"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Continue exploring</p><h2 className="mt-2 text-2xl font-semibold">Related products</h2></div><Link href="/shop" className="text-sm text-ink-mute hover:text-ink">All products ↗</Link></div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div></section>
       )}
       {reviewsResult.error
         ? <section className="mt-14 border-t border-line pt-8"><h2 className="text-2xl font-semibold">Customer reviews</h2><p className="mt-2 text-sm text-ink-mute">Reviews are not available until the owner applies the product reviews SQL proposal.</p></section>

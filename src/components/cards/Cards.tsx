@@ -44,17 +44,21 @@ export function ProjectCard({ p }: { p: Project }) {
 export function ProductCard({ p }: { p: Product }) {
   const a = availability(p);
   return (
-    <Link href={`/shop/${p.slug}`} className="surface surface-hover group flex h-full flex-col overflow-hidden p-3 sm:p-4">
-      <ProductImage src={p.image_url} alt={p.name} />
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {p.isDemo && <Badge tone="demo">Demo product</Badge>}
-        <Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge>
+    <Link href={`/shop/${p.slug}`} className="surface surface-hover group flex h-full flex-col overflow-hidden">
+      <div className="relative p-2.5 pb-0 sm:p-3 sm:pb-0">
+        <ProductImage src={p.image_urls?.[0] ?? p.image_url} alt={p.name} className="rounded-xl" />
+        <div className="absolute left-5 top-5 flex flex-wrap gap-2">
+          {p.isDemo && <Badge tone="demo">Demo product</Badge>}
+          <Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge>
+        </div>
       </div>
-      <h3 className="mt-3 text-lg font-semibold">{p.name}</h3>
-      <p className="mt-1 text-sm text-ink-mute">{p.category}</p>
-      <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-        <ProductPrice product={p} className="font-display text-lg" />
-        <span className={`text-right text-xs ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-mute">{p.category}</p>
+        <h3 className="mt-2 text-lg font-semibold leading-snug">{p.name}</h3>
+        <div className="mt-auto flex items-end justify-between gap-3 pt-6">
+          <ProductPrice product={p} className="font-display text-lg" />
+          <span className={`text-right text-xs ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
+        </div>
       </div>
     </Link>
   );

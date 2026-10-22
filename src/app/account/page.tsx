@@ -18,6 +18,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
 import { VendorApplication } from "@/components/account/VendorApplication";
 import { LanguageToggle, TranslatedText } from "@/components/i18n/LanguageProvider";
+import { ProfilePhoto } from "@/components/account/ProfilePhoto";
 
 export const metadata: Metadata = { title: "My account", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -34,7 +35,7 @@ export default async function Account() {
     profileRes, ordersRes, admin, addressesRes, wishlistRes, productsRes, requestsRes, ticketsRes, notificationsRes,
     vendorApplicationRes,
   ] = await Promise.all([
-    supabase.from("profiles").select("display_name, phone").eq("id", user.id).maybeSingle(),
+    supabase.from("profiles").select("display_name, phone, avatar_path").eq("id", user.id).maybeSingle(),
     supabase.from("orders").select("id, order_ref, status, payment_status, total, currency, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     isCurrentUserAdmin(),
     supabase.from("customer_addresses").select("id,label,full_name,phone,address_line,city,region,country,postal_code,is_default").eq("user_id", user.id).order("is_default", { ascending: false }),
@@ -45,6 +46,21 @@ export default async function Account() {
     supabase.from("notifications").select("id,title,body,href,read_at,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     supabase.from("vendor_applications").select("business_name,contact_value,description,status,admin_note,referral_code").eq("user_id", user.id).maybeSingle(),
   ]);
+  const avatarColumnMissing = Boolean(profileRes.error && /avatar_path/i.test(profileRes.error.message) &&
+    /column|schema cache|does not exist|could not find/i.test(profileRes.error.message));
+  const fallbackProfileRes = avatarColumnMissing
+    ? await supabase.from("profiles").select("display_name, phone").eq("id", user.id).maybeSingle()
+    : null;
+  const profile = avatarColumnMissing ? fallbackProfileRes?.data : profileRes.data;
+  const profileError = avatarColumnMissing ? fallbackProfileRes?.error : profileRes.error;
+  const avatarPath = avatarColumnMissing ? null : profileRes.data?.avatar_path ?? null;
+  const photoConfigured = !avatarColumnMissing && !profileRes.error;
+  let avatarUrl: string | null = null;
+  if (avatarPath) {
+    const { data, error } = await supabase.storage.from("profile-photos").createSignedUrl(avatarPath, 3600);
+    if (error) console.error("Could not create a signed profile photo URL:", error.message);
+    else avatarUrl = data.signedUrl;
+  }
   const vendorProfileRes = await supabase.from("vendor_profiles").select("status")
     .eq("user_id", user.id).maybeSingle();
   const affiliateCodeRes = vendorApplicationRes.data?.referral_code
@@ -77,32 +93,63 @@ export default async function Account() {
     return product ? [{ id: item.id, product_id: item.product_id, name: product.name, slug: product.slug }] : [];
   });
   const dataErrors = [
-    profileRes.error, ordersRes.error, addressesRes.error, wishlistRes.error, productsRes.error,
+    profileError, ordersRes.error, addressesRes.error, wishlistRes.error, productsRes.error,
     requestsRes.error, savedProductsRes.error, digitalItemsRes.error, ticketsRes.error, ticketMessagesRes.error, notificationsRes.error, vendorProfileRes.error,
   ].filter(Boolean).map((error) => error?.message);
   const orders = ordersRes.data ?? [];
 
   return (
     <>
-      <PageHeader title={<TranslatedText value="My account" />} intro={user.email ?? undefined}>
-        {admin && <Badge tone="info">Administrator</Badge>}
-      </PageHeader>
-      <Container className="space-y-10 py-10">
+      <div className="border-b border-line bg-aurora">
+        <Container className="grid gap-8 py-9 sm:py-12 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="flex flex-col items-center gap-6 sm:flex-row">
+            <ProfilePhoto userId={user.id} name={profile?.display_name ?? ""} email={user.email ?? ""} initialUrl={avatarUrl}
+              initialPath={avatarPath} configured={photoConfigured} />
+            <div className="text-center sm:text-left">
+              {admin && <Badge tone="info">Administrator</Badge>}
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                {profile?.display_name ? `Welcome back, ${profile.display_name}` : "Your account"}
+              </h1>
+              <p className="mt-2 max-w-xl text-ink-mute">Your orders, saved items, and account details in one place.</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
+            {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
+            <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
+          </div>
+        </Container>
+      </div>
+      <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+        <nav aria-label="Account sections" className="h-fit lg:sticky lg:top-24">
+          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block">Account menu</p>
+          <div className="flex gap-2 overflow-x-auto pb-2 lg:grid lg:overflow-visible lg:border-l lg:border-line lg:pb-0">
+            {[
+              ["overview", "Overview"], ["orders", "Orders"], ["profile", "Profile"], ["addresses", "Addresses"],
+              ["wishlist", "Wishlist"], ["service-requests", "Requests"], ["downloads", "Downloads"], ["support", "Support"],
+              ["notifications", "Notifications"], ["vendor", "Vendor"], ["settings", "Settings"], ["language", "Language"], ["security", "Security"],
+            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-violet/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-violet">
+              {label}
+            </a>)}
+          </div>
+        </nav>
+        <div className="min-w-0 space-y-12">
         {dataErrors.length > 0 && <p role="alert" className="rounded-xl border border-red-400/40 p-4 text-red-300">
           Some account sections could not load. Complete the required Supabase SQL setup and verify row-level permissions: {dataErrors.join("; ")}
         </p>}
-
         <section id="overview">
-          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Overview" /></h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-1 font-display text-2xl">{orders.length}</p></Card>
-            <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-1 font-display text-2xl">{addressesRes.data?.length ?? 0}</p></Card>
-            <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-1 font-display text-2xl">{wishlist.length}</p></Card>
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Your dashboard</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
+            <span className="hidden text-sm text-ink-mute sm:block">A personal space for everything you do with ZIKA</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Card className="bg-gradient-to-br from-violet/15 to-obsidian-900"><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-3 font-display text-4xl">{orders.length}</p><a href="#orders" className="mt-4 inline-flex text-sm text-cyan-soft">View order history <span aria-hidden="true" className="ml-2">↗</span></a></Card>
+            <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-3 font-display text-4xl">{addressesRes.data?.length ?? 0}</p><a href="#addresses" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Manage delivery details ↗</a></Card>
+            <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-3 font-display text-4xl">{wishlist.length}</p><a href="#wishlist" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Browse saved products ↗</a></Card>
           </div>
         </section>
 
         <section id="orders">
-          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="My orders" /></h2>
+          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Recent activity</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="My orders" /></h2></div><span className="text-sm text-ink-mute">{orders.length} total</span></div>
           {ordersRes.error ? <p role="alert" className="text-red-300">Orders could not be loaded: {ordersRes.error.message}</p> : orders.length === 0 ? (
             <EmptyState title="No orders yet" description="Orders you place while signed in will appear here." action={{ label: "Visit the shop", href: "/shop" }} />
           ) : (
@@ -119,10 +166,10 @@ export default async function Account() {
         </section>
 
         <section id="profile">
-          <h2 className="mb-4 text-2xl font-semibold"><TranslatedText value="Profile" /></h2>
-          <Card>
-            {profileRes.error && <p role="alert" className="mb-3 text-red-300">Profile could not be loaded: {profileRes.error.message}</p>}
-            <ProfileForm userId={user.id} fullName={profileRes.data?.display_name ?? ""} phone={profileRes.data?.phone ?? ""} />
+          <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Your details</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Profile" /></h2></div>
+          <Card className="max-w-3xl">
+            {profileError && <p role="alert" className="mb-3 text-red-300">Profile could not be loaded: {profileError.message}</p>}
+            <ProfileForm userId={user.id} fullName={profile?.display_name ?? ""} phone={profile?.phone ?? ""} />
           </Card>
         </section>
 
@@ -196,11 +243,12 @@ export default async function Account() {
         <section id="settings"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Settings" /></h2><Card><Badge>{comingSoon}</Badge><p className="mt-2 text-ink-mute">Additional account preferences are not available yet.</p></Card></section>
         <section id="language"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Language" /></h2><Card className="flex items-center justify-between gap-3"><p>Choose English or Amharic for the navigation, footer, shop filters, and account headings.</p><LanguageToggle /></Card></section>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 border-t border-line pt-6">
           {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
           {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary">My vendor products</Button>}
           {(vendorProfileRes.data?.status === "active" || vendorApplicationRes.data?.status === "approved") && <Button href="/account/earnings" variant="secondary">My earnings</Button>}
           <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
+        </div>
         </div>
       </Container>
     </>

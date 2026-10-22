@@ -77,8 +77,8 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       {loadError && <p role="alert" className="rounded-xl border border-red-400/40 p-4 text-red-300">{loadError}</p>}
       {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
 
-      <section>
-        <h2 className="mb-4 text-2xl font-semibold">Orders overview</h2>
+      <section id="admin-overview" className="scroll-mt-24">
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Operations</p><h2 className="mt-2 text-2xl font-semibold">Orders overview</h2></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           {Object.entries(counts).map(([status, count]) => (
             <Card key={status}><p className="text-sm capitalize text-ink-mute">{status.replace(/_/g, " ")}</p><p className="mt-2 font-display text-2xl">{count}</p></Card>
@@ -86,8 +86,8 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-4 text-2xl font-semibold">Products and stock</h2>
+      <section id="admin-products" className="scroll-mt-24">
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Catalog</p><h2 className="mt-2 text-2xl font-semibold">Products and stock</h2></div>
         <Card>
           <h3 className="text-lg font-semibold">Add product</h3>
           <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} dualPricingAvailable={dualPricingAvailable} digitalFiles={[]} onSave={send} busy={busy} />
@@ -95,23 +95,25 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
         <div className="mt-4 space-y-4">
           {products.map((product) => (
             <Card key={product.id}>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <h3 className="font-semibold">{product.name}</h3>
-                <Badge tone={product.stock <= 5 ? "warn" : "ok"}>{product.stock <= 5 ? `Low stock: ${product.stock}` : `Stock: ${product.stock}`}</Badge>
-                <Badge>{product.is_demo ? "Demo" : "Live"}</Badge>
-                <Badge>{product.is_published ? "Active" : "Inactive"}</Badge>
-              </div>
-              <p className="mb-3 text-sm text-ink-mute">
-                {typeof product.price_etb === "number" && Number.isFinite(product.price_etb) &&
-                typeof product.price_usd === "number" && Number.isFinite(product.price_usd)
-                  ? `${formatMoney(product.price_etb, "ETB")} · ${formatMoney(product.price_usd, "USD")}`
-                  : `Current price: ${formatMoney(product.price, product.currency)}`}
-              </p>
-              <ProductEditor categories={categories} initial={{
-                ...product, description: product.description ?? "", image_url: product.image_url ?? "",
-                price: String(product.price), price_etb: String(product.price_etb ?? ""), price_usd: String(product.price_usd ?? ""), stock: String(product.stock),
-                category_id: product.category_id === null ? "" : String(product.category_id),
-              }} dualPricingAvailable={dualPricingAvailable} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
+              <details>
+                <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 [&::-webkit-details-marker]:hidden">
+                  <span className="mr-auto font-semibold">{product.name}</span>
+                  <Badge tone={product.stock <= 5 ? "warn" : "ok"}>{product.stock <= 5 ? `Low stock: ${product.stock}` : `Stock: ${product.stock}`}</Badge>
+                  <Badge>{product.is_demo ? "Demo" : "Live"}</Badge>
+                  <Badge>{product.is_published ? "Active" : "Inactive"}</Badge>
+                  <span className="text-sm text-cyan-soft">Edit product ↓</span>
+                </summary>
+                <p className="mt-3 text-sm text-ink-mute">
+                  {typeof product.price_etb === "number" && Number.isFinite(product.price_etb) &&
+                  typeof product.price_usd === "number" && Number.isFinite(product.price_usd)
+                    ? `${formatMoney(product.price_etb, "ETB")} · ${formatMoney(product.price_usd, "USD")}`
+                    : `Current price: ${formatMoney(product.price, product.currency)}`}
+                </p>
+                <ProductEditor categories={categories} initial={{
+                  ...product, description: product.description ?? "", image_url: product.image_url ?? "",
+                  price: String(product.price), price_etb: String(product.price_etb ?? ""), price_usd: String(product.price_usd ?? ""), stock: String(product.stock),
+                  category_id: product.category_id === null ? "" : String(product.category_id),
+                }} dualPricingAvailable={dualPricingAvailable} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
               {variants.filter((v) => v.product_id === product.id).length > 0 && (
                 <div className="mt-5 border-t border-line pt-4">
                   <h4 className="font-medium">Variant stock</h4>
@@ -122,22 +124,23 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
                   </div>
                 </div>
               )}
-              {product.is_published && <Button className="mt-4" variant="secondary" disabled={busy} onClick={() => void send({ action: "deactivate_product", id: product.id })}>Deactivate (soft delete)</Button>}
+                {product.is_published && <Button className="mt-4" variant="secondary" disabled={busy} onClick={() => void send({ action: "deactivate_product", id: product.id })}>Deactivate (soft delete)</Button>}
+              </details>
             </Card>
           ))}
           {products.length === 0 && <p className="text-ink-mute">No products were returned. Confirm the Supabase migrations and permissions have been applied.</p>}
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-4 text-2xl font-semibold">Categories</h2>
+      <section id="admin-categories" className="scroll-mt-24">
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Organization</p><h2 className="mt-2 text-2xl font-semibold">Categories</h2></div>
         <Card><CategoryEditor initial={{ id: "", name: "", slug: "" }} onSave={send} busy={busy} /></Card>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {categories.map((category) => <Card key={category.id}><CategoryEditor initial={{ id: String(category.id), name: category.name, slug: category.slug }} onSave={send} busy={busy} /></Card>)}
         </div>
       </section>
 
-      <section>
+      <section id="admin-orders" className="scroll-mt-24">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-2xl font-semibold">Orders</h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -192,7 +195,7 @@ function ProductEditor({ categories, initial, dualPricingAvailable, digitalFiles
   const set = (key: string, value: string | boolean) => setValues((current) => ({ ...current, [key]: value }));
   return (
     <>
-      <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => {
+      <form className="mt-5 grid gap-4 sm:grid-cols-2" onSubmit={(event) => {
         event.preventDefault();
         void onSave({
           ...values, action: "save_product", price: Number(values.price), stock: Number(values.stock),
@@ -201,24 +204,33 @@ function ProductEditor({ categories, initial, dualPricingAvailable, digitalFiles
           price_usd: values.price_usd.trim() ? Number(values.price_usd) : null,
         });
       }}>
-        <Input label="Name" value={values.name} onChange={(event) => set("name", event.target.value)} required />
-        <Input label="Slug" value={values.slug} onChange={(event) => set("slug", event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
-        <Textarea label="Description" value={values.description} onChange={(event) => set("description", event.target.value)} />
-        <Input label="Image URL" type="url" value={values.image_url ?? ""} onChange={(event) => set("image_url", event.target.value)} />
-        <Input label="Price" type="number" min="0" step="0.01" value={values.price} onChange={(event) => set("price", event.target.value)} required />
-        <Select label="Currency" value={values.currency} onChange={(event) => set("currency", event.target.value)}><option>ETB</option><option>USD</option></Select>
-        {dualPricingAvailable && <>
-          <Input label="Price in ETB (optional)" type="number" min="0" step="0.01" value={values.price_etb} onChange={(event) => set("price_etb", event.target.value)} hint="Enter both currency prices to display dual pricing." />
-          <Input label="Price in USD (optional)" type="number" min="0" step="0.01" value={values.price_usd} onChange={(event) => set("price_usd", event.target.value)} hint="Leave both blank to keep the current single price." />
-        </>}
-        <Input label="Stock" type="number" min="0" step="1" value={values.stock} onChange={(event) => set("stock", event.target.value)} required />
-        <Select label="Category" value={values.category_id ?? ""} onChange={(event) => set("category_id", event.target.value)}>
-          <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
-        </Select>
-        <Select label="Product type" value={values.product_type} onChange={(event) => set("product_type", event.target.value)}><option value="physical">Physical</option><option value="digital">Digital</option></Select>
-        <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> Demo product</label>
-        <label className="flex min-h-[44px] items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> Active / published</label>
-        <Button type="submit" loading={busy}>{values.id ? "Save product" : "Create product"}</Button>
+        <fieldset className="grid gap-4 rounded-xl border border-line p-4 sm:col-span-2 sm:grid-cols-2">
+          <legend className="px-2 text-sm font-semibold">Product identity</legend>
+          <Input label="Name" value={values.name} onChange={(event) => set("name", event.target.value)} required />
+          <Input label="Slug" value={values.slug} onChange={(event) => set("slug", event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
+          <div className="sm:col-span-2"><Textarea label="Description" value={values.description} onChange={(event) => set("description", event.target.value)} /></div>
+          <div className="sm:col-span-2"><Input label="Image URL" type="url" value={values.image_url ?? ""} onChange={(event) => set("image_url", event.target.value)} /></div>
+        </fieldset>
+        <fieldset className="grid gap-4 rounded-xl border border-line p-4 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-3">
+          <legend className="px-2 text-sm font-semibold">Pricing &amp; inventory</legend>
+          <Input label="Price" type="number" min="0" step="0.01" value={values.price} onChange={(event) => set("price", event.target.value)} required />
+          <Select label="Currency" value={values.currency} onChange={(event) => set("currency", event.target.value)}><option>ETB</option><option>USD</option></Select>
+          <Input label="Stock" type="number" min="0" step="1" value={values.stock} onChange={(event) => set("stock", event.target.value)} required />
+          {dualPricingAvailable && <>
+            <Input label="Price in ETB (optional)" type="number" min="0" step="0.01" value={values.price_etb} onChange={(event) => set("price_etb", event.target.value)} hint="Enter both currency prices to display dual pricing." />
+            <Input label="Price in USD (optional)" type="number" min="0" step="0.01" value={values.price_usd} onChange={(event) => set("price_usd", event.target.value)} hint="Leave both blank to keep the current single price." />
+          </>}
+          <Select label="Category" value={values.category_id ?? ""} onChange={(event) => set("category_id", event.target.value)}>
+            <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+          </Select>
+          <Select label="Product type" value={values.product_type} onChange={(event) => set("product_type", event.target.value)}><option value="physical">Physical</option><option value="digital">Digital</option></Select>
+        </fieldset>
+        <fieldset className="grid gap-3 rounded-xl border border-line p-4 sm:col-span-2 sm:grid-cols-[1fr_1fr_auto] sm:items-center">
+          <legend className="px-2 text-sm font-semibold">Visibility</legend>
+          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> Demo product</label>
+          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> Active / published</label>
+          <Button type="submit" loading={busy}>{values.id ? "Save product" : "Create product"}</Button>
+        </fieldset>
       </form>
       {values.id && values.product_type === "digital" && (
         <div className="mt-4 space-y-3 border-t border-line pt-4">

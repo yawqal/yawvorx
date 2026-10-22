@@ -77,8 +77,18 @@ export default async function Admin() {
       <PageHeader title="Admin area" intro={`Signed in as ${user.email ?? "admin"}`}>
         <Badge tone="ok">Admin verified by the database</Badge>
       </PageHeader>
-      <Container className="py-10">
-        <nav aria-label="Admin tools" className="mb-8 flex flex-wrap gap-3">
+      <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+        <nav aria-label="Admin sections" className="h-fit lg:sticky lg:top-24">
+          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block">Workspace</p>
+          <div className="flex gap-2 overflow-x-auto pb-2 lg:grid lg:overflow-visible lg:border-l lg:border-line lg:pb-0">
+            {[
+              ["admin-overview", "Overview"], ["admin-products", "Products"], ["admin-categories", "Categories"], ["admin-orders", "Orders"],
+              ["admin-services", "Services"], ["admin-portfolio", "Portfolio"], ["admin-requests", "Requests"], ["admin-support", "Support inbox"],
+            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-violet/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-violet">{label}</a>)}
+          </div>
+        </nav>
+        <div className="min-w-0">
+        <nav aria-label="Admin tools" className="mb-8 flex flex-wrap gap-2">
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/audit">Audit log</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/reviews">Product reviews</Link>
@@ -104,6 +114,7 @@ export default async function Admin() {
           tickets={supportTickets}
           loadError={errors.length ? `Some admin data could not be loaded: ${errors.join("; ")}` : undefined}
         />
+        </div>
       </Container>
     </>
   );

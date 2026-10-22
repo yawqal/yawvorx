@@ -21,10 +21,20 @@ const primaryLinks = [
   { href: "/ai-tools", label: "AI Tools" },
   { href: "/vendors", label: "Vendors" },
 ];
+const desktopLinks = [
+  { href: "/", label: "Home" },
+  { href: "/shop", label: "Shop" },
+  { href: "/services", label: "Services" },
+  { href: "/portfolio", label: "Portfolio" },
+];
 const moreLinks = [
+  { href: "/shop", label: "Digital Products" },
+  { href: "/freelancers", label: "Freelancers" },
+  { href: "/courses", label: "Courses" },
+  { href: "/ai-tools", label: "AI Tools" },
+  { href: "/vendors", label: "Vendors" },
   { href: "/affiliate", label: "Affiliate" },
   { href: "/directory", label: "Directory" },
-  { href: "/portfolio", label: "Portfolio" },
   { href: "/subscriptions", label: "Subscriptions" },
   { href: "/developers", label: "Developers" },
   { href: "/contact", label: "Support" },
@@ -105,30 +115,33 @@ export function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-obsidian/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-      <nav aria-label="Main" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="ZIKA home" className="shrink-0"><Logo size={30} /></Link>
-        <ul className="hidden items-center gap-0.5 xl:flex">
-          {primaryLinks.map((link) => (
+    <header className="sticky top-0 z-40 border-b border-line bg-obsidian/95 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <nav aria-label="Main" className="mx-auto flex h-[4.5rem] max-w-[1600px] items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
+        <Link href="/" aria-label="ZIKA home" className="flex shrink-0 items-center gap-3">
+          <Logo size={34} />
+          <span className="hidden border-l border-line pl-3 sm:block"><span className="block text-sm font-semibold tracking-[0.12em]">ZIKA</span><span className="mt-0.5 block text-[9px] uppercase tracking-[0.16em] text-ink-mute">By YAWVOREX</span></span>
+        </Link>
+        <ul className="hidden items-center gap-1 xl:flex">
+          {desktopLinks.map((link) => (
             <li key={`${link.label}-${link.href}`}>
               <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                className={`whitespace-nowrap rounded-lg px-2 py-2 text-xs font-medium transition 2xl:px-2.5 2xl:text-sm ${active(link.href) ? "bg-white/[0.05] text-violet-soft" : "text-ink-mute hover:bg-white/[0.03] hover:text-ink"}`}>
+                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${active(link.href) ? "bg-white/[0.05] text-violet-soft" : "text-ink-mute hover:bg-white/[0.03] hover:text-ink"}`}>
                 {link.label}
               </Link>
             </li>
           ))}
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
-              className="min-h-11 rounded-lg px-2 text-sm font-medium text-ink-mute transition hover:bg-white/[0.03] hover:text-ink"
+              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-white/[0.03] hover:text-ink"
               onClick={() => setMoreOpen((value) => !value)}>More <span aria-hidden="true">⌄</span></button>
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
-              className="absolute right-0 top-full z-50 mt-2 grid w-[min(36rem,90vw)] grid-cols-2 gap-2 rounded-2xl border border-line bg-obsidian-900 p-4 shadow-depth md:grid-cols-3">
+              className="absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl border border-line bg-obsidian-900 p-4 shadow-depth md:grid-cols-3">
               {moreLinks.map((link) => <Link key={link.label} href={link.href}
                 className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-obsidian-800 hover:text-ink">{link.label}</Link>)}
             </div>}
           </li>
         </ul>
-        <div className="hidden items-center gap-1.5 xl:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <Button href="/cart" variant="ghost" className="px-3">{cartLabel}</Button>
           <LanguageToggle />
           {currencyPicker}
@@ -153,12 +166,13 @@ export function Navbar() {
           <button type="button" className="min-h-11 min-w-11 rounded-xl border border-line px-3 text-sm" aria-label="Close menu"
             onClick={() => { setMobileOpen(false); setMobileMore(false); mobileTrigger.current?.focus(); }}>Close</button>
         </div>
-        <div className="flex-1 py-4">
-          <ul className="divide-y divide-line">
+        <div className="flex-1 py-5">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute">{mobileMore ? "More from ZIKA" : "Explore ZIKA"}</p>
+          <ul className={mobileMore ? "space-y-1" : "grid gap-2 sm:grid-cols-2"}>
             {(mobileMore ? moreLinks : primaryLinks).map((link) => (
               <li key={`${link.label}-${link.href}`}>
                 <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                  className={`flex min-h-12 items-center text-lg font-medium transition-colors ${active(link.href) ? "text-violet-soft" : "text-ink"}`}
+                  className={`flex min-h-12 items-center rounded-xl px-4 text-lg font-medium transition-colors ${mobileMore ? "border-b border-line" : "border border-line bg-obsidian-900"} ${active(link.href) ? "text-violet-soft" : "text-ink"}`}
                   onClick={() => setMobileOpen(false)}>{link.label}</Link>
               </li>
             ))}
