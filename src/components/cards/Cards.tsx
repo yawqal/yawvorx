@@ -9,9 +9,10 @@ import { availability, type Product } from "@/data/products";
 import type { Project } from "@/data/portfolio";
 import type { Service } from "@/data/services";
 
-export function ServiceCard({ s, full = false }: { s: Service; full?: boolean }) {
+export function ServiceCard({ s, full = false, icon }: { s: Service; full?: boolean; icon?: React.ReactNode }) {
   return (
-    <Card interactive className="flex h-full flex-col" >
+    <Card interactive className="flex h-full flex-col">
+      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">{icon}</div>}
       <h3 id={s.slug} className="text-lg font-semibold">{s.title}</h3>
       <p className="mt-2 text-ink-mute">{s.description}</p>
       <ul className="mt-4 space-y-1.5 text-sm text-ink-mute">
@@ -32,7 +33,7 @@ export function ProjectCard({ p }: { p: Project }) {
     <Link href={`/portfolio/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
       <Art seed={seed} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        {p.isDemo !== false && <Badge tone="demo">Sample concept</Badge>}<Badge>{p.category}</Badge>
+        {p.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{p.category}</Badge>
       </div>
       <h3 className="mt-3 text-lg font-semibold">{p.title}</h3>
       <p className="mt-1 text-ink-mute">{p.summary}</p>
