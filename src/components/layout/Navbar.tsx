@@ -105,26 +105,26 @@ export function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-obsidian/85 pt-[env(safe-area-inset-top)] shadow-depth backdrop-blur-xl">
-      <nav aria-label="Main" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-line bg-obsidian/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <nav aria-label="Main" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link href="/" aria-label="ZIKA home" className="shrink-0"><Logo size={30} /></Link>
         <ul className="hidden items-center gap-0.5 xl:flex">
           {primaryLinks.map((link) => (
             <li key={`${link.label}-${link.href}`}>
               <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                className={`whitespace-nowrap rounded-lg px-2 py-2 text-xs transition 2xl:px-2.5 2xl:text-sm ${active(link.href) ? "text-cyan-soft" : "text-ink-mute hover:text-ink"}`}>
+                className={`whitespace-nowrap rounded-lg px-2 py-2 text-xs font-medium transition 2xl:px-2.5 2xl:text-sm ${active(link.href) ? "bg-white/[0.05] text-violet-soft" : "text-ink-mute hover:bg-white/[0.03] hover:text-ink"}`}>
                 {link.label}
               </Link>
             </li>
           ))}
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
-              className="min-h-11 rounded-lg px-2 text-sm text-ink-mute hover:text-ink"
+              className="min-h-11 rounded-lg px-2 text-sm font-medium text-ink-mute transition hover:bg-white/[0.03] hover:text-ink"
               onClick={() => setMoreOpen((value) => !value)}>More <span aria-hidden="true">⌄</span></button>
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
               className="absolute right-0 top-full z-50 mt-2 grid w-[min(36rem,90vw)] grid-cols-2 gap-2 rounded-2xl border border-line bg-obsidian-900 p-4 shadow-depth md:grid-cols-3">
               {moreLinks.map((link) => <Link key={link.label} href={link.href}
-                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute hover:bg-obsidian-800 hover:text-ink">{link.label}</Link>)}
+                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-obsidian-800 hover:text-ink">{link.label}</Link>)}
             </div>}
           </li>
         </ul>
@@ -135,7 +135,7 @@ export function Navbar() {
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost" className="px-3">{accountLabel}</Button>
         </div>
-        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line xl:hidden"
+        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-obsidian-900 text-ink transition hover:border-violet/50 xl:hidden"
           aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => { setMobileOpen((value) => !value); setMobileMore(false); }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -145,7 +145,7 @@ export function Navbar() {
       </nav>
 
       {mobileOpen && <div ref={mobilePanel} id="mobile-menu" onKeyDown={trapTab}
-        className="fixed inset-0 z-[60] flex h-[100dvh] flex-col overflow-y-auto bg-obsidian px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] xl:hidden">
+        className="bg-aurora fixed inset-0 z-[60] flex h-[100dvh] flex-col overflow-y-auto bg-obsidian px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] xl:hidden">
         <div className="flex min-h-16 items-center justify-between border-b border-line">
           {mobileMore
             ? <button type="button" className="min-h-11 rounded-lg px-3 text-ink" onClick={() => setMobileMore(false)}>← Back</button>
@@ -158,7 +158,7 @@ export function Navbar() {
             {(mobileMore ? moreLinks : primaryLinks).map((link) => (
               <li key={`${link.label}-${link.href}`}>
                 <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                  className={`flex min-h-12 items-center text-lg ${active(link.href) ? "text-cyan-soft" : "text-ink"}`}
+                  className={`flex min-h-12 items-center text-lg font-medium transition-colors ${active(link.href) ? "text-violet-soft" : "text-ink"}`}
                   onClick={() => setMobileOpen(false)}>{link.label}</Link>
               </li>
             ))}

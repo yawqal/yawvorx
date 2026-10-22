@@ -27,7 +27,7 @@ export function Footer() {
       <Container className="relative grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-7">
         <div className="sm:col-span-2">
           <Logo size={30} />
-          <p className="mt-4 text-sm text-ink-mute">Powered by YAWVOREX</p>
+          <p className="mt-4 text-sm font-medium text-ink">A digital platform by YAWVOREX</p>
           <p className="mt-2 max-w-sm text-sm text-ink-mute">{siteConfig.description}</p>
           <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
             {socialLinks().map((social) => <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer"

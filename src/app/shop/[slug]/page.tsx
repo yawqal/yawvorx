@@ -71,19 +71,23 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   };
 
   return (
-    <Container className="py-12">
+    <Container className="py-8 sm:py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c") }} />
-      <Link href="/shop" className="inline-block py-2 text-ink-mute hover:text-ink">Back to shop</Link>
-      <div className="mt-4 grid gap-8 lg:grid-cols-2">
-        <ProductImage src={p.image_url} alt={p.name} />
-        <div>
+      <Link href="/shop" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink-mute transition hover:text-ink"><span aria-hidden="true">←</span> Back to shop</Link>
+      <div className="mt-5 grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="lg:sticky lg:top-24">
+          <ProductImage src={p.image_url} alt={p.name} className="rounded-2xl" />
+        </div>
+        <div className="surface p-5 sm:p-8">
           <div className="flex flex-wrap gap-2">{p.isDemo && <Badge tone="demo">Demo product</Badge>}<Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
-          <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">{p.name}</h1>
-          <p className="mt-1 text-ink-mute">{p.category}</p>
-          <p className="mt-4 text-ink-mute">{p.description}</p>
-          <p className="mt-5"><ProductPrice product={p} className="font-display text-lg" /></p>
-          <div className="mt-6"><AddToCart product={p} /></div>
-          <Card className="mt-6 text-sm text-ink-mute">
+          <h1 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">{p.name}</h1>
+          <p className="mt-2 text-sm text-ink-mute">{p.category}</p>
+          <p className="mt-5 whitespace-pre-line leading-relaxed text-ink-mute">{p.description}</p>
+          <div className="mt-6 border-t border-line pt-5">
+            <ProductPrice product={p} className="font-display text-xl font-semibold" />
+          </div>
+          <div className="mt-5"><AddToCart product={p} /></div>
+          <Card className="mt-6 bg-obsidian-800/70 text-sm leading-relaxed text-ink-mute">
             <h2 className="font-semibold text-ink">{p.type === "digital" ? "Digital delivery" : "Shipping"}</h2>
             <p className="mt-1">{p.type === "digital"
               ? "After your payment is verified by YAWVOREX, secure download links are available in your account."

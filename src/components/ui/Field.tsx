@@ -2,7 +2,7 @@ import { useId } from "react";
 
 type Common = { label: string; error?: string; hint?: string };
 const control =
-  "w-full min-h-[44px] rounded-xl border bg-obsidian-800 px-4 py-2.5 text-base text-ink placeholder:text-ink-mute/70 transition focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30";
+  "control w-full px-4 py-2.5 text-base placeholder:text-ink-mute/70 focus:border-violet focus:outline-none focus:ring-2 focus:ring-violet/30";
 
 function Wrap({ label, error, hint, id, children }: Common & { id: string; children: React.ReactNode }) {
   return (

@@ -11,11 +11,11 @@ type Props = {
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className">;
 
 const base =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-5 text-sm font-medium transition duration-200 disabled:pointer-events-none disabled:opacity-50 sm:text-base";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:text-base";
 const variants: Record<Variant, string> = {
-  primary: "bg-gradient-to-r from-cyan to-violet text-obsidian hover:brightness-110 hover:shadow-glow",
-  secondary: "border border-line bg-obsidian-800 text-ink hover:border-cyan/50",
-  ghost: "text-ink-mute hover:text-ink",
+  primary: "bg-gradient-to-r from-violet to-cyan text-obsidian hover:brightness-110 hover:shadow-glow",
+  secondary: "border border-line bg-obsidian-800 text-ink hover:border-violet/50 hover:bg-obsidian-700",
+  ghost: "text-ink-mute hover:bg-white/[0.04] hover:text-ink",
 };
 
 /** Pass `href` to render a link, otherwise it renders a <button>. */

@@ -5,29 +5,40 @@
 :root { color-scheme: dark; }
 
 @layer base {
-  html { background: #07080b; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { background: #07080B; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
   html[lang="am"] body { font-family: var(--font-ethiopic), sans-serif; line-height: 1.65; }
   h1, h2, h3 { @apply font-display tracking-tight; }
   html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] h3 { font-family: var(--font-ethiopic), sans-serif; }
   ::selection { background: rgba(139, 92, 246, 0.45); }
   :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; border-radius: 6px; }
+  img { color: #A1A7B4; }
 }
 
 @layer components {
-  .surface { @apply rounded-2xl border border-line bg-obsidian-900/80 shadow-depth; }
-  .surface-hover { @apply transition duration-200 hover:border-cyan/40 hover:shadow-glow; }
-  .text-gradient { @apply bg-gradient-to-r from-cyan via-cyan-soft to-violet-soft bg-clip-text text-transparent; }
+  .surface { @apply rounded-2xl border border-line bg-obsidian-900 shadow-depth; }
+  .surface-hover { @apply transition duration-200 hover:-translate-y-0.5 hover:border-violet/40 hover:bg-obsidian-800 hover:shadow-glow; }
+  .text-gradient { @apply bg-gradient-to-r from-violet-soft via-violet to-cyan bg-clip-text text-transparent; }
   .bg-aurora {
     background:
-      radial-gradient(60% 50% at 15% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
-      radial-gradient(55% 45% at 90% 10%, rgba(139, 92, 246, 0.16), transparent 70%);
+      radial-gradient(52% 66% at 84% 16%, rgba(139, 92, 246, 0.16), transparent 74%),
+      radial-gradient(46% 54% at 12% 0%, rgba(34, 211, 238, 0.08), transparent 74%);
   }
-  .hero-title { font-size: clamp(44px, 7vw, 88px); letter-spacing: -0.03em; }
+  .hero-title { font-size: clamp(46px, 7vw, 88px); letter-spacing: -0.045em; }
   .home-reveal { animation: home-fade-up 650ms ease both; }
+  .hero-art {
+    background:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+      radial-gradient(65% 75% at 55% 42%, rgba(139,92,246,0.19), transparent 68%),
+      #0E1016;
+    background-size: 38px 38px, 38px 38px, auto, auto;
+  }
+  .control {
+    @apply min-h-11 rounded-xl border border-line bg-obsidian-800 text-ink transition;
+  }
 }
 
-/* Logo + intro motion */
 @keyframes home-fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -38,7 +49,6 @@
 .logo-draw path:nth-child(3) { animation-delay: 0.5s; }
 .rise { opacity: 0; animation: rise 0.7s ease forwards; }
 
-/* If JavaScript is unavailable, the intro still removes itself. */
 .intro-overlay { animation: introOut 0.5s ease 3.6s forwards; }
 
 @media (prefers-reduced-motion: reduce) {

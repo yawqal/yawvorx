@@ -30,7 +30,7 @@ export function ServiceCard({ s, full = false, icon }: { s: Service; full?: bool
 export function ProjectCard({ p }: { p: Project }) {
   const seed = p.slug.length;
   return (
-    <Link href={`/portfolio/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
+    <Link href={`/portfolio/${p.slug}`} className="surface surface-hover group block h-full overflow-hidden p-3 sm:p-4">
       <Art seed={seed} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {p.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{p.category}</Badge>
@@ -44,7 +44,7 @@ export function ProjectCard({ p }: { p: Project }) {
 export function ProductCard({ p }: { p: Product }) {
   const a = availability(p);
   return (
-    <Link href={`/shop/${p.slug}`} className="surface surface-hover group block overflow-hidden p-3 sm:p-4">
+    <Link href={`/shop/${p.slug}`} className="surface surface-hover group flex h-full flex-col overflow-hidden p-3 sm:p-4">
       <ProductImage src={p.image_url} alt={p.name} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {p.isDemo && <Badge tone="demo">Demo product</Badge>}
@@ -52,9 +52,9 @@ export function ProductCard({ p }: { p: Product }) {
       </div>
       <h3 className="mt-3 text-lg font-semibold">{p.name}</h3>
       <p className="mt-1 text-sm text-ink-mute">{p.category}</p>
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-auto flex items-center justify-between gap-3 pt-4">
         <ProductPrice product={p} className="font-display text-lg" />
-        <span className={`text-sm ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
+        <span className={`text-right text-xs ${a.ok ? "text-ink-mute" : "text-red-300"}`}>{a.label}</span>
       </div>
     </Link>
   );
