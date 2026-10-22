@@ -7,7 +7,9 @@
 @layer base {
   html { background: #07080b; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
+  html[lang="am"] body { font-family: var(--font-ethiopic), sans-serif; line-height: 1.65; }
   h1, h2, h3 { @apply font-display tracking-tight; }
+  html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] h3 { font-family: var(--font-ethiopic), sans-serif; }
   ::selection { background: rgba(139, 92, 246, 0.45); }
   :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; border-radius: 6px; }
 }
