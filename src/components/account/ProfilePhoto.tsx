@@ -110,7 +110,7 @@ export function ProfilePhoto({ userId, name, email, initialUrl, initialPath, con
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-white/15 bg-obsidian-700 ring-4 ring-violet/10 sm:h-32 sm:w-32">
+      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-obsidian-700 ring-4 ring-violet/10 sm:h-32 sm:w-32">
         {src
           ? <Image src={src} alt={`${label}'s profile photo`} fill sizes="128px" unoptimized className="object-cover" />
           : <div aria-label="Default profile avatar" className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet/25 to-cyan/15 text-2xl font-semibold text-ink">
@@ -128,7 +128,7 @@ export function ProfilePhoto({ userId, name, email, initialUrl, initialPath, con
             <Camera size={16} aria-hidden="true" />{src ? "Change photo" : "Upload photo"}
           </button>
           {selected && <button type="button" disabled={busy || !configured} onClick={() => void upload()}
-            className="min-h-11 rounded-xl bg-gradient-to-r from-violet to-cyan px-4 text-sm font-semibold text-obsidian disabled:opacity-50">
+            className="min-h-11 rounded-xl bg-violet px-4 text-sm font-semibold text-white disabled:opacity-50">
             {busy ? "Uploading…" : "Save photo"}
           </button>}
         </div>

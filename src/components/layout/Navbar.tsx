@@ -10,6 +10,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { NotificationsBell } from "@/components/account/NotificationsBell";
 import { LanguageToggle, useLanguage } from "@/components/i18n/LanguageProvider";
 import { useCurrency } from "@/components/i18n/CurrencyProvider";
+import { siteConfig } from "@/config/site";
 
 const primaryLinks = [
   { href: "/", label: "Home" },
@@ -103,7 +104,7 @@ export function Navbar() {
   }, [mobileOpen]);
 
   const currencyPicker = (
-    <div className="inline-flex min-h-11 items-center rounded-xl border border-line px-1 text-sm text-ink-mute">
+    <div className="inline-flex min-h-11 items-center rounded-xl border border-line bg-white/70 px-1 text-sm text-ink-mute shadow-sm">
       {(["ETB", "USD"] as const).map((value, index) => (
         <span key={value} className="inline-flex items-center">
           {index > 0 && <span aria-hidden="true" className="px-1">|</span>}
@@ -115,29 +116,29 @@ export function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-obsidian/95 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-      <nav aria-label="Main" className="mx-auto flex h-[4.5rem] max-w-[1600px] items-center justify-between gap-4 px-4 sm:h-20 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-white/80 bg-white/85 pt-[env(safe-area-inset-top)] shadow-[0_8px_28px_-24px_rgba(28,31,49,.5)] backdrop-blur-xl">
+      <nav aria-label="Main" className="mx-auto flex h-[4.25rem] max-w-[1600px] items-center justify-between gap-4 px-4 sm:h-[4.75rem] sm:px-6 lg:px-8">
         <Link href="/" aria-label="ZIKA home" className="flex shrink-0 items-center gap-3">
           <Logo size={34} />
-          <span className="hidden border-l border-line pl-3 sm:block"><span className="block text-sm font-semibold tracking-[0.12em]">ZIKA</span><span className="mt-0.5 block text-[9px] uppercase tracking-[0.16em] text-ink-mute">By YAWVOREX</span></span>
+          <span className="hidden border-l border-line pl-3 sm:block"><span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-ink-mute">By YAWVOREX</span><span className="mt-1 block text-[10px] leading-tight tracking-wide text-ink-mute">{siteConfig.tagline}</span></span>
         </Link>
         <ul className="hidden items-center gap-1 xl:flex">
           {desktopLinks.map((link) => (
             <li key={`${link.label}-${link.href}`}>
               <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${active(link.href) ? "bg-white/[0.05] text-violet-soft" : "text-ink-mute hover:bg-white/[0.03] hover:text-ink"}`}>
+                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${active(link.href) ? "bg-violet/[0.08] text-violet-soft" : "text-ink-mute hover:bg-violet/[0.05] hover:text-ink"}`}>
                 {link.label}
               </Link>
             </li>
           ))}
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
-              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-white/[0.03] hover:text-ink"
+              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-violet/[0.05] hover:text-ink"
               onClick={() => setMoreOpen((value) => !value)}>More <span aria-hidden="true">⌄</span></button>
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
-              className="absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl border border-line bg-obsidian-900 p-4 shadow-depth md:grid-cols-3">
+              className="glass-panel absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl p-4 md:grid-cols-3">
               {moreLinks.map((link) => <Link key={link.label} href={link.href}
-                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-obsidian-800 hover:text-ink">{link.label}</Link>)}
+                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-violet/[0.06] hover:text-ink">{link.label}</Link>)}
             </div>}
           </li>
         </ul>
@@ -148,7 +149,7 @@ export function Navbar() {
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost" className="px-3">{accountLabel}</Button>
         </div>
-        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-obsidian-900 text-ink transition hover:border-violet/50 xl:hidden"
+        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white text-ink transition hover:border-violet/50 xl:hidden"
           aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => { setMobileOpen((value) => !value); setMobileMore(false); }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">

@@ -16,7 +16,7 @@ export function LogoMark({ size = 32, animated = false }: { size?: number; anima
       </defs>
       <path pathLength={1} d="M8 8 L24 28" stroke="url(#yvx-a)" strokeWidth="5" strokeLinecap="round" />
       <path pathLength={1} d="M40 8 L24 28" stroke="url(#yvx-b)" strokeWidth="5" strokeLinecap="round" />
-      <path pathLength={1} d="M24 28 V41" stroke="#F4F6FA" strokeWidth="5" strokeLinecap="round" />
+      <path pathLength={1} d="M24 28 V41" stroke="#171923" strokeWidth="5" strokeLinecap="round" />
     </svg>
   );
 }

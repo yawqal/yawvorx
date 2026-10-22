@@ -6,12 +6,12 @@ import { Card } from "@/components/ui/Card";
 const accents: Record<string, string> = {
   violet: "text-violet-soft border-violet/30",
   cyan: "text-cyan-soft border-cyan/30",
-  green: "text-green-400 border-green-500/30",
-  amber: "text-amber-400 border-amber-500/30",
-  pink: "text-pink-400 border-pink-500/30",
-  blue: "text-blue-400 border-blue-500/30",
-  emerald: "text-emerald-400 border-emerald-500/30",
-  orange: "text-orange-400 border-orange-500/30",
+  green: "text-emerald-300 border-emerald-500/30",
+  amber: "text-amber-300 border-amber-500/30",
+  pink: "text-fuchsia-700 border-pink-500/30",
+  blue: "text-blue-700 border-blue-500/30",
+  emerald: "text-emerald-300 border-emerald-500/30",
+  orange: "text-orange-800 border-orange-500/30",
 };
 
 export function ComingSoon({ title, accent }: { title: string; accent: keyof typeof accents }) {

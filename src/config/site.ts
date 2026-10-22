@@ -30,9 +30,9 @@ export const siteConfig = {
     github: "https://github.com/yawqal/yawvorx",
   },
   colors: {
-    primary: "#06B6D4", // Neon Cyan
-    secondary: "#8B5CF6", // Neon Violet
-    background: "#090A0F", // Dark Background
+    primary: "#7657E8",
+    secondary: "#54C9DD",
+    background: "#F5F6FA",
   },
 };
 

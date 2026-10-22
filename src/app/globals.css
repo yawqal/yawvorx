@@ -2,41 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; }
+:root { color-scheme: light; }
 
 @layer base {
-  html { background: #07080B; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { background: #F5F6FA; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
   html[lang="am"] body { font-family: var(--font-ethiopic), sans-serif; line-height: 1.65; }
   h1, h2, h3 { @apply font-display tracking-tight; }
   html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] h3 { font-family: var(--font-ethiopic), sans-serif; }
-  ::selection { background: rgba(139, 92, 246, 0.45); }
-  :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; border-radius: 6px; }
-  img { color: #A1A7B4; }
+  ::selection { background: rgba(118, 87, 232, 0.2); }
+  :focus-visible { outline: 3px solid #7657E8; outline-offset: 3px; border-radius: 6px; }
+  img { color: #626779; }
 }
 
 @layer components {
-  .surface { @apply rounded-2xl border border-line bg-obsidian-900 shadow-depth; }
-  .surface-hover { @apply transition duration-200 hover:-translate-y-0.5 hover:border-violet/40 hover:bg-obsidian-800 hover:shadow-glow; }
-  .text-gradient { @apply bg-gradient-to-r from-violet-soft via-violet to-cyan bg-clip-text text-transparent; }
+  .surface { @apply rounded-[1.25rem] border border-line/80 bg-white/80 shadow-depth; backdrop-filter: blur(14px); }
+  .surface-hover { @apply transition duration-200 hover:-translate-y-0.5 hover:border-violet/30 hover:bg-white hover:shadow-glow; }
+  .text-gradient { @apply bg-gradient-to-r from-violet-soft via-violet to-cyan-soft bg-clip-text text-transparent; }
   .bg-aurora {
     background:
-      radial-gradient(52% 66% at 84% 16%, rgba(139, 92, 246, 0.16), transparent 74%),
-      radial-gradient(46% 54% at 12% 0%, rgba(34, 211, 238, 0.08), transparent 74%);
+      radial-gradient(54% 76% at 82% 10%, rgba(118, 87, 232, 0.12), transparent 72%),
+      radial-gradient(45% 62% at 4% 8%, rgba(84, 201, 221, 0.14), transparent 72%),
+      linear-gradient(115deg, #FBFBFE 0%, #F2F1FA 58%, #F5FAFC 100%);
   }
-  .hero-title { font-size: clamp(46px, 7vw, 88px); letter-spacing: -0.045em; }
-  .home-reveal { animation: home-fade-up 650ms ease both; }
+  .hero-title { font-size: clamp(44px, 6.8vw, 84px); letter-spacing: -0.055em; }
+  .home-reveal { animation: home-fade-up 520ms ease both; }
   .hero-art {
     background:
-      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-      radial-gradient(65% 75% at 55% 42%, rgba(139,92,246,0.19), transparent 68%),
-      #0E1016;
-    background-size: 38px 38px, 38px 38px, auto, auto;
+      radial-gradient(70% 80% at 50% 35%, rgba(118,87,232,0.12), transparent 68%),
+      radial-gradient(48% 60% at 100% 100%, rgba(84,201,221,0.14), transparent 74%),
+      linear-gradient(145deg, rgba(255,255,255,.98), rgba(242,243,250,.88));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 32px 70px -48px rgba(64,53,125,.45);
   }
   .control {
-    @apply min-h-11 rounded-xl border border-line bg-obsidian-800 text-ink transition;
+    @apply min-h-11 rounded-xl border border-line bg-white text-ink transition;
+    box-shadow: inset 0 1px 2px rgba(23,25,35,.025);
   }
+  .glass-panel { @apply border border-line/80 bg-white/75 shadow-depth; backdrop-filter: blur(16px); }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft; }
+  .section-heading { @apply text-3xl font-semibold tracking-tight text-ink sm:text-4xl; }
 }
 
 @keyframes home-fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
@@ -50,6 +54,10 @@
 .rise { opacity: 0; animation: rise 0.7s ease forwards; }
 
 .intro-overlay { animation: introOut 0.5s ease 3.6s forwards; }
+
+@media (max-width: 639px) {
+  .hero-title { font-size: clamp(42px, 12vw, 58px); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

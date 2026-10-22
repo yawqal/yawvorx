@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Art } from "@/components/ui/Art";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { ProductPrice } from "@/components/shop/ProductPrice";
+import { ProjectArtwork } from "@/components/portfolio/ProjectArtwork";
 import { availability, type Product } from "@/data/products";
 import type { Project } from "@/data/portfolio";
 import type { Service } from "@/data/services";
@@ -27,16 +27,22 @@ export function ServiceCard({ s, full = false, icon }: { s: Service; full?: bool
   );
 }
 
-export function ProjectCard({ p }: { p: Project }) {
+export function ProjectCard({ p, featured = false }: { p: Project; featured?: boolean }) {
   const seed = p.slug.length;
   return (
-    <Link href={`/portfolio/${p.slug}`} className="surface surface-hover group block h-full overflow-hidden p-3 sm:p-4">
-      <Art seed={seed} />
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {p.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{p.category}</Badge>
+    <Link href={`/portfolio/${p.slug}`} className={`surface surface-hover group flex h-full flex-col overflow-hidden ${featured ? "sm:flex-row" : ""}`}>
+      <div className={featured ? "sm:w-[58%]" : ""}>
+        <ProjectArtwork imageUrl={p.coverImageUrl} title={p.title} seed={seed} className={featured ? "h-full !aspect-[4/3] rounded-b-none border-0 sm:!aspect-auto sm:min-h-[300px]" : "rounded-b-none border-0"} />
       </div>
-      <h3 className="mt-3 text-lg font-semibold">{p.title}</h3>
-      <p className="mt-1 text-ink-mute">{p.summary}</p>
+      <div className={`flex flex-1 flex-col p-4 sm:p-5 ${featured ? "sm:justify-center sm:px-7 sm:py-8" : ""}`}>
+        <div className="flex flex-wrap items-center gap-2">
+          {p.isDemo !== false && <Badge tone="demo">Sample concept</Badge>}<Badge>{p.category}</Badge>
+        </div>
+        <h3 className={`mt-3 font-semibold ${featured ? "text-2xl sm:text-3xl" : "text-lg"}`}>{p.title}</h3>
+        <p className="mt-2 leading-relaxed text-ink-mute">{p.summary}</p>
+        {p.tags.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{p.tags.slice(0, featured ? 4 : 2).map((tag) => <span key={tag} className="rounded-full bg-obsidian-800 px-2.5 py-1 text-xs text-ink-mute">{tag}</span>)}</div>}
+        <span className="mt-auto inline-flex items-center pt-5 text-sm font-semibold text-violet-soft">Explore project <span aria-hidden="true" className="ml-2 transition group-hover:translate-x-1">↗</span></span>
+      </div>
     </Link>
   );
 }

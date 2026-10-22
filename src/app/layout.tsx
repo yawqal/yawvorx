@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "ZIKA by YAWVOREX", description: siteConfig.description },
 };
 
-export const viewport: Viewport = { themeColor: "#07080B", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#F5F6FA", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
