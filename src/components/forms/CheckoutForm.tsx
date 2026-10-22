@@ -157,8 +157,9 @@ export function CheckoutForm() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
-      <form onSubmit={submit} noValidate className="space-y-5">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
+      <form onSubmit={submit} noValidate className="surface space-y-5 p-5 sm:p-8">
+        <div className="border-b border-line pb-4"><p className="eyebrow">Delivery &amp; contact</p><h2 className="mt-2 text-xl font-semibold">Your details</h2><p className="mt-1 text-sm text-ink-mute">Your information is used to prepare the order request.</p></div>
         <Input label="Full name" name="name" autoComplete="name" value={v.name} onChange={change} error={errors.name} />
         <div className="grid gap-5 sm:grid-cols-2">
           <Input label="Phone (with country code)" name="phone" type="tel" autoComplete="tel" value={v.phone} onChange={change} error={errors.phone} />
@@ -171,19 +172,19 @@ export function CheckoutForm() {
             <Input label="Country" name="country" autoComplete="country-name" value={v.country} onChange={change} error={errors.country} />
           </div>
         </>)}
-        <Select label="Ordering method" name="method" value={v.method} onChange={change} error={errors.method}>{METHODS.map((m) => <option key={m}>{m}</option>)}</Select>
+        <div className="border-t border-line pt-5"><Select label="Ordering method" name="method" value={v.method} onChange={change} error={errors.method}>{METHODS.map((m) => <option key={m}>{m}</option>)}</Select></div>
         <Textarea label="Notes (optional)" name="notes" rows={3} value={v.notes} onChange={change} />
         <p className="text-sm text-ink-mute">Never send card numbers, CVVs, or passwords. YAWVOREX does not collect them.</p>
         {fail && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{fail}</p>}
         <Button type="submit" className="w-full sm:w-auto" loading={busy} disabled={busy}>Place order request</Button>
       </form>
-      <Card className="h-fit">
-        <h2 className="text-lg font-semibold">Your items</h2>
+      <Card className="h-fit bg-ink text-white lg:sticky lg:top-24">
+        <p className="text-xs font-semibold uppercase tracking-[0.17em] text-cyan-bright">Final review</p><h2 className="mt-2 text-lg font-semibold text-white">Your items</h2>
         <ul className="mt-3 space-y-2 text-sm">
-          {items.map((i) => <li key={i.key} className="flex justify-between gap-3"><span>{i.qty} × {i.name}{i.variantLabel ? ` (${i.variantLabel})` : ""}</span><span>{formatMoney(i.qty * i.unitPrice, i.currency)}</span></li>)}
+          {items.map((i) => <li key={i.key} className="flex justify-between gap-3 border-b border-white/10 pb-2"><span className="text-white/80">{i.qty} × {i.name}{i.variantLabel ? ` (${i.variantLabel})` : ""}</span><span className="shrink-0">{formatMoney(i.qty * i.unitPrice, i.currency)}</span></li>)}
         </ul>
-        <div className="mt-4 flex justify-between border-t border-line pt-3"><span>Subtotal</span><span className="font-display">{formatMoney(subtotal, currency ?? undefined)}</span></div>
-        <p className="mt-2 text-xs text-ink-mute">Shipping, if any, and the final total are calculated by our server when you place the order.</p>
+        <div className="mt-4 flex justify-between border-t border-white/20 pt-3"><span className="text-white/70">Subtotal</span><span className="font-display text-lg">{formatMoney(subtotal, currency ?? undefined)}</span></div>
+        <p className="mt-3 text-xs leading-relaxed text-white/70">Shipping, if any, and the final total are calculated by our server when you place the order.</p>
       </Card>
     </div>
   );

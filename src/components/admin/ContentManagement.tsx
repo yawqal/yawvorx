@@ -56,7 +56,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
       {loadError && <p role="alert" className="rounded-xl border border-red-400/40 p-4 text-red-300">{loadError}</p>}
       {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
 
-      <section>
+      <section id="admin-services" className="scroll-mt-24">
         <h3 className="mb-4 text-2xl font-semibold">Services</h3>
         <Card><ServiceEditor onSave={send} busy={busy} /></Card>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -67,7 +67,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
         </div>
       </section>
 
-      <section>
+      <section id="admin-portfolio" className="scroll-mt-24">
         <h3 className="mb-4 text-2xl font-semibold">Portfolio projects</h3>
         <Card><ProjectEditor onSave={send} busy={busy} /></Card>
         <div className="mt-3 space-y-3">
@@ -78,7 +78,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
         </div>
       </section>
 
-      <section>
+      <section id="admin-requests" className="scroll-mt-24">
         <h3 className="mb-4 text-2xl font-semibold">Service requests</h3>
         {requests.length === 0 && <p className="text-ink-mute">No service requests have been submitted.</p>}
         <div className="space-y-3">
@@ -103,7 +103,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
         </div>
       </section>
 
-      <section>
+      <section id="admin-support" className="scroll-mt-24">
         <h3 className="mb-4 text-2xl font-semibold">Support inbox</h3>
         {tickets.length === 0 && <p className="text-ink-mute">No support tickets have been submitted.</p>}
         <div className="space-y-3">

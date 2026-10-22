@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useCart } from "./CartProvider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -16,10 +17,10 @@ export function CartView() {
       <ul className="space-y-4">
         {items.map((i) => (
           <li key={i.key}>
-            <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">{i.name}</h2>
-                <p className="text-sm text-ink-mute">{i.variantLabel ? `${i.variantLabel} · ` : ""}{i.type === "digital" ? "Digital" : "Physical"} · {formatMoney(i.unitPrice, i.currency)} each</p>
+            <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div className="min-w-0">
+                <Link href={`/shop/${i.slug}`} className="text-lg font-semibold decoration-violet/40 underline-offset-4 hover:text-violet-soft hover:underline">{i.name}</Link>
+                <p className="mt-1 text-sm text-ink-mute">{i.variantLabel ? `${i.variantLabel} · ` : ""}{i.type === "digital" ? "Digital" : "Physical"} · {formatMoney(i.unitPrice, i.currency)} each</p>
               </div>
               <div className="flex items-center justify-between gap-4 sm:justify-end">
                 {i.maxQty > 1 ? (
@@ -37,10 +38,10 @@ export function CartView() {
         ))}
       </ul>
 
-      <Card className="h-fit lg:sticky lg:top-24">
-        <h2 className="text-lg font-semibold">Order summary</h2>
-        <div className="mt-4 flex justify-between"><span className="text-ink-mute">Subtotal</span><span className="font-display">{formatMoney(subtotal, currency ?? undefined)}</span></div>
-        <p className="mt-3 text-sm text-ink-mute">Shipping, if any, is confirmed when your order is reviewed. Final prices and stock are checked by our server when you place the order.</p>
+      <Card className="h-fit bg-gradient-to-b from-white to-obsidian-800 lg:sticky lg:top-24">
+        <p className="eyebrow">Your selection</p><h2 className="mt-2 text-xl font-semibold">Order summary</h2>
+        <div className="mt-5 flex justify-between border-t border-line pt-4"><span className="text-ink-mute">Subtotal</span><span className="font-display text-lg font-semibold">{formatMoney(subtotal, currency ?? undefined)}</span></div>
+        <p className="mt-3 text-sm leading-relaxed text-ink-mute">Shipping, if any, is confirmed when your order is reviewed. Final prices and stock are checked by our server when you place the order.</p>
         <Button href="/checkout" className="mt-5 w-full">Continue to checkout</Button>
       </Card>
     </div>

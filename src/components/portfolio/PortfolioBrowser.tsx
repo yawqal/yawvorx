@@ -19,7 +19,9 @@ export function PortfolioBrowser({ projects }: { projects: Project[] }) {
       </div>
       {shown.length === 0
         ? <div className="mt-6"><EmptyState title="Nothing in this category yet" /></div>
-        : <div className="mt-6 grid gap-5 sm:grid-cols-2">{shown.map((p) => <ProjectCard key={p.slug} p={p} />)}</div>}
+        : <div className="mt-6 grid gap-5 lg:grid-cols-2">
+          {shown.map((p, index) => <div key={p.slug} className={index % 5 === 0 ? "lg:col-span-2" : ""}><ProjectCard p={p} featured={index % 5 === 0} /></div>)}
+        </div>}
     </div>
   );
 }

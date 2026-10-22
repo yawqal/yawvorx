@@ -63,6 +63,19 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
     .in("product_id", rows.map((r) => r.id))
     .order("sort_order", { ascending: true });
   const variantRows = (vdata ?? []) as unknown as VariantRow[];
+  const { data: imageRows, error: imagesError } = await supabase
+    .from("product_images")
+    .select("product_id,storage_path")
+    .in("product_id", rows.map((r) => r.id))
+    .order("sort_order", { ascending: true });
+  if (imagesError) console.error("Could not load product gallery images:", imagesError.message);
+  const imageUrls = new Map<string, string[]>();
+  for (const image of imageRows ?? []) {
+    const { data } = supabase.storage.from("product-images").getPublicUrl(image.storage_path);
+    const current = imageUrls.get(image.product_id) ?? [];
+    current.push(data.publicUrl);
+    imageUrls.set(image.product_id, current);
+  }
 
   return rows.map((r): Product => {
     const mine = variantRows.filter((v) => v.product_id === r.id);
@@ -84,6 +97,9 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
       currency,
       ...(hasDualPrices ? { priceETB, priceUSD } : {}),
       category: categoryName(r.categories),
+      ...(imageUrls.has(r.id) || r.image_url
+        ? { image_urls: [...new Set([...(r.image_url ? [r.image_url] : []), ...(imageUrls.get(r.id) ?? [])])] }
+        : {}),
       type: r.product_type === "digital" ? "digital" : "physical",
       stock,
       variants: variants.length > 0 ? variants : undefined,
