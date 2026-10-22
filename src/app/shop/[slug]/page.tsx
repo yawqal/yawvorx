@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
-import { Art } from "@/components/ui/Art";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { Card } from "@/components/ui/Card";
 import { ProductCard } from "@/components/cards/Cards";
 import { AddToCart } from "@/components/shop/AddToCart";
@@ -72,7 +72,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c") }} />
       <Link href="/shop" className="inline-block py-2 text-ink-mute hover:text-ink">Back to shop</Link>
       <div className="mt-4 grid gap-8 lg:grid-cols-2">
-        <Art seed={p.name.length} />
+        <ProductImage src={p.image_url} alt={p.name} />
         <div>
           <div className="flex flex-wrap gap-2">{p.isDemo && <Badge tone="demo">Demo product</Badge>}<Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
           <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">{p.name}</h1>

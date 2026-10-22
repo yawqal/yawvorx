@@ -5,7 +5,7 @@ type CategoryRef = { name: string } | { name: string }[] | null;
 type ProductRow = {
   id: string; slug: string; name: string; description: string | null; price: number | string;
   currency: string; stock: number | null; product_type: string; is_demo: boolean | null;
-  category_id: number | null; price_etb?: number | string | null; price_usd?: number | string | null; categories: CategoryRef;
+  category_id: number | null; image_url: string | null; price_etb?: number | string | null; price_usd?: number | string | null; categories: CategoryRef;
 };
 type VariantRow = { id: string; product_id: string; label: string; price_delta: number | string; stock: number | null };
 export type ProductCategory = { id: number; name: string; slug: string };
@@ -44,9 +44,9 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
     if (search) query = query.ilike("name", `%${search.replace(/[%_\\]/g, "\\$&")}%`);
     return query.order("created_at", { ascending: true });
   };
-  let result = await queryProducts("id, slug, name, description, price, currency, stock, product_type, is_demo, category_id, price_etb, price_usd, categories(name)");
+  let result = await queryProducts("id, slug, name, description, price, currency, stock, product_type, is_demo, category_id, image_url, price_etb, price_usd, categories(name)");
   if (isMissingDualPriceColumns(result.error)) {
-    result = await queryProducts("id, slug, name, description, price, currency, stock, product_type, is_demo, category_id, categories(name)");
+    result = await queryProducts("id, slug, name, description, price, currency, stock, product_type, is_demo, category_id, image_url, categories(name)");
   }
   if (result.error || !result.data) {
     if (result.error) console.error("Could not load published products:", result.error.message);
@@ -79,6 +79,7 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
       slug: r.slug,
       name: r.name,
       description: r.description ?? "",
+      image_url: r.image_url,
       price: num(r.price),
       currency,
       ...(hasDualPrices ? { priceETB, priceUSD } : {}),

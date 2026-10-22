@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Art } from "@/components/ui/Art";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { formatMoney } from "@/lib/format";
 import { availability, type Product } from "@/data/products";
 import type { Project } from "@/data/portfolio";
@@ -43,7 +44,7 @@ export function ProductCard({ p }: { p: Product }) {
   const a = availability(p);
   return (
     <Link href={`/shop/${p.slug}`} className="surface surface-hover block overflow-hidden p-3 sm:p-4">
-      <Art seed={p.name.length} />
+      <ProductImage src={p.image_url} alt={p.name} />
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {p.isDemo && <Badge tone="demo">Demo product</Badge>}
         <Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge>

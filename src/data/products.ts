@@ -3,6 +3,7 @@ export type Currency = "ETB" | "USD";
 export type Variant = { id: string; label: string; priceDelta?: number };
 export type Product = {
   id?: string; slug: string; name: string; description: string; price: number; currency: Currency; category: string;
+  image_url?: string | null;
   priceETB?: number; priceUSD?: number;
   type: "digital" | "physical"; stock?: number; variants?: Variant[]; isDemo?: boolean;
 };
