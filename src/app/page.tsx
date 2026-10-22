@@ -91,7 +91,7 @@ export default async function Home() {
         <div className="mt-6"><Button href="/services" variant="secondary">See all services</Button></div>
       </Section>
 
-      <Section title="Selected projects" intro="Sample concepts that show our approach. These are demonstrations, not client work.">
+      <Section title="Selected projects" intro="Featured work from our portfolio, including clearly marked sample concepts.">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{projects.slice(0, 3).map((p) => <ProjectCard key={p.slug} p={p} />)}</div>
         <div className="mt-6"><Button href="/portfolio" variant="secondary">View portfolio</Button></div>
       </Section>

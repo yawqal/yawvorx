@@ -24,7 +24,7 @@ export function Footer() {
         </pattern></defs>
         <rect width="480" height="240" fill="url(#tibeb)" />
       </svg>
-      <Container className="relative grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-6">
+      <Container className="relative grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-7">
         <div className="sm:col-span-2">
           <Logo size={30} />
           <p className="mt-4 text-sm text-ink-mute">Powered by YAWVOREX</p>
