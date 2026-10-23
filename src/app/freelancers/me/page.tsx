@@ -43,6 +43,7 @@ export default async function MyFreelancerProfilePage() {
       <Badge tone={profile.status === "approved" ? "ok" : profile.status === "rejected" || profile.status === "suspended" ? "warn" : "info"}>{statusMessage}</Badge>
       {profile.is_verified === true && <Badge tone="ok">Verified</Badge>}
       <Button href="/freelancers/me/orders" variant="secondary">Orders</Button>
+      <Button href="/freelancers/me/inquiries" variant="secondary">Inquiries</Button>
     </PageHeader>
     <Container className="grid min-w-0 gap-8 py-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <div className="min-w-0 space-y-6">
