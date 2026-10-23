@@ -4,6 +4,8 @@ import { canonicalUrl } from "@/lib/seo";
 import { Container } from "@/components/ui/Container";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DirectorySubmitForm } from "@/components/marketplace/DirectorySubmitForm";
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Add a business", robots: { index: false, follow: false }, alternates: { canonical: canonicalUrl("/directory/add") } };
 export default async function AddDirectoryBusinessPage() {
   await requireUser("/directory/add");
