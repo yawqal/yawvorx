@@ -19,10 +19,20 @@ export function FreelancerInquiryForm({ profileId }: { profileId: string }) {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, profile_id: profileId }),
       });
-      const result = await response.json() as { error?: string; message?: string };
-      if (!response.ok) { setError(result.error ?? "Inquiry could not be sent."); return; }
+      let result: unknown;
+      try {
+        result = await response.json();
+      } catch {
+        setError(`Unexpected server response (status ${response.status}).`);
+        return;
+      }
+      const payload = result && typeof result === "object" ? result as { error?: unknown; message?: unknown } : {};
+      if (!response.ok) {
+        setError(typeof payload.error === "string" && payload.error ? payload.error : "Inquiry could not be sent.");
+        return;
+      }
       event.currentTarget.reset();
-      setMessage(result.message ?? "Your inquiry was sent.");
+      setMessage(typeof payload.message === "string" ? payload.message : "Your inquiry was sent.");
     } catch {
       setError("Could not reach the server. Check your connection and try again.");
     } finally { setBusy(false); }
