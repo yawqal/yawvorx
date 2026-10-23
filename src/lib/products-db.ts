@@ -26,7 +26,7 @@ function categoryName(c: CategoryRef): string {
 }
 
 /** Reads published products (and their active options) from the database. Returns [] if anything goes wrong. */
-async function load(slug?: string, filters: { search?: string; categoryId?: string } = {}): Promise<Product[]> {
+async function load(slug?: string, filters: { search?: string; categoryId?: string } = {}, vendorId?: string): Promise<Product[]> {
   const supabase = getSupabaseServerClient();
   if (!supabase) return [];
 
@@ -39,6 +39,7 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
     .from("products")
     .select(columns)
     .eq("is_published", true);
+    if (vendorId) query = query.eq("vendor_id", vendorId).eq("approval_status", "approved");
     if (slug) query = query.eq("slug", slug);
     if (categoryId !== null && Number.isSafeInteger(categoryId)) query = query.eq("category_id", categoryId);
     if (search) query = query.ilike("name", `%${search.replace(/[%_\\]/g, "\\$&")}%`);
@@ -109,6 +110,7 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
 }
 
 export const getProducts = (filters: { search?: string; categoryId?: string } = {}): Promise<Product[]> => load(undefined, filters);
+export const getApprovedVendorProducts = (vendorId: string): Promise<Product[]> => load(undefined, {}, vendorId);
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   return (await load(slug))[0];
 }
