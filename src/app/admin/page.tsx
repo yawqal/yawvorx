@@ -96,6 +96,7 @@ export default async function Admin() {
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/settings">Marketplace settings</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendor-products">Vendor products</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/freelancers">Freelancers</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/freelance-orders">Freelancer orders</Link>
           <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/payouts">Payouts and earnings</Link>
         </nav>
         <AdminConsole

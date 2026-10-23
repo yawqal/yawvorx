@@ -117,6 +117,7 @@ export default async function Account() {
           <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
             {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
             {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary">My Freelancer Profile</Button>}
+            <Button href="/account/freelance-orders" variant="secondary">My freelancer orders</Button>
             <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
           </div>
         </Container>

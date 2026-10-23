@@ -23,6 +23,27 @@ export async function PATCH(request: Request) {
   }
 
   const values = body as Record<string, unknown>;
+  let avatar_url: string | null | undefined;
+  if (Object.hasOwn(values, "avatar_url")) {
+    if (values.avatar_url === null) {
+      avatar_url = null;
+    } else if (typeof values.avatar_url === "string" && values.avatar_url.length <= 500 && values.avatar_url.startsWith("https://")) {
+      try {
+        const avatar = new URL(values.avatar_url);
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseHost = supabaseUrl ? new URL(supabaseUrl).host : "";
+        const expectedPath = `/storage/v1/object/public/freelancer-photos/${user.id}/`;
+        if (avatar.host !== supabaseHost || !supabaseHost || !avatar.pathname.startsWith(expectedPath)) {
+          return NextResponse.json({ error: "Photo URL is not valid." }, { status: 400 });
+        }
+        avatar_url = values.avatar_url;
+      } catch {
+        return NextResponse.json({ error: "Photo URL is not valid." }, { status: 400 });
+      }
+    } else {
+      return NextResponse.json({ error: "Photo URL is not valid." }, { status: 400 });
+    }
+  }
   const display_name = clean(values.display_name, 80);
   const headline = clean(values.headline, 120);
   const bio = clean(values.bio, 2000);
@@ -84,9 +105,12 @@ export async function PATCH(request: Request) {
   if (!profile.data) return NextResponse.json({ error: "Freelancer profile was not found." }, { status: 404 });
   const profileId = profile.data.id;
 
-  const updated = await supabase.from("freelancer_profiles").update({
+  const updates = {
     display_name, headline, bio, category, skills, availability, starting_price_etb,
-  }).eq("id", profileId).eq("user_id", user.id).select("id").maybeSingle();
+    ...(avatar_url !== undefined ? { avatar_url } : {}),
+  };
+  const updated = await supabase.from("freelancer_profiles").update(updates)
+    .eq("id", profileId).eq("user_id", user.id).select("id").maybeSingle();
   if (updated.error) return NextResponse.json({ error: `Profile could not be updated: ${updated.error.message}` }, { status: 500 });
   if (!updated.data) return NextResponse.json({ error: "Profile could not be updated." }, { status: 404 });
 
