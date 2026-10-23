@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { canonicalUrl } from "@/lib/seo";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
+import { getCurrentUser } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Freelancers",
@@ -31,6 +32,10 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
   const category = clean(params.category, 60);
   const sort = params.sort === "price" ? "price" : "newest";
   const supabase = getSupabaseServerClient();
+  const user = await getCurrentUser();
+  const ownProfile = user && supabase
+    ? await supabase.from("freelancer_profiles").select("id").eq("user_id", user.id).maybeSingle()
+    : null;
   let profiles: Profile[] = [];
   let loadError: string | null = null;
   if (supabase) {
@@ -56,7 +61,9 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
     <PageHeader title="Find a freelancer" intro="Browse approved professionals and connect with the right person for your project." />
     <Container className="py-8 sm:py-10">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <Button href="/freelancers/apply">Become a Freelancer</Button>
+        <Button href={user ? ownProfile?.data ? "/freelancers/me" : "/freelancers/apply" : "/login?next=%2Ffreelancers%2Fapply"}>
+          {user ? ownProfile?.data ? "My Profile" : "Add Profile" : "Add Profile"}
+        </Button>
       </div>
       <form method="get" className="mb-8 grid gap-3 rounded-2xl border border-line p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <label className="grid gap-2 text-sm font-semibold">Search by name or skill
