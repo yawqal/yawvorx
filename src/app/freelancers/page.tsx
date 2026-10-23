@@ -9,6 +9,7 @@ import { canonicalUrl } from "@/lib/seo";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
 import { getCurrentUser } from "@/lib/auth";
+import { FreelancerAvatar } from "@/components/marketplace/FreelancerAvatar";
 
 export const metadata: Metadata = {
   title: "Freelancers",
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 type SearchParams = Promise<{ q?: string; category?: string; sort?: string }>;
 type Profile = {
   id: string; slug: string; display_name: string; headline: string | null; category: string;
-  skills: string[] | string | null; is_verified: boolean | null; created_at: string;
+  skills: string[] | string | null; avatar_url: string | null; is_verified: boolean | null; created_at: string;
   freelancer_services: { price_etb: number | string | null; is_active: boolean | null }[] | null;
 };
 
@@ -40,7 +41,7 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
   let loadError: string | null = null;
   if (supabase) {
     const result = await supabase.from("freelancer_profiles")
-      .select("id,slug,display_name,headline,category,skills,is_verified,created_at,freelancer_services(price_etb,is_active)")
+      .select("id,slug,display_name,headline,category,skills,avatar_url,is_verified,created_at,freelancer_services(price_etb,is_active)")
       .eq("status", "approved").order("created_at", { ascending: false });
     if (result.error) loadError = `Freelancers could not be loaded: ${result.error.message}`;
     else profiles = (result.data ?? []) as unknown as Profile[];
@@ -89,7 +90,10 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
             .sort((a, b) => a - b)[0];
           return <Card key={profile.id} className="flex min-w-0 flex-col">
             <div className="flex flex-wrap items-center gap-2"><Badge>{profile.category}</Badge>{profile.is_verified === true && <Badge tone="ok">Verified</Badge>}</div>
-            <h2 className="mt-3 break-words text-xl font-semibold">{profile.display_name}</h2>
+            <div className="mt-3 flex items-center gap-3">
+              <FreelancerAvatar name={profile.display_name} src={profile.avatar_url} size={56} />
+              <h2 className="break-words text-xl font-semibold">{profile.display_name}</h2>
+            </div>
             {profile.headline && <p className="mt-1 break-words text-ink-mute">{profile.headline}</p>}
             <div className="mt-4 flex flex-wrap gap-2">{skillsList(profile.skills).map((skill) => skill.trim()).filter(Boolean).slice(0, 10).map((skill) => <span key={skill} className="rounded-full bg-obsidian-800 px-3 py-1 text-xs text-ink-mute">{skill}</span>)}</div>
             {startingPrice !== undefined && <p className="mt-4 text-sm text-ink-mute">Starting at <span className="font-semibold text-ink">{formatMoney(startingPrice, "ETB")}</span></p>}

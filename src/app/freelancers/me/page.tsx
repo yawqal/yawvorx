@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { formatMoney } from "@/lib/format";
 import { FreelancerManageForm } from "@/components/marketplace/FreelancerManageForm";
+import { FreelancerAvatar } from "@/components/marketplace/FreelancerAvatar";
 
 export const metadata: Metadata = { title: "My freelancer profile", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function MyFreelancerProfilePage() {
   const supabase = getSupabaseServerClient();
   if (!supabase) return <><PageHeader title="My freelancer profile" /><Container className="py-8"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
   const profileResult = await supabase.from("freelancer_profiles")
-    .select("id,slug,display_name,headline,bio,category,skills,availability,starting_price_etb,status,is_verified,created_at")
+    .select("id,slug,display_name,headline,bio,category,skills,availability,starting_price_etb,status,is_verified,avatar_url,created_at")
     .eq("user_id", user.id).maybeSingle();
   if (profileResult.error) return <><PageHeader title="My freelancer profile" /><Container className="py-8"><p role="alert" className="text-red-300">Profile could not be loaded: {profileResult.error.message}</p></Container></>;
   if (!profileResult.data) redirect("/freelancers/apply");
@@ -38,6 +39,7 @@ export default async function MyFreelancerProfilePage() {
 
   return <>
     <PageHeader title="My freelancer profile" intro="Manage your profile and service packages.">
+      <FreelancerAvatar name={profile.display_name} src={profile.avatar_url} size={64} />
       <Badge tone={profile.status === "approved" ? "ok" : profile.status === "rejected" || profile.status === "suspended" ? "warn" : "info"}>{statusMessage}</Badge>
       {profile.is_verified === true && <Badge tone="ok">Verified</Badge>}
     </PageHeader>
@@ -71,7 +73,7 @@ export default async function MyFreelancerProfilePage() {
             })}</div>}
         </section>
       </div>
-      <section className="min-w-0"><h2 className="mb-3 text-xl font-semibold">Edit profile</h2><FreelancerManageForm profile={profile} packages={packagesResult.data ?? []} /></section>
+      <section className="min-w-0"><h2 className="mb-3 text-xl font-semibold">Edit profile</h2><FreelancerManageForm profile={profile} packages={packagesResult.data ?? []} userId={user.id} /></section>
     </Container>
   </>;
 }

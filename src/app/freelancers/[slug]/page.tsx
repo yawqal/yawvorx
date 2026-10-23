@@ -10,11 +10,12 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/auth";
 import { formatMoney } from "@/lib/format";
 import { FreelancerInquiryForm } from "@/components/marketplace/FreelancerInquiryForm";
+import { FreelancerAvatar } from "@/components/marketplace/FreelancerAvatar";
 
 type Props = { params: Promise<{ slug: string }> };
 type Profile = {
   id: string; slug: string; user_id: string; status: string; display_name: string; headline: string | null; bio: string | null;
-  category: string; skills: string[] | string | null; availability: string | null; is_verified: boolean | null;
+  category: string; skills: string[] | string | null; availability: string | null; avatar_url: string | null; is_verified: boolean | null;
 };
 type Package = { id: string; tier: string; price_etb: number | string; delivery_days: number; revisions: number; description: string };
 
@@ -22,11 +23,11 @@ async function load(slug: string, userId?: string) {
   const supabase = getSupabaseServerClient();
   if (!supabase) return { profile: null, packages: [], error: "Database is not configured." };
   let result = await supabase.from("freelancer_profiles")
-    .select("id,slug,user_id,status,display_name,headline,bio,category,skills,availability,is_verified")
+    .select("id,slug,user_id,status,display_name,headline,bio,category,skills,availability,avatar_url,is_verified")
     .eq("slug", slug).eq("status", "approved").maybeSingle();
   if (!result.data && !result.error && userId) {
     result = await supabase.from("freelancer_profiles")
-      .select("id,slug,user_id,status,display_name,headline,bio,category,skills,availability,is_verified")
+      .select("id,slug,user_id,status,display_name,headline,bio,category,skills,availability,avatar_url,is_verified")
       .eq("slug", slug).eq("user_id", userId).maybeSingle();
   }
   if (result.error) return { profile: null, packages: [], error: result.error.message };
@@ -63,6 +64,7 @@ export default async function FreelancerProfilePage({ params }: Props) {
   const tiers = ["basic", "standard", "premium"];
   return <>
     <PageHeader title={profile.display_name} intro={profile.headline ?? "Freelancer profile"}>
+      <FreelancerAvatar name={profile.display_name} src={profile.avatar_url} size={72} />
       <Badge>{profile.category}</Badge>{profile.is_verified === true && <Badge tone="ok">Verified</Badge>}
     </PageHeader>
     <Container className="grid min-w-0 gap-8 py-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.7fr)]">
