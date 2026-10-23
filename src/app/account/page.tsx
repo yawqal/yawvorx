@@ -33,7 +33,7 @@ export default async function Account() {
   }
   const [
     profileRes, ordersRes, admin, addressesRes, wishlistRes, productsRes, requestsRes, ticketsRes, notificationsRes,
-    vendorApplicationRes,
+    vendorApplicationRes, freelancerProfileRes,
   ] = await Promise.all([
     supabase.from("profiles").select("display_name, phone, avatar_path").eq("id", user.id).maybeSingle(),
     supabase.from("orders").select("id, order_ref, status, payment_status, total, currency, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
@@ -45,6 +45,7 @@ export default async function Account() {
     supabase.from("support_tickets").select("id,subject,status,created_at").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(50),
     supabase.from("notifications").select("id,title,body,href,read_at,created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     supabase.from("vendor_applications").select("business_name,contact_value,description,status,admin_note,referral_code").eq("user_id", user.id).maybeSingle(),
+    supabase.from("freelancer_profiles").select("id").eq("user_id", user.id).maybeSingle(),
   ]);
   const avatarColumnMissing = Boolean(profileRes.error && /avatar_path/i.test(profileRes.error.message) &&
     /column|schema cache|does not exist|could not find/i.test(profileRes.error.message));
@@ -115,6 +116,7 @@ export default async function Account() {
           </div>
           <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
             {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
+            {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary">My Freelancer Profile</Button>}
             <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
           </div>
         </Container>
