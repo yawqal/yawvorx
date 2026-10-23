@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { FreelanceOrderActions } from "@/components/marketplace/FreelanceOrderActions";
+import { FreelanceOrderFiles } from "@/components/marketplace/FreelanceOrderFiles";
 
 export const metadata: Metadata = { title: "Freelancer order", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -27,9 +28,10 @@ export default async function FreelanceOrderDetailPage({ params }: Props) {
   const isFreelancer = order.freelancer_user_id === user.id;
   const isClient = order.client_user_id === user.id;
   if (!isFreelancer && !isClient) notFound();
-  const [messagesResult, reviewResult] = await Promise.all([
+  const [messagesResult, reviewResult, filesResult] = await Promise.all([
     supabase.from("freelancer_order_messages").select("id,sender_id,body,created_at").eq("order_id", id).order("created_at", { ascending: true }),
     supabase.from("freelancer_reviews").select("rating,comment,created_at").eq("order_id", id).maybeSingle(),
+    supabase.from("freelancer_order_files").select("id,kind,filename,size_bytes,created_at").eq("order_id", id).order("created_at", { ascending: false }),
   ]);
   if (messagesResult.error || reviewResult.error) {
     return <><PageHeader title="Freelancer order" /><Container className="py-8"><p role="alert" className="text-red-300">Order details could not be loaded: {messagesResult.error?.message ?? reviewResult.error?.message}</p></Container></>;
@@ -57,6 +59,13 @@ export default async function FreelanceOrderDetailPage({ params }: Props) {
         status={status as "pending" | "accepted" | "declined" | "in_progress" | "submitted" | "revision_requested" | "completed" | "cancelled"}
         messages={messagesResult.data ?? []}
         review={reviewResult.data}
+      />
+      <FreelanceOrderFiles
+        orderId={order.id}
+        status={status}
+        isFreelancer={isFreelancer}
+        files={filesResult.data ?? []}
+        loadError={filesResult.error?.message}
       />
     </Container>
   </>;
