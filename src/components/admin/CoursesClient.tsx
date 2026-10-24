@@ -255,9 +255,14 @@ export default function CoursesClient() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id: course.id, status: "published" }),
                       })
-                        .then(res => res.json())
+                        .then(async (res) => {
+                          if (!res.ok) {
+                            const error = await res.json();
+                            throw new Error(error.error ?? "Failed to publish course");
+                          }
+                          return res.json();
+                        })
                         .then(data => {
-                          if (!res.ok) throw new Error(data.error ?? "Failed");
                           // refresh
                           fetchCourses();
                         })
@@ -271,16 +276,21 @@ export default function CoursesClient() {
                   <Button
                     variant="secondary"
                     disabled={false}
-                    loading={false>
+                    loading={false}
                     onClick={() => {
                       fetch("/api/admin/courses", {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id: course.id, status: "draft" }),
                       })
-                        .then(res => res.json())
+                        .then(async (res) => {
+                          if (!res.ok) {
+                            const error = await res.json();
+                            throw new Error(error.error ?? "Failed to unpublish course");
+                          }
+                          return res.json();
+                        })
                         .then(data => {
-                          if (!res.ok) throw new Error(data.error ?? "Failed");
                           fetchCourses();
                         })
                         .catch(err => alert(err.message));
