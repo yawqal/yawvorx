@@ -15,7 +15,7 @@ async function getCourse(slug: string) {
   if (!supabase) return { data: null, error: "Database is not configured." };
   const { data, error } = await supabase.from("courses")
     .select("slug,title,description,level,price_etb,instructor_name")
-    .eq("slug", slug).eq("is_published", true).maybeSingle();
+    .eq("slug", slug).eq("status", "published").maybeSingle();
   return { data, error: error?.message ?? null };
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

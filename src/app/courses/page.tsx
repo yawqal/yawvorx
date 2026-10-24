@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function CoursesPage() {
   const supabase = getSupabaseServerClient();
   const result = supabase
-    ? await supabase.from("courses").select("id,slug,title,description,level,price_etb,instructor_name").eq("is_published", true).order("created_at", { ascending: false })
+    ? await supabase.from("courses").select("id,slug,title,description,level,price_etb,instructor_name").eq("status", "published").order("created_at", { ascending: false })
     : { data: null, error: { message: "Database is not configured." } };
   return <>
     <PageHeader title="Courses" intro="Explore courses available from our instructors." />
