@@ -13,6 +13,8 @@ import type { Metadata } from "next";
 import { ArrowUpRight, Camera, Code2, Palette, PanelsTopLeft, ShoppingBag, Video } from "lucide-react";
 import Link from "next/link";
 import { canonicalUrl } from "@/lib/seo";
+import { InteractiveLogoMark } from "@/components/brand/InteractiveLogoMark";
+import { Hero3D } from "@/components/ui/Hero3D";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -56,18 +58,20 @@ export default async function Home() {
           <div className="absolute inset-8 rounded-full border border-violet/10" />
           <div className="absolute inset-20 rounded-full border border-cyan/15" />
         </div>
-        <Container className="home-reveal relative grid items-center gap-10 py-12 sm:py-16 lg:min-h-[660px] lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:py-20">
+        <Container className="home-reveal relative grid items-center gap-12 py-16 sm:py-20 lg:min-h-[720px] lg:grid-cols-[1.05fr_.95fr] lg:gap-20 lg:py-24">
           <div className="relative z-10 max-w-2xl">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/65 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-mute shadow-sm backdrop-blur">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-violet" />
-              ZIKA <span className="text-line">/</span> YAWVOREX Studio
-            </p>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/65 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-mute shadow-sm backdrop-blur">
+              <InteractiveLogoMark size={24} className="mr-2" tiltAmount={4} perspective={800} />
+              <span className="text-xs font-semibold">ZIKA</span>
+              <span className="mx-1 text-line">/</span>
+              <span className="text-xs font-semibold">YAWVOREX Studio</span>
+            </div>
             <h1 className="hero-title max-w-3xl font-semibold leading-[1.02]">
               Beyond Digital.<br /><span className="text-gradient">Beyond Ordinary.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-mute sm:text-lg">{siteConfig.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button href="/services">Explore Services <ArrowUpRight size={16} aria-hidden="true" /></Button>
+              <Button href="/services" className="px-6 py-3">Explore Services <ArrowUpRight size={16} aria-hidden="true" /></Button>
               <Button href="/portfolio" variant="secondary">View Portfolio</Button>
               <Button href="/shop" variant="ghost">Shop Products</Button>
             </div>
@@ -76,7 +80,8 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[620px] lg:rotate-[1.5deg]">
+          <div className="relative mx-auto w-full max-w-[620px] lg:rotate-[1.5deg] overflow-hidden">
+            <Hero3D className="absolute inset-0 z-0" />
             <div aria-hidden="true" className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-violet/15 via-white/20 to-cyan/20 blur-2xl" />
             <div className="glass-panel relative rounded-[1.65rem] p-3 sm:p-4">
               <div className="flex items-center justify-between px-2 pb-3">

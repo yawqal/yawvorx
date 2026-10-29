@@ -11,13 +11,23 @@
   h1, h2, h3 { @apply font-display tracking-tight; }
   html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] h3 { font-family: var(--font-ethiopic), sans-serif; }
   ::selection { background: rgba(118, 87, 232, 0.2); }
-  :focus-visible { outline: 3px solid #7657E8; outline-offset: 3px; border-radius: 6px; }
+  :focus-visible { outline: 3px solid #8B5CF6; outline-offset: 3px; border-radius: 6px; }
   img { color: #626779; }
+
+  /* Enhanced focus ring for better accessibility */
+  .focus-ring { outline: 3px solid hsl(240 70% 50% / 0.5); outline-offset: 2px; }
+}
+
+@layer utilities {
+  .focus-outline {
+    @apply outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet/50;
+  }
 }
 
 @layer components {
-  .surface { @apply rounded-[1.25rem] border border-line/80 bg-white/80 shadow-depth; backdrop-filter: blur(14px); }
-  .surface-hover { @apply transition duration-200 hover:-translate-y-0.5 hover:border-violet/30 hover:bg-white hover:shadow-glow; }
+  .surface { @apply rounded-[1.5rem] border border-line/70 bg-white/85 shadow-[0_20px_45px_-30px_rgba(34,38,57,0.22)]; backdrop-filter: blur(16px); }
+  .surface-hover { @apply transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:[box-shadow:0_28px_65px_-42px_rgba(34,38,57,0.32)] hover:rotate-[1deg] hover:border-violet/40 hover:bg-white/90; }
+  .surface-interactive { @apply cursor-pointer; }
   .text-gradient { @apply bg-gradient-to-r from-violet-soft via-violet to-cyan-soft bg-clip-text text-transparent; }
   .bg-aurora {
     background:
@@ -35,12 +45,26 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 32px 70px -48px rgba(64,53,125,.45);
   }
   .control {
-    @apply min-h-11 rounded-xl border border-line bg-white text-ink transition;
+    @apply min-h-[44px] rounded-xl border border-line bg-white text-ink transition-all duration-300 ease-out;
     box-shadow: inset 0 1px 2px rgba(23,25,35,.025);
   }
-  .glass-panel { @apply border border-line/80 bg-white/75 shadow-depth; backdrop-filter: blur(16px); }
+  .glass-panel { @apply border border-line/80 bg-white/75 shadow-[0_20px_45px_-30px_rgba(34,38,57,0.22)]; backdrop-filter: blur(18px); }
   .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft; }
   .section-heading { @apply text-3xl font-semibold tracking-tight text-ink sm:text-4xl; }
+
+  /* Enhanced elevation system */
+  .elevation-1 { @apply shadow-sm; }
+  .elevation-2 { @apply shadow; }
+  .elevation-3 { @apply shadow-md; }
+  .elevation-4 { @apply shadow-lg; }
+  .elevation-5 { @apply shadow-xl; }
+  .elevation-6 { @apply shadow-2xl; }
+  .elevation-7 { @apply shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]; }
+
+  /* Refined interactive states */
+  .interactive-transition { @apply transition-all duration-300 ease-out; }
+  .interactive-hover { @apply transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.015]; }
+  .interactive-press { @apply transition-all duration-300 ease-out active:scale-[0.98]; }
 }
 
 @keyframes home-fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }

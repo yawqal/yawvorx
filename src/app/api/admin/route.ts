@@ -62,12 +62,12 @@ async function audit(
       reason,
     });
     if (error) {
-      console.error("Audit log insert failed", { action, tableName, recordId, error });
+      console.error("Audit log insert failed", { action, tableName, recordId });
       return "The action succeeded, but the audit log could not be written.";
     }
     return null;
   } catch (error) {
-    console.error("Audit log insert failed", { action, tableName, recordId, error });
+    console.error("Audit log insert failed", { action, tableName, recordId });
     return "The action succeeded, but the audit log could not be written.";
   }
 }
@@ -144,7 +144,7 @@ export async function POST(request: Request) {
       if (isMissingDualPriceColumns(probe.error)) {
         if (priceETB !== null || priceUSD !== null) return fail("Dual-price columns are not installed; review the pricing proposal first.", 409);
       } else if (probe.error) {
-        console.error("Could not check dual-price columns", probe.error);
+        console.error("Dual-price column check failed");
         return fail("Product pricing configuration could not be checked.", 500);
       } else {
         dualPriceValues = { price_etb: priceETB ?? null, price_usd: priceUSD ?? null };
@@ -470,7 +470,7 @@ export async function POST(request: Request) {
             created = true;
           }
           else if (error.code !== "23505") {
-            console.error("Affiliate code creation failed", { applicationId, error });
+            console.error("Affiliate code creation failed");
             return fail("Application approved, but the referral code could not be created. Retry the review.", 500);
           }
         }

@@ -22,7 +22,7 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ q
   return (
     <div className="min-h-[70vh]">
       <div className="border-b border-line bg-aurora">
-        <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_auto] lg:items-end lg:py-20">
+        <Container className="grid gap-12 py-16 sm:py-20 lg:grid-cols-[1fr_auto] lg:items-end lg:py-24">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">The collection</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl"><TranslatedText value="Shop" /></h1>

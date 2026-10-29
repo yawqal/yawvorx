@@ -15,7 +15,6 @@ import { siteConfig } from "@/config/site";
 const primaryLinks = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
-  { href: "/shop", label: "Digital Products" },
   { href: "/services", label: "Services" },
   { href: "/freelancers", label: "Freelancers" },
   { href: "/courses", label: "Courses" },
@@ -29,7 +28,6 @@ const desktopLinks = [
   { href: "/portfolio", label: "Portfolio" },
 ];
 const moreLinks = [
-  { href: "/shop", label: "Digital Products" },
   { href: "/freelancers", label: "Freelancers" },
   { href: "/courses", label: "Courses" },
   { href: "/ai-tools", label: "AI Tools" },
@@ -38,7 +36,6 @@ const moreLinks = [
   { href: "/directory", label: "Directory" },
   { href: "/subscriptions", label: "Subscriptions" },
   { href: "/developers", label: "Developers" },
-  { href: "/contact", label: "Support" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
@@ -108,7 +105,7 @@ export function Navbar() {
       {(["ETB", "USD"] as const).map((value, index) => (
         <span key={value} className="inline-flex items-center">
           {index > 0 && <span aria-hidden="true" className="px-1">|</span>}
-          <button type="button" className={`min-h-10 min-w-10 rounded-lg px-2 hover:text-ink ${currency === value ? "text-cyan-soft" : ""}`}
+          <button type="button" className={`min-h-11 min-w-11 rounded-lg px-2 hover:text-ink ${currency === value ? "text-cyan-soft" : ""} focus-outline`}
             aria-pressed={currency === value} onClick={() => setCurrency(value)}>{value}</button>
         </span>
       ))}
@@ -133,7 +130,7 @@ export function Navbar() {
           ))}
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
-              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-violet/[0.05] hover:text-ink"
+              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-violet/[0.05] hover:text-ink focus-outline"
               onClick={() => setMoreOpen((value) => !value)}>More <span aria-hidden="true">⌄</span></button>
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
               className="glass-panel absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl p-4 md:grid-cols-3">
@@ -149,7 +146,7 @@ export function Navbar() {
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost" className="px-3">{accountLabel}</Button>
         </div>
-        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white text-ink transition hover:border-violet/50 xl:hidden"
+        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white text-ink transition hover:border-violet/50 xl:hidden focus-outline"
           aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => { setMobileOpen((value) => !value); setMobileMore(false); }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -162,9 +159,9 @@ export function Navbar() {
         className="bg-aurora fixed inset-0 z-[60] flex h-[100dvh] flex-col overflow-y-auto bg-obsidian px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] xl:hidden">
         <div className="flex min-h-16 items-center justify-between border-b border-line">
           {mobileMore
-            ? <button type="button" className="min-h-11 rounded-lg px-3 text-ink" onClick={() => setMobileMore(false)}>← Back</button>
+            ? <button type="button" className="min-h-11 rounded-lg px-3 text-ink focus-outline" onClick={() => setMobileMore(false)}>← Back</button>
             : <Link href="/" aria-label="ZIKA home"><Logo size={28} /></Link>}
-          <button type="button" className="min-h-11 min-w-11 rounded-xl border border-line px-3 text-sm" aria-label="Close menu"
+          <button type="button" className="min-h-11 min-w-11 rounded-xl border border-line px-3 text-sm focus-outline" aria-label="Close menu"
             onClick={() => { setMobileOpen(false); setMobileMore(false); mobileTrigger.current?.focus(); }}>Close</button>
         </div>
         <div className="flex-1 py-5">
@@ -178,7 +175,7 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          {!mobileMore && <button type="button" className="mt-2 flex min-h-12 w-full items-center justify-between border-t border-line text-lg text-ink"
+          {!mobileMore && <button type="button" className="mt-2 flex min-h-12 w-full items-center justify-between border-t border-line text-lg text-ink focus-outline"
             aria-expanded={mobileMore} onClick={() => setMobileMore(true)}>More <span aria-hidden="true">→</span></button>}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-4">

@@ -115,10 +115,10 @@ export default async function Account() {
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
-            {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
-            {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary">My Freelancer Profile</Button>}
-            <Button href="/account/freelance-orders" variant="secondary">My freelancer orders</Button>
-            <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
+            {admin && <Button href="/admin" variant="secondary" className="focus-outline">Admin area</Button>}
+            {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary" className="focus-outline">My Freelancer Profile</Button>}
+            <Button href="/account/freelance-orders" variant="secondary" className="focus-outline">My freelancer orders</Button>
+            <Button href="/shop" variant="ghost" className="focus-outline"><TranslatedText value="Continue shopping" /></Button>
           </div>
         </Container>
       </div>
@@ -144,7 +144,7 @@ export default async function Account() {
             <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Your dashboard</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
             <span className="hidden text-sm text-ink-mute sm:block">A personal space for everything you do with ZIKA</span>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-3">
             <Card className="bg-gradient-to-br from-violet/15 to-obsidian-900"><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-3 font-display text-4xl">{orders.length}</p><a href="#orders" className="mt-4 inline-flex text-sm text-cyan-soft">View order history <span aria-hidden="true" className="ml-2">↗</span></a></Card>
             <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-3 font-display text-4xl">{addressesRes.data?.length ?? 0}</p><a href="#addresses" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Manage delivery details ↗</a></Card>
             <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-3 font-display text-4xl">{wishlist.length}</p><a href="#wishlist" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Browse saved products ↗</a></Card>
@@ -247,10 +247,10 @@ export default async function Account() {
         <section id="language"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Language" /></h2><Card className="flex items-center justify-between gap-3"><p>Choose English or Amharic for the navigation, footer, shop filters, and account headings.</p><LanguageToggle /></Card></section>
 
         <div className="flex flex-wrap gap-3 border-t border-line pt-6">
-          {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
-          {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary">My vendor products</Button>}
-          {(vendorProfileRes.data?.status === "active" || vendorApplicationRes.data?.status === "approved") && <Button href="/account/earnings" variant="secondary">My earnings</Button>}
-          <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
+          {admin && <Button href="/admin" variant="secondary" className="focus-outline">Admin area</Button>}
+          {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary" className="focus-outline">My vendor products</Button>}
+          {(vendorProfileRes.data?.status === "active" || vendorApplicationRes.data?.status === "approved") && <Button href="/account/earnings" variant="secondary" className="focus-outline">My earnings</Button>}
+          <Button href="/shop" variant="ghost" className="focus-outline"><TranslatedText value="Continue shopping" /></Button>
         </div>
         </div>
       </Container>

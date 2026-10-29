@@ -19,6 +19,8 @@ export async function POST(request: Request) {
   const payload = body as Record<string, unknown>;
   if (Object.keys(payload).some((key) => !ALLOWED_KEYS.has(key)) ||
       !Array.isArray(payload.p_items) ||
+      payload.p_items.length === 0 ||
+      payload.p_items.length > 100 ||
       !payload.p_customer || typeof payload.p_customer !== "object" || Array.isArray(payload.p_customer) ||
       typeof payload.p_idempotency_key !== "string" ||
       typeof payload.p_payment_method !== "string" ||

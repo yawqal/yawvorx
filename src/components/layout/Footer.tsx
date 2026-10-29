@@ -31,24 +31,24 @@ export function Footer() {
           <p className="mt-2 max-w-sm text-sm text-ink-mute">{siteConfig.description}</p>
           <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
             {socialLinks().map((social) => <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer"
-              className="py-1 text-sm text-ink-mute underline-offset-4 hover:text-ink hover:underline">{social.name}</a>)}
-            {mail && <a href={mail} className="py-1 text-sm text-ink-mute underline-offset-4 hover:text-ink hover:underline">Email</a>}
-            {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="py-1 text-sm text-ink-mute underline-offset-4 hover:text-ink hover:underline">WhatsApp</a>}
+              className="py-1 text-sm text-ink focus-outline underline-offset-4 hover:text-ink hover:underline">{social.name}</a>)}
+            {mail && <a href={mail} className="py-1 text-sm text-ink focus-outline underline-offset-4 hover:text-ink hover:underline">Email</a>}
+            {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="py-1 text-sm text-ink focus-outline underline-offset-4 hover:text-ink hover:underline">WhatsApp</a>}
           </div>
         </div>
         {columns.map((column) => <div key={column.title}>
           <h2 className="text-sm font-semibold uppercase tracking-wider">{column.title}</h2>
           <ul className="mt-3 space-y-1">
             {column.links.map((link) => <li key={`${column.title}-${link.href}-${link.label}`}>
-              <Link href={link.href} className="inline-flex min-h-10 items-center text-sm text-ink-mute underline-offset-4 hover:text-ink hover:underline">{link.label}</Link>
+              <Link href={link.href} className="inline-flex min-h-10 items-center text-sm text-ink focus-outline underline-offset-4 hover:text-ink hover:underline">{link.label}</Link>
             </li>)}
           </ul>
         </div>)}
       </Container>
       <div className="relative border-t border-line bg-obsidian-800/60">
-        <Container className="flex flex-col gap-2 py-5 text-sm text-ink-mute sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-2 py-5 text-sm text-ink sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
-          <Link href="/terms" className="min-h-10 inline-flex items-center underline-offset-4 hover:text-ink hover:underline">Terms and policies</Link>
+          <Link href="/terms" className="min-h-10 inline-flex items-center text-sm text-ink focus-outline underline-offset-4 hover:text-ink hover:underline">Terms and policies</Link>
         </Container>
       </div>
     </footer>

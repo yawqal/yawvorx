@@ -44,7 +44,7 @@ export function AddToCart({ product }: { product: Product }) {
           Your cart already has items priced in {otherCurrency}. One order can use one currency only, so please finish that order first or <Link href="/cart" className="underline">review your cart</Link>.
         </p>
       )}
-      <Button className="w-full sm:w-auto" disabled={!!otherCurrency || unit === null} onClick={() => {
+      <Button className="w-full sm:w-auto focus-outline" disabled={!!otherCurrency || unit === null} onClick={() => {
         if (unit === null) return;
         add({ key: `${product.slug}:${variantId}`, slug: product.slug, name: product.name, variantId: variantId || undefined, variantLabel: variant?.label, unitPrice: unit, type: product.type, maxQty, currency }, qty);
         setAdded(true);

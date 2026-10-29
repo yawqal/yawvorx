@@ -12,16 +12,16 @@ import type { Service } from "@/data/services";
 export function ServiceCard({ s, full = false, icon }: { s: Service; full?: boolean; icon?: React.ReactNode }) {
   return (
     <Card interactive className="flex h-full flex-col">
-      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">{icon}</div>}
-      <h3 id={s.slug} className="text-lg font-semibold">{s.title}</h3>
-      <p className="mt-2 text-ink-mute">{s.description}</p>
-      <ul className="mt-4 space-y-1.5 text-sm text-ink-mute">
+      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">{icon}</div>}
+      <h3 id={s.slug} className="text-lg font-semibold sm:text-xl">{s.title}</h3>
+      <p className="mt-3 text-ink-mute sm:mt-4">{s.description}</p>
+      <ul className="mt-6 space-y-2 text-sm text-ink-mute sm:mt-8">
         {(full ? s.deliverables : s.deliverables.slice(0, 3)).map((d) => (
           <li key={d} className="flex gap-2"><span aria-hidden="true" className="text-cyan">+</span>{d}</li>
         ))}
       </ul>
-      <div className="mt-auto pt-5">
-        <Button href={`/hire?service=${s.slug}`} variant="secondary" className="w-full sm:w-auto">Inquire about {s.title}</Button>
+      <div className="mt-auto pt-6">
+        <Button href={`/hire?service=${s.slug}`} variant="secondary" className="w-full sm:w-auto focus-outline">Inquire about {s.title}</Button>
       </div>
     </Card>
   );
@@ -30,11 +30,11 @@ export function ServiceCard({ s, full = false, icon }: { s: Service; full?: bool
 export function ProjectCard({ p, featured = false }: { p: Project; featured?: boolean }) {
   const seed = p.slug.length;
   return (
-    <Link href={`/portfolio/${p.slug}`} className={`surface surface-hover group flex h-full flex-col overflow-hidden ${featured ? "sm:flex-row" : ""}`}>
+    <Link href={`/portfolio/${p.slug}`} className={`${featured ? "sm:flex-row" : ""} surface surface-hover group flex h-full flex-col overflow-hidden hover:shadow-xl motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02] motion-safe:transition-transform transition-transform duration-200`}>
       <div className={featured ? "sm:w-[58%]" : ""}>
         <ProjectArtwork imageUrl={p.coverImageUrl} title={p.title} seed={seed} className={featured ? "h-full !aspect-[4/3] rounded-b-none border-0 sm:!aspect-auto sm:min-h-[300px]" : "rounded-b-none border-0"} />
       </div>
-      <div className={`flex flex-1 flex-col p-4 sm:p-5 ${featured ? "sm:justify-center sm:px-7 sm:py-8" : ""}`}>
+      <div className={`flex flex-1 flex-col p-4 sm:p-6 ${featured ? "sm:justify-center sm:px-7 sm:py-8" : ""}`}>
         <div className="flex flex-wrap items-center gap-2">
           {p.isDemo !== false && <Badge tone="demo">Sample concept</Badge>}<Badge>{p.category}</Badge>
         </div>
@@ -50,8 +50,8 @@ export function ProjectCard({ p, featured = false }: { p: Project; featured?: bo
 export function ProductCard({ p }: { p: Product }) {
   const a = availability(p);
   return (
-    <Link href={`/shop/${p.slug}`} className="surface surface-hover group flex h-full flex-col overflow-hidden">
-      <div className="relative p-2.5 pb-0 sm:p-3 sm:pb-0">
+    <Link href={`/shop/${p.slug}`} className="surface surface-hover group flex h-full flex-col overflow-hidden hover:shadow-xl motion-safe:hover:-translate-y-1 motion-safe:hover:scale-[1.02] motion-safe:transition-transform transition-transform duration-200 focus-outline">
+      <div className="relative p-3 pb-0 sm:p-4 sm:pb-0">
         <ProductImage src={p.image_urls?.[0] ?? p.image_url} alt={p.name} className="rounded-xl" />
         <div className="absolute left-5 top-5 flex flex-wrap gap-2">
           {p.isDemo && <Badge tone="demo">Demo product</Badge>}

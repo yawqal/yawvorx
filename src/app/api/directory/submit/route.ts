@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 const categories = new Set(["Technology", "Retail", "Food & Beverage", "Professional Services", "Health & Wellness", "Education", "Other"]);
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -9,6 +10,8 @@ const noindex = { "X-Robots-Tag": "noindex, nofollow" };
 const clean = (value: unknown, max: number) => typeof value === "string" ? value.trim().slice(0, max) : "";
 const slugify = (value: string) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
 export async function POST(request: Request) {
+  const limited = rateLimit(request, "directory-submit-post", 3, 60_000);
+  if (limited) return limited;
   const user = await requireUser("/directory/add");
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Database is not configured." }, { status: 503, headers: noindex });
