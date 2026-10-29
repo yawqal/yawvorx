@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     if (inserted.error) return NextResponse.json({ error: `Inquiry could not be sent: ${inserted.error.message}` }, { status: 500, headers: noindex });
     return NextResponse.json({ ok: true, message: "Your inquiry was sent." }, { status: 201, headers: noindex });
   } catch (error) {
-    console.error("freelancer inquiry failed", error);
+    console.error("Freelancer inquiry submission failed");
     return NextResponse.json({ error: "Inquiry could not be sent. Please try again." }, { status: 500, headers: noindex });
   }
 }

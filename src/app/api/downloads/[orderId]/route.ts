@@ -43,7 +43,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ ord
     file.file_name.trim().length > 0 &&
     file.file_name.length <= 255);
   if (eligible.length !== purchasedFiles.length) {
-    console.error("Invalid digital file reference found for a verified order", { orderId: order.id });
+    console.error("Invalid digital file reference found for a verified order");
     return NextResponse.json({ error: "A digital file reference is invalid. Contact support." }, { status: 500 });
   }
   if (eligible.length === 0) return NextResponse.json({ error: "No downloads are attached to this purchase." }, { status: 404 });
@@ -52,7 +52,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ ord
   for (const file of eligible) {
     const { data, error } = await supabase.storage.from(file.storage_bucket).createSignedUrl(file.storage_path, 60);
     if (error || !data?.signedUrl) {
-      console.error("Secure download link creation failed", { orderId: order.id, productId: file.product_id, error });
+      console.error("Secure download link creation failed");
       return NextResponse.json({ error: "Could not create a secure download link." }, { status: 500 });
     }
     downloads.push({ fileName: file.file_name, url: data.signedUrl });

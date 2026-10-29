@@ -16,7 +16,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
       {images.length > 1 && <div className="mt-3 grid grid-cols-4 gap-3 sm:grid-cols-5">
         {images.map((image, index) => <button key={`${image}-${index}`} type="button" aria-label={`Show ${name} image ${index + 1}`}
           aria-pressed={selected === index} onClick={() => setSelected(index)}
-          className={`relative aspect-square overflow-hidden rounded-xl border bg-obsidian-800 transition ${selected === index ? "border-violet ring-2 ring-violet/30" : "border-line hover:border-violet/50"}`}>
+          className={`relative aspect-square overflow-hidden rounded-xl border bg-obsidian-800 transition focus-outline ${selected === index ? "border-violet ring-2 ring-violet/30" : "border-line hover:border-violet/50"}`}>
           <Image src={image} alt="" fill sizes="96px" unoptimized className="object-cover" />
         </button>)}
       </div>}

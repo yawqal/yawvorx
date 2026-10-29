@@ -266,7 +266,7 @@ export default function CoursesClient() {
                           // refresh
                           fetchCourses();
                         })
-                        .catch(err => alert(err.message));
+                        .catch(err => setSubmitError(err instanceof Error ? err.message : "Failed to publish course"));
                     }}
                   >
                     Publish
@@ -293,7 +293,7 @@ export default function CoursesClient() {
                         .then(data => {
                           fetchCourses();
                         })
-                        .catch(err => alert(err.message));
+                        .catch(err => setSubmitError(err instanceof Error ? err.message : "Failed to unpublish course"));
                     }}
                   >
                     Unpublish

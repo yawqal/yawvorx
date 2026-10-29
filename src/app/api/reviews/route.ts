@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A verified paid purchase is required before reviewing this product." }, { status: 403 });
   }
   if (error) {
-    console.error("Product review submission failed", { productId, userId: user.id, error });
+    console.error("Product review submission failed");
     return NextResponse.json({ error: "Your review could not be saved. Please try again later." }, { status: 500 });
   }
   return NextResponse.json({ ok: true }, { status: 201 });

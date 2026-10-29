@@ -7,8 +7,8 @@ const config: Config = {
     extend: {
       colors: {
         obsidian: { DEFAULT: "#F5F6FA", 900: "#FFFFFF", 800: "#EEF0F7", 700: "#E5E8F0" },
-        cyan: { DEFAULT: "#247F91", soft: "#176E80", bright: "#54C9DD" },
-        violet: { DEFAULT: "#7657E8", soft: "#6245CF" },
+        cyan: { DEFAULT: "#22D3EE", soft: "#176E80", bright: "#54C9DD" },
+        violet: { DEFAULT: "#8B5CF6", soft: "#6245CF" },
         ink: { DEFAULT: "#171923", mute: "#626779" },
         line: "#E2E5EE",
         red: { 300: "#C93C50" },
@@ -22,6 +22,8 @@ const config: Config = {
       boxShadow: {
         glow: "0 12px 30px -18px rgba(118,87,232,0.38)",
         depth: "0 24px 55px -38px rgba(34,38,57,0.28)",
+        "depth-md": "0 20px 45px -30px rgba(34,38,57,0.22)",
+        "depth-lg": "0 28px 65px -42px rgba(34,38,57,0.32)",
       },
     },
   },

@@ -2,7 +2,7 @@ import { useId } from "react";
 
 type Common = { label: string; error?: string; hint?: string };
 const control =
-  "control w-full px-4 py-2.5 text-base placeholder:text-ink-mute/80 focus:border-violet focus:outline-none focus:ring-2 focus:ring-violet/20";
+  "w-full px-6 py-4 text-base placeholder:text-ink-mute/70 focus:border-violet focus:outline-none focus:ring-2 focus:ring-violet/50 transition-all duration-300 ease-out";
 
 function Wrap({ label, error, hint, id, children }: Common & { id: string; children: React.ReactNode }) {
   return (
@@ -20,7 +20,7 @@ export function Input({ label, error, hint, ...p }: Common & React.InputHTMLAttr
   const id = useId();
   return (
     <Wrap {...{ label, error, hint, id }}>
-      <input id={id} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`${control} ${state(error)}`} {...p} />
+      <input id={id} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`control ${control} ${state(error)} hover:border-violet/30 hover:bg-white/50`} {...p} />
     </Wrap>
   );
 }
@@ -29,7 +29,7 @@ export function Textarea({ label, error, hint, ...p }: Common & React.TextareaHT
   const id = useId();
   return (
     <Wrap {...{ label, error, hint, id }}>
-      <textarea id={id} rows={5} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`${control} ${state(error)}`} {...p} />
+      <textarea id={id} rows={5} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`control ${control} ${state(error)} hover:border-violet/30 hover:bg-white/50`} {...p} />
     </Wrap>
   );
 }
@@ -38,7 +38,9 @@ export function Select({ label, error, hint, children, ...p }: Common & React.Se
   const id = useId();
   return (
     <Wrap {...{ label, error, hint, id }}>
-      <select id={id} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`${control} ${state(error)}`} {...p}>{children}</select>
+      <select id={id} aria-invalid={!!error} aria-describedby={error || hint ? `${id}-d` : undefined} className={`control ${control} ${state(error)} hover:border-violet/30 hover:bg-white/50`} {...p}>{children}</select>
     </Wrap>
   );
 }
+
+// Enhanced field focus states can be added via className when needed

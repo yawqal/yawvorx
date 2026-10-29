@@ -79,10 +79,19 @@ export function DirectoryReview({ businesses, onUpdate }: DirectoryReviewProps) 
                 <p className="mt-1 text-sm text-ink-mute">{biz.description.slice(0, 100)}{biz.description.length > 100 ? "…" : ""}</p>
               )}
               <p className="mt-1 text-sm text-ink-mute">
-                {biz.city}{biz.website ? ` • <a href={biz.website} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Website</a>` : ""}
+                {biz.city}
+                {biz.website && (
+                  <>
+                    {" • "}
+                    <a href={biz.website} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-ink">
+                      Website
+                    </a>
+                  </>
+                )}
               </p>
               <p className="mt-1 text-sm text-ink-mute">
-                Email: {biz.public_email}{biz.public_phone ? ` • Phone: {biz.public_phone}` : ""}
+                Email: {biz.public_email}
+                {biz.public_phone ? ` • Phone: ${biz.public_phone}` : ""}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">

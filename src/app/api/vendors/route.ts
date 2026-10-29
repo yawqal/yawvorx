@@ -42,8 +42,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "You already have a vendor application on file." }, { status: 409 });
   }
   if (error) {
-    console.error("Vendor application submission failed", { userId: user.id, error });
-    return NextResponse.json({ error: "Your application could not be saved. Confirm the vendor SQL proposal is installed." }, { status: 500 });
+    console.error("Vendor application submission failed");
+    return NextResponse.json({ error: "Your application could not be saved. Please try again." }, { status: 500 });
   }
   return NextResponse.json({ ok: true }, { status: 201 });
 }

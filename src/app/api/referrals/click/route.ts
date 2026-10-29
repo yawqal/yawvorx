@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   const { data: affiliate, error: lookupError } = await supabase.from("affiliate_codes")
     .select("id").eq("code", code).eq("is_active", true).maybeSingle();
   if (lookupError) {
-    console.error("Affiliate referral lookup failed", { error: lookupError });
+    console.error("Affiliate referral lookup failed");
     return NextResponse.json({ error: "Referral tracking is unavailable." }, { status: 503 });
   }
   if (!affiliate) return NextResponse.json({ error: "Referral code is not active." }, { status: 404 });
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     affiliate_code_id: affiliate.id, event_type: "click",
   });
   if (insertError) {
-    console.error("Affiliate click could not be recorded", { code, error: insertError });
+    console.error("Affiliate click could not be recorded");
     return NextResponse.json({ error: "Referral visit could not be recorded." }, { status: 503 });
   }
 
@@ -51,12 +51,12 @@ export async function POST(request: Request) {
   try {
     const { error } = await supabase.from("referral_visits").insert({ token, affiliate_code: code });
     if (error) {
-      console.error("Affiliate referral visit could not be recorded", { code, error });
+      console.error("Affiliate referral visit could not be recorded");
     } else {
       visitRecorded = true;
     }
   } catch (error) {
-    console.error("Affiliate referral visit could not be recorded", { code, error });
+    console.error("Affiliate referral visit recording failed");
   }
 
   const response = NextResponse.json({ ok: true });

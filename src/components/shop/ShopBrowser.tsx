@@ -28,13 +28,13 @@ export function ShopBrowser({ products, categories, search, selectedCategory }: 
     return <EmptyState title="The shop is getting ready" description="Owner: add your first product from the admin panel once it is available (Phase 6)." />;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12">
+    <div className="grid gap-9 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-14">
       <aside className="h-fit lg:sticky lg:top-24">
-        <div className="border-b border-line pb-4">
+        <div className="border-b border-line pb-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Find your next</p>
-          <h2 className="mt-2 text-xl font-semibold">{t("Refine selection")}</h2>
+          <h2 className="mt-3 text-xl font-semibold">{t("Refine selection")}</h2>
         </div>
-        <form method="get" action="/shop" className="grid gap-4 py-5">
+        <form method="get" action="/shop" className="grid gap-5 py-6">
           <Input label={t("Search")} name="q" type="search" maxLength={80} placeholder={t("Search products")} defaultValue={search} />
           <Select label={t("Category")} name="category" defaultValue={selectedCategory}>
             <option value="">{t("All categories")}</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -50,13 +50,13 @@ export function ShopBrowser({ products, categories, search, selectedCategory }: 
         </form>
       </aside>
       <section aria-label="Product results">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-4">
-          <div><p className="text-xs uppercase tracking-[0.18em] text-ink-mute">Catalog</p><h2 className="mt-1 text-2xl font-semibold">{t("Products")}</h2></div>
+        <div className="flex flex-wrap items-end justify-between gap-5 border-b border-line pb-5">
+          <div><p className="text-xs uppercase tracking-[0.18em] text-ink-mute">Catalog</p><h2 className="mt-2 text-2xl font-semibold">{t("Products")}</h2></div>
           <p className="text-sm text-ink-mute" role="status">{shown.length} {t(shown.length === 1 ? "product" : "products")}</p>
         </div>
         {shown.length === 0
-          ? <div className="mt-6"><EmptyState title="No matching products" description="Try a different search or clear the filters." /></div>
-          : <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">{shown.map((p) => <ProductCard key={p.slug} p={p} />)}</div>}
+          ? <div className="mt-8"><EmptyState title="No matching products" description="Try a different search or clear the filters." /></div>
+          : <div className="mt-8 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{shown.map((p) => <ProductCard key={p.slug} p={p} />)}</div>}
       </section>
     </div>
   );

@@ -71,10 +71,10 @@ export function HireForm({ defaultService = "", availableServices = staticServic
   );
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-5">
+    <form onSubmit={submit} noValidate className="space-y-6">
       <p className="text-sm text-ink-mute">Signed-in requests are saved in your account. If you continue as a guest, we prepare a message for you to send.</p>
       <Input label="Your name" name="name" autoComplete="name" value={v.name} onChange={change} error={errors.name} />
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         <Select label="Preferred contact method" name="contactMethod" value={v.contactMethod} onChange={change} error={errors.contactMethod}>
           {CONTACT_METHODS.map((m) => <option key={m}>{m}</option>)}
         </Select>
@@ -85,7 +85,7 @@ export function HireForm({ defaultService = "", availableServices = staticServic
         {availableServices.map((s) => <option key={s.slug} value={s.slug}>{s.title}</option>)}
       </Select>
       <Textarea label="Project description" name="description" value={v.description} onChange={change} error={errors.description} hint="What do you want to achieve? Who is it for?" />
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         <Select label="Budget range (optional)" name="budget" value={v.budget} onChange={change}>{BUDGETS.map((b) => <option key={b}>{b}</option>)}</Select>
         <Input label="Desired deadline (optional)" name="deadline" type="date" value={v.deadline} onChange={change} error={errors.deadline} />
       </div>
