@@ -29,7 +29,6 @@ const desktopLinks = [
   { href: "/portfolio", label: "Portfolio" },
 ];
 const moreLinks = [
-  { href: "/shop", label: "Digital Products" },
   { href: "/freelancers", label: "Freelancers" },
   { href: "/courses", label: "Courses" },
   { href: "/ai-tools", label: "AI Tools" },
@@ -134,7 +133,18 @@ export function Navbar() {
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
               className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-violet/[0.05] hover:text-ink"
-              onClick={() => setMoreOpen((value) => !value)}>More <span aria-hidden="true">⌄</span></button>
+              onClick={() => setMoreOpen((value) => !value)}>More
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 16 16"
+                  className={`${moreOpen ? "rotate-180" : ""} transition-transform duration-200`}
+                  aria-hidden="true"
+                >
+                  <path fill="currentColor" d="M7.293 1.5a.5.5 0 0 1 .707.253L10.5 5.5a.5.5 0 0 1-.253.707L7.293 8.75a.5.5 0 0 1-.5-.253L4.5 5.5a.5.5 0 0 1 .253-.707L7.293 2.25a.5.5 0 0 1 .707-.253z" />
+                </svg>
+            </button>
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
               className="glass-panel absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl p-4 md:grid-cols-3">
               {moreLinks.map((link) => <Link key={link.label} href={link.href}
