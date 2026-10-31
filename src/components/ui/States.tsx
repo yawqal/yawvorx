@@ -19,7 +19,7 @@ type StateProps = { title: string; description?: string; action?: { label: strin
 /** Empty screens should tell the visitor (or owner) what to do next. */
 export function EmptyState({ title, description, action }: StateProps) {
   return (
-    <div className="surface mx-auto max-w-lg p-8 text-center">
+    <div className="surface mx-auto max-w-lg p-8 text-center" aria-label={title}>
       <h3 className="text-xl font-semibold">{title}</h3>
       {description && <p className="mt-2 text-ink-mute">{description}</p>}
       {action && <Button href={action.href} className="mt-5">{action.label}</Button>}
