@@ -7,7 +7,7 @@ const config: Config = {
     extend: {
       colors: {
         obsidian: { DEFAULT: "#F5F6FA", 900: "#FFFFFF", 800: "#EEF0F7", 700: "#E5E8F0" },
-        cyan: { DEFAULT: "#247F91", soft: "#176E80", bright: "#54C9DD" },
+        cyan: { DEFAULT: "#207282", soft: "#176E80", bright: "#54C9DD" },
         violet: { DEFAULT: "#7657E8", soft: "#6245CF" },
         ink: { DEFAULT: "#171923", mute: "#626779" },
         line: "#E2E5EE",

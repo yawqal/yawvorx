@@ -153,12 +153,11 @@ export default async function Home() {
           </div>
           <div className="grid auto-rows-[minmax(180px,auto)] gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:auto-rows-[190px]">
             {projects.slice(0, 3).map((project, index) => (
-              <Link key={project.slug} href={`/portfolio/${project.slug}`} className={`surface surface-hover group relative overflow-hidden p-2 ${index === 0 ? "sm:row-span-2 lg:col-span-7 lg:row-span-2" : "lg:col-span-5"}`}>
-                <Art seed={project.slug.length} className="!aspect-auto h-full min-h-[190px] rounded-xl border-0 sm:min-h-[210px]" />
-                <div className="absolute inset-x-2 bottom-2 rounded-b-xl bg-gradient-to-t from-obsidian via-obsidian/95 to-transparent px-5 pb-5 pt-12 sm:px-6">
+              <Link key={project.slug} href={`/portfolio/${project.slug}`} className={`surface surface-hover group relative overflow-hidden p-2 ${index === 0 ? "sm:row-span-2 lg:col-span-8 lg:row-span-2" : "lg:col-span-4"}`}>
+                <Art seed={project.slug.length} className="!aspect-auto h-full min-h-[190px] rounded-2xl border-0 sm:min-h-[210px]" />
+                <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-white/80 p-5 backdrop-blur-sm">
                   <div className="flex flex-wrap gap-2">{project.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{project.category}</Badge></div>
-                  <h3 className="mt-3 text-xl font-semibold sm:text-2xl">{project.title}</h3>
-                  <p className="mt-1 line-clamp-2 max-w-xl text-sm text-ink-mute">{project.summary}</p>
+                  <h3 className="mt-2 text-xl font-semibold sm:text-2xl">{project.title}</h3>
                 </div>
               </Link>
             ))}
