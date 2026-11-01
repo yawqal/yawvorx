@@ -34,7 +34,7 @@ export function DigitalDownloads({ orderId }: { orderId: string }) {
       {downloads.length > 0 && <>
         <p className="mt-2 text-xs text-ink-mute">These private links expire after one minute.</p>
         <ul className="mt-2 space-y-2">{downloads.map((download) => <li key={`${download.fileName}:${download.url}`}>
-          <a className="text-cyan-soft underline" href={download.url}>{download.fileName}</a>
+          <a className="text-secondary-soft underline" href={download.url}>{download.fileName}</a>
         </li>)}</ul>
       </>}
     </div>

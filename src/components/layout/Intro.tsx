@@ -37,7 +37,7 @@ export function Intro() {
       <button
         type="button"
         onClick={() => { setShow(false); remember(); }}
-        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-sm text-ink hover:border-cyan/50"
+        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-sm text-ink hover:border-brand/50"
       >
         Skip intro
       </button>

@@ -79,7 +79,7 @@ export function SupportTickets({ userId, tickets }: { userId: string; tickets: T
       {tickets.map((ticket) => <Card key={ticket.id}>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="font-semibold">{ticket.subject}</h3>
-          <span className="text-sm capitalize text-cyan-soft">{ticket.status.replace(/_/g, " ")}</span>
+          <span className="text-sm capitalize text-secondary-soft">{ticket.status.replace(/_/g, " ")}</span>
         </div>
         <p className="mt-1 text-xs text-ink-mute">Opened {new Date(ticket.created_at).toLocaleString()}</p>
         <ol className="mt-4 space-y-3">

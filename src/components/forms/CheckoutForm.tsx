@@ -179,7 +179,7 @@ export function CheckoutForm() {
         <Button type="submit" className="w-full sm:w-auto" loading={busy} disabled={busy}>Place order request</Button>
       </form>
       <Card className="h-fit bg-ink text-white lg:sticky lg:top-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.17em] text-cyan-bright">Final review</p><h2 className="mt-2 text-lg font-semibold text-white">Your items</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.17em] text-brand-bright">Final review</p><h2 className="mt-2 text-lg font-semibold text-white">Your items</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {items.map((i) => <li key={i.key} className="flex justify-between gap-3 border-b border-white/10 pb-2"><span className="text-white/80">{i.qty} × {i.name}{i.variantLabel ? ` (${i.variantLabel})` : ""}</span><span className="shrink-0">{formatMoney(i.qty * i.unitPrice, i.currency)}</span></li>)}
         </ul>

@@ -31,7 +31,7 @@ export function ShopBrowser({ products, categories, search, selectedCategory }: 
     <div className="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12">
       <aside className="h-fit lg:sticky lg:top-24">
         <div className="border-b border-line pb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Find your next</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Find your next</p>
           <h2 className="mt-2 text-xl font-semibold">{t("Refine selection")}</h2>
         </div>
         <form method="get" action="/shop" className="grid gap-4 py-5">

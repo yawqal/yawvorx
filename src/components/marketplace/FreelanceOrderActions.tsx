@@ -63,11 +63,11 @@ export function FreelanceOrderActions({ orderId, userId, freelancerUserId, statu
       <h2 id="order-timeline-heading" className="text-xl font-semibold">Status timeline</h2>
       <ol className="mt-3 grid gap-2 sm:grid-cols-4">
         {["pending", "accepted", "in_progress", "submitted", "completed"].map((step) => (
-          <li key={step} className={`rounded-xl border p-3 text-sm ${step === status ? "border-violet text-ink" : "border-line text-ink-mute"}`}>
+          <li key={step} className={`rounded-xl border p-3 text-sm ${step === status ? "border-brand text-ink" : "border-line text-ink-mute"}`}>
             <span className="capitalize">{step.replace(/_/g, " ")}</span>{step === status && <span className="ml-2">(current)</span>}
           </li>
         ))}
-        {["declined", "revision_requested", "cancelled"].includes(status) && <li className="rounded-xl border border-violet p-3 text-sm capitalize">{status.replace(/_/g, " ")} (current)</li>}
+        {["declined", "revision_requested", "cancelled"].includes(status) && <li className="rounded-xl border border-brand p-3 text-sm capitalize">{status.replace(/_/g, " ")} (current)</li>}
       </ol>
     </section>
     <section className="min-w-0">
@@ -99,7 +99,7 @@ export function FreelanceOrderActions({ orderId, userId, freelancerUserId, statu
       <Textarea label="Comment (optional)" name="comment" maxLength={1000} />
       <Button type="submit" loading={busy}>Submit review</Button>
     </form>)}
-    <p role="status" aria-live="polite" className="min-h-5 text-sm text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="min-h-5 text-sm text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-300">{error}</p>
   </div>;
 }

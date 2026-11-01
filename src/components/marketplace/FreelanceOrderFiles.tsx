@@ -148,11 +148,11 @@ export function FreelanceOrderFiles({ orderId, status, isFreelancer, files, load
         type="file"
         accept=".pdf,.png,.jpg,.jpeg,.webp,.zip,.txt,.docx,.mp4"
         onChange={selectFile}
-        className="min-h-[44px] w-full min-w-0 rounded-xl border border-line bg-white p-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet"
+        className="min-h-[44px] w-full min-w-0 rounded-xl border border-line bg-white p-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
       />
       <Button type="submit" loading={busy} disabled={!selected || busy}>{uploadKind === "reference" ? "Add reference file" : "Upload delivery file"}</Button>
     </form>}
-    <p role="status" aria-live="polite" className="min-h-5 break-words text-sm text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="min-h-5 break-words text-sm text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="min-h-5 break-words text-sm text-red-300">{error}</p>
   </section>;
 }

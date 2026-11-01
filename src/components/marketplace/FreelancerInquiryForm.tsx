@@ -44,7 +44,7 @@ export function FreelancerInquiryForm({ profileId }: { profileId: string }) {
       <Textarea label="Project message" name="message" minLength={10} maxLength={2000} required />
       <Input label="Budget (ETB or range)" name="budget" maxLength={120} />
       <Input label="Desired deadline" name="deadline" type="date" />
-      <p role="status" aria-live="polite" className="text-sm text-cyan-soft">{message}</p>
+      <p role="status" aria-live="polite" className="text-sm text-secondary-soft">{message}</p>
       <p role="alert" aria-live="polite" className="text-sm text-red-300">{error}</p>
       <Button type="submit" loading={busy}>Send inquiry</Button>
     </form>

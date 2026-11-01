@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="lg:sticky lg:top-24"><ProductGallery images={p.image_urls?.length ? p.image_urls : p.image_url ? [p.image_url] : []} name={p.name} /></div>
         <div className="min-w-0 pt-2 lg:pt-5">
           <div className="flex flex-wrap gap-2">{p.isDemo && <Badge tone="demo">Demo product</Badge>}<Badge>{p.type === "digital" ? "Digital" : "Physical"}</Badge><Badge tone={a.ok ? "ok" : "warn"}>{a.label}</Badge></div>
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">{p.category}</p>
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">{p.category}</p>
           <h1 className="mt-3 text-3xl font-semibold leading-[1.08] tracking-tight sm:text-4xl lg:text-5xl">{p.name}</h1>
           <p className="mt-5 whitespace-pre-line text-base leading-relaxed text-ink-mute">{p.description}</p>
           <div className="mt-7 border-y border-line py-6"><AddToCart product={p} /></div>
@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
       {related.length > 0 && (
-        <section className="mt-16 border-t border-line pt-10"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Continue exploring</p><h2 className="mt-2 text-2xl font-semibold">Related products</h2></div><Link href="/shop" className="text-sm text-ink-mute hover:text-ink">All products ↗</Link></div>
+        <section className="mt-16 border-t border-line pt-10"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Continue exploring</p><h2 className="mt-2 text-2xl font-semibold">Related products</h2></div><Link href="/shop" className="text-sm text-ink-mute hover:text-ink">All products ↗</Link></div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div></section>
       )}
       {reviewsResult.error

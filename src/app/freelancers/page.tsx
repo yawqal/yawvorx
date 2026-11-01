@@ -78,15 +78,15 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
       </div>
       <form method="get" className="mb-8 grid gap-3 rounded-2xl border border-line p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         <label className="grid gap-2 text-sm font-semibold">Search by name or skill
-          <input className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet" type="search" name="q" maxLength={80} defaultValue={search} />
+          <input className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" type="search" name="q" maxLength={80} defaultValue={search} />
         </label>
         <label className="grid gap-2 text-sm font-semibold">Category
-          <select className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet" name="category" defaultValue={category}>
+          <select className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" name="category" defaultValue={category}>
             <option value="">All categories</option>{categories.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
         </label>
         <label className="grid gap-2 text-sm font-semibold">Sort by
-          <select className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet" name="sort" defaultValue={sort}>
+          <select className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" name="sort" defaultValue={sort}>
             <option value="newest">Newest</option><option value="price">Lowest starting price</option>
           </select>
         </label>
@@ -109,7 +109,7 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
             {rating && rating.review_count > 0 && <p className="mt-2 text-sm text-ink-mute">{Number(rating.avg_rating).toFixed(1)} / 5 ({rating.review_count} reviews)</p>}
             <div className="mt-4 flex flex-wrap gap-2">{skillsList(profile.skills).map((skill) => skill.trim()).filter(Boolean).slice(0, 10).map((skill) => <span key={skill} className="rounded-full bg-obsidian-800 px-3 py-1 text-xs text-ink-mute">{skill}</span>)}</div>
             {startingPrice !== undefined && <p className="mt-4 text-sm text-ink-mute">Starting at <span className="font-semibold text-ink">{formatMoney(startingPrice, "ETB")}</span></p>}
-            <Link className="mt-auto inline-flex min-h-[44px] items-center pt-5 font-semibold text-violet-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet" href={`/freelancers/${encodeURIComponent(profile.slug)}`}>View Profile <span aria-hidden="true" className="ml-2">↗</span></Link>
+            <Link className="mt-auto inline-flex min-h-[44px] items-center pt-5 font-semibold text-brand-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" href={`/freelancers/${encodeURIComponent(profile.slug)}`}>View Profile <span aria-hidden="true" className="ml-2">↗</span></Link>
           </Card>;
         })}</div>}
     </Container>

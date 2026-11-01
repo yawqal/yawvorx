@@ -130,7 +130,7 @@ export default async function Account() {
               ["overview", "Overview"], ["orders", "Orders"], ["profile", "Profile"], ["addresses", "Addresses"],
               ["wishlist", "Wishlist"], ["service-requests", "Requests"], ["downloads", "Downloads"], ["support", "Support"],
               ["notifications", "Notifications"], ["vendor", "Vendor"], ["settings", "Settings"], ["language", "Language"], ["security", "Security"],
-            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-violet/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-violet">
+            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-brand/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-brand">
               {label}
             </a>)}
           </div>
@@ -141,18 +141,18 @@ export default async function Account() {
         </p>}
         <section id="overview">
           <div className="mb-5 flex items-end justify-between gap-3">
-            <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Your dashboard</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
+            <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Your dashboard</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
             <span className="hidden text-sm text-ink-mute sm:block">A personal space for everything you do with ZIKA</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
-            <Card className="bg-gradient-to-br from-violet/15 to-obsidian-900"><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-3 font-display text-4xl">{orders.length}</p><a href="#orders" className="mt-4 inline-flex text-sm text-cyan-soft">View order history <span aria-hidden="true" className="ml-2">↗</span></a></Card>
+            <Card className="bg-gradient-to-br from-brand/15 to-obsidian-900"><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-3 font-display text-4xl">{orders.length}</p><a href="#orders" className="mt-4 inline-flex text-sm text-secondary-soft">View order history <span aria-hidden="true" className="ml-2">↗</span></a></Card>
             <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-3 font-display text-4xl">{addressesRes.data?.length ?? 0}</p><a href="#addresses" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Manage delivery details ↗</a></Card>
             <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-3 font-display text-4xl">{wishlist.length}</p><a href="#wishlist" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Browse saved products ↗</a></Card>
           </div>
         </section>
 
         <section id="orders">
-          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Recent activity</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="My orders" /></h2></div><span className="text-sm text-ink-mute">{orders.length} total</span></div>
+          <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Recent activity</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="My orders" /></h2></div><span className="text-sm text-ink-mute">{orders.length} total</span></div>
           {ordersRes.error ? <p role="alert" className="text-red-300">Orders could not be loaded: {ordersRes.error.message}</p> : orders.length === 0 ? (
             <EmptyState title="No orders yet" description="Orders you place while signed in will appear here." action={{ label: "Visit the shop", href: "/shop" }} />
           ) : (
@@ -162,14 +162,14 @@ export default async function Account() {
                   <div><Link href={`/account/orders/${order.id}`} className="font-semibold underline">{order.order_ref}</Link><p className="text-sm text-ink-mute">{new Date(order.created_at).toLocaleDateString()}</p></div>
                   <div className="text-right"><p className="font-display">{formatMoney(Number(order.total), order.currency)}</p><Badge>{order.status.replace(/_/g, " ")} · {order.payment_status.replace(/_/g, " ")}</Badge></div>
                 </div>
-                <Link className="mt-3 inline-block text-sm text-cyan-soft underline" href={`/account/orders/${order.id}`}>Order detail and tracking</Link>
+                <Link className="mt-3 inline-block text-sm text-secondary-soft underline" href={`/account/orders/${order.id}`}>Order detail and tracking</Link>
               </Card>)}
             </div>
           )}
         </section>
 
         <section id="profile">
-          <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Your details</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Profile" /></h2></div>
+          <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Your details</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Profile" /></h2></div>
           <Card className="max-w-3xl">
             {profileError && <p role="alert" className="mb-3 text-red-300">Profile could not be loaded: {profileError.message}</p>}
             <ProfileForm userId={user.id} fullName={profile?.display_name ?? ""} phone={profile?.phone ?? ""} />
@@ -219,7 +219,7 @@ export default async function Account() {
                 <div className="flex items-center gap-2"><h3 className="font-semibold">{notice.title}</h3>{!notice.read_at && <Badge tone="info">New</Badge>}</div>
                 {notice.body && <p className="mt-1 text-sm text-ink-mute">{notice.body}</p>}
                 <p className="mt-1 text-xs text-ink-mute">{new Date(notice.created_at).toLocaleString()}</p>
-                {notice.href?.startsWith("/") && !notice.href.startsWith("//") && <Link href={notice.href} className="mt-2 inline-block text-sm text-cyan-soft underline">Open</Link>}
+                {notice.href?.startsWith("/") && !notice.href.startsWith("//") && <Link href={notice.href} className="mt-2 inline-block text-sm text-secondary-soft underline">Open</Link>}
               </Card>)}
               {notificationsRes.data?.length === 0 && <Card><p className="text-ink-mute">No notifications yet. New support replies will appear here and in the navigation bell.</p></Card>}
             </div>

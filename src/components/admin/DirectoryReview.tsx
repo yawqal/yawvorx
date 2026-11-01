@@ -63,7 +63,7 @@ export function DirectoryReview({ businesses, onUpdate }: DirectoryReviewProps) 
 
   return (
     <div className="space-y-4">
-      <p role="status" aria-live="polite" className="text-cyan-soft">{message}</p>
+      <p role="status" aria-live="polite" className="text-secondary-soft">{message}</p>
       <p role="alert" aria-live="polite" className="text-red-300">{error}</p>
       {businesses.map((biz) => (
         <Card key={biz.id}>

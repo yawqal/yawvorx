@@ -48,7 +48,7 @@ export default async function AuditLog({
           <label className="text-sm text-ink-mute">Table
             <input name="table_name" maxLength={100} defaultValue={tableName} className="mt-1 min-h-11 w-full rounded-xl border border-line bg-obsidian-800 px-3 text-ink" />
           </label>
-          <button className="self-end rounded-xl bg-cyan px-4 py-3 font-semibold text-obsidian">Filter</button>
+          <button className="self-end rounded-xl bg-brand px-4 py-3 font-semibold text-obsidian">Filter</button>
         </form>
         {error && <p role="alert" className="text-red-300">Audit log could not be loaded: {error.message}</p>}
         {!error && (data ?? []).map((entry) => (
@@ -60,7 +60,7 @@ export default async function AuditLog({
             <p className="mt-1 break-all text-sm text-ink-mute">Record: {entry.record_id} · Actor: {entry.actor}</p>
             {entry.reason && <p className="mt-2 text-sm">{entry.reason}</p>}
             <details className="mt-3 text-sm">
-              <summary className="cursor-pointer text-cyan-soft">Change details</summary>
+              <summary className="cursor-pointer text-secondary-soft">Change details</summary>
               <pre className="mt-2 overflow-auto rounded-lg bg-obsidian-900 p-3 text-xs">{JSON.stringify({ old_data: entry.old_data, new_data: entry.new_data }, null, 2)}</pre>
             </details>
           </Card>

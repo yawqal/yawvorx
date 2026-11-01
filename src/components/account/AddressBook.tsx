@@ -78,7 +78,7 @@ export function AddressBook({ initial }: { initial: Address[] }) {
       <div className="grid gap-3 sm:grid-cols-2">
         {initial.map((address) => (
           <Card key={address.id}>
-            <div className="flex items-start justify-between gap-2"><h3 className="font-semibold">{address.label}</h3>{address.is_default && <span className="text-xs text-cyan-soft">Default</span>}</div>
+            <div className="flex items-start justify-between gap-2"><h3 className="font-semibold">{address.label}</h3>{address.is_default && <span className="text-xs text-secondary-soft">Default</span>}</div>
             <p className="mt-2 text-sm text-ink-mute">{address.full_name}<br />{address.address_line}<br />{[address.city, address.region, address.country, address.postal_code].filter(Boolean).join(", ")}<br />{address.phone}</p>
             <div className="mt-3 flex gap-2">
               <Button variant="secondary" onClick={() => setDraft({ ...address, region: address.region ?? "", postal_code: address.postal_code ?? "" })}>Edit</Button>

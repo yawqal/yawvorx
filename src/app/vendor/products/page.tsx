@@ -27,7 +27,7 @@ export default async function VendorProductsPage() {
       <PageHeader title="My vendor products" />
       <Container className="py-10"><Card>
         <p>Your vendor account is not active</p>
-        <Link href="/account" className="mt-3 inline-block text-cyan-soft underline">Go to your account and vendor application</Link>
+        <Link href="/account" className="mt-3 inline-block text-secondary-soft underline">Go to your account and vendor application</Link>
       </Card></Container>
     </>;
   }

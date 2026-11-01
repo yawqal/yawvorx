@@ -26,7 +26,7 @@ export function FreelancerReview({ profiles }: { profiles: Profile[] }) {
     finally { setBusy(null); }
   }
   return <div className="space-y-4">
-    <p role="status" aria-live="polite" className="text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="text-red-300">{error}</p>
     {profiles.map((profile) => <Card key={profile.id}>
       <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">

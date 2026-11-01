@@ -58,7 +58,7 @@ export function VendorReviewConsole({
 
   return (
     <div className="space-y-4">
-      {message && <p role="status" className="text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="text-secondary-soft">{message}</p>}
       {applications.map((application) => {
         const referral = application.referral_code ? referrals.get(application.referral_code) : undefined;
         return <Card key={application.id}>

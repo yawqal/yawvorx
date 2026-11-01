@@ -55,7 +55,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
         {items.length === 0 ? <p className="mt-2 text-sm text-ink-mute">No notifications yet.</p> : (
           <ul className="mt-2 max-h-80 space-y-2 overflow-y-auto">
             {items.map((item) => <li key={item.id}>
-              <button type="button" className={`w-full rounded-lg border border-line p-3 text-left ${item.read_at ? "opacity-70" : "bg-cyan/5"}`} onClick={() => void openNotice(item)}>
+              <button type="button" className={`w-full rounded-lg border border-line p-3 text-left ${item.read_at ? "opacity-70" : "bg-brand/5"}`} onClick={() => void openNotice(item)}>
                 <span className="block font-medium">{item.title}</span>
                 {item.body && <span className="mt-1 block text-sm text-ink-mute">{item.body}</span>}
                 <span className="mt-1 block text-xs text-ink-mute">{new Date(item.created_at).toLocaleString()}</span>
@@ -63,7 +63,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
             </li>)}
           </ul>
         )}
-        <button type="button" className="mt-2 min-h-[40px] text-sm text-cyan-soft underline" onClick={() => { setOpen(false); router.push("/account#notifications"); }}>View account</button>
+        <button type="button" className="mt-2 min-h-[40px] text-sm text-secondary-soft underline" onClick={() => { setOpen(false); router.push("/account#notifications"); }}>View account</button>
       </div>}
     </div>
   );

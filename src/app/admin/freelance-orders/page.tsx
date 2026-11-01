@@ -32,7 +32,7 @@ export default async function AdminFreelanceOrdersPage({ searchParams }: Props) 
         <Select label="Filter by status" name="status" defaultValue={status}>
           <option value="">All statuses</option>{statusOptions.map((item) => <option key={item} value={item}>{item.replace(/_/g, " ")}</option>)}
         </Select>
-        <button type="submit" className="min-h-[44px] self-end rounded-xl border border-line px-5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet">Apply filters</button>
+        <button type="submit" className="min-h-[44px] self-end rounded-xl border border-line px-5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">Apply filters</button>
       </form>
       {result.error ? <p role="alert" className="text-red-300">Orders could not be loaded: {result.error.message}</p>
         : !result.data?.length ? <Card><p>No orders yet.</p></Card>

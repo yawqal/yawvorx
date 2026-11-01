@@ -21,7 +21,7 @@ export default async function Portfolio() {
               {usingFallback && <Badge tone="demo">Showing sample fallback</Badge>}
             </div>
             <p className="eyebrow">A view into the studio</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">Selected work<span className="text-violet-soft">.</span></h1>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">Selected work<span className="text-brand-soft">.</span></h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-mute sm:text-lg">{usingFallback
               ? "The projects below are sample concepts created to show our approach. They are not completed client work."
               : "Published work and concepts from the studio."}</p>
