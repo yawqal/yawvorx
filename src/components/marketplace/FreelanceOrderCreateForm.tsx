@@ -39,7 +39,7 @@ export function FreelanceOrderCreateForm({ serviceId }: { serviceId: string; use
     <Textarea label="Project details" name="details" minLength={10} maxLength={4000} required />
     <Input label="Desired deadline (optional)" name="deadline" type="date" min={today} />
     <p className="rounded-xl border border-amber-700/20 bg-amber-500/10 p-4 text-sm text-amber-200">Payments for freelancer orders are not processed on ZIKA yet. Agree payment terms directly with the freelancer.</p>
-    <p role="status" aria-live="polite" className="min-h-5 text-sm text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="min-h-5 text-sm text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-300">{error}</p>
     <Button type="submit" loading={busy}>Place order</Button>
   </form>;

@@ -31,19 +31,19 @@ export default function About() {
             <Button href="/services" variant="secondary" className="mt-8 w-fit">Explore services <ArrowUpRight size={16} /></Button>
           </Card>
           <div className="grid gap-4">
-            <Card className="flex gap-4 sm:p-7"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet/10 text-violet-soft"><Compass size={20} /></span><div><h3 className="font-semibold">Vision</h3><p className="mt-2 leading-relaxed text-ink-mute">{vision}</p></div></Card>
-            <Card className="bg-ink text-white sm:p-7"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-bright">Our point of view</p><p className="mt-3 max-w-lg text-xl font-medium leading-relaxed">Useful technology and expressive design belong in the same conversation.</p></Card>
+            <Card className="flex gap-4 sm:p-7"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-soft"><Compass size={20} /></span><div><h3 className="font-semibold">Vision</h3><p className="mt-2 leading-relaxed text-ink-mute">{vision}</p></div></Card>
+            <Card className="bg-ink text-white sm:p-7"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-bright">Our point of view</p><p className="mt-3 max-w-lg text-xl font-medium leading-relaxed">Useful technology and expressive design belong in the same conversation.</p></Card>
           </div>
         </div>
       </Section>
       <Section title="Values">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{values.map((v, i) => {
           const Icon = [Sparkles, Layers3, Compass, ShieldCheck][i];
-          return <Card key={v.t} className="min-h-44"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet/10 text-violet-soft"><Icon size={19} /></span><h3 className="mt-5 font-semibold">{v.t}</h3><p className="mt-2 text-sm leading-relaxed text-ink-mute">{v.d}</p></Card>;
+          return <Card key={v.t} className="min-h-44"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand-soft"><Icon size={19} /></span><h3 className="mt-5 font-semibold">{v.t}</h3><p className="mt-2 text-sm leading-relaxed text-ink-mute">{v.d}</p></Card>;
         })}</div>
       </Section>
       <Section title="Our approach" intro="We combine creative direction with careful engineering: designs are planned for phones first, built with accessible, maintainable code, and tested before they reach you.">
-        <Card className="bg-gradient-to-br from-violet/[0.08] via-white to-cyan/[0.08] flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <Card className="bg-gradient-to-br from-brand/[0.08] via-white to-secondary/[0.08] flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div><p className="eyebrow">Start a conversation</p><h3 className="mt-2 text-2xl font-semibold">Bring the next idea into focus.</h3></div>
           <Button href="/hire">Hire YAWVOREX <ArrowUpRight size={16} /></Button>
         </Card>

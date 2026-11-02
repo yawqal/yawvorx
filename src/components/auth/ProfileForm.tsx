@@ -26,7 +26,7 @@ export function ProfileForm({ userId, fullName, phone }: { userId: string; fullN
     <form onSubmit={submit} className="space-y-4">
       <Input label="Full name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
       <Input label="Phone (optional)" type="tel" autoComplete="tel" value={tel} onChange={(e) => setTel(e.target.value)} />
-      {msg && <p role="status" className={msg.ok ? "text-cyan-soft" : "text-red-300"}>{msg.text}</p>}
+      {msg && <p role="status" className={msg.ok ? "text-secondary-soft" : "text-red-300"}>{msg.text}</p>}
       <Button type="submit" loading={busy}>Save profile</Button>
     </form>
   );

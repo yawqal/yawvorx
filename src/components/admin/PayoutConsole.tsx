@@ -54,7 +54,7 @@ export function PayoutConsole({ balances, minPayoutEtb, payouts, ledger }: {
   return (
     <div className="space-y-10">
       {error && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{error}</p>}
-      {message && <p role="status" className="text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="text-secondary-soft">{message}</p>}
       <section>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-semibold">Balances</h2>
@@ -66,7 +66,7 @@ export function PayoutConsole({ balances, minPayoutEtb, payouts, ledger }: {
             <tbody>{balances.map((row) => {
               const due = Number(row.due);
               const highlighted = due > 0 && (row.currency !== "ETB" || minPayoutEtb === null || due >= Number(minPayoutEtb));
-              return <tr className={highlighted ? "bg-cyan/10" : "border-t border-line"} key={`${row.user_id}-${row.currency}`}>
+              return <tr className={highlighted ? "bg-brand/10" : "border-t border-line"} key={`${row.user_id}-${row.currency}`}>
                 <td className="px-3 py-2">{row.name}</td><td className="px-3 py-2">{row.currency}</td>
                 <td className="px-3 py-2">{money(Number(row.pending), row.currency)}</td><td className="px-3 py-2">{money(Number(row.payable), row.currency)}</td>
                 <td className="px-3 py-2">{money(Number(row.paid_out), row.currency)}</td><td className="px-3 py-2">{money(due, row.currency)}</td>

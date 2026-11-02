@@ -5,41 +5,41 @@
 :root { color-scheme: light; }
 
 @layer base {
-  html { background: #F5F6FA; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { background: #fbf4ec; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body { @apply bg-obsidian font-sans text-ink antialiased; overflow-x: hidden; }
   html[lang="am"] body { font-family: var(--font-ethiopic), sans-serif; line-height: 1.65; }
   h1, h2, h3 { @apply font-display tracking-tight; }
   html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] h3 { font-family: var(--font-ethiopic), sans-serif; }
-  ::selection { background: rgba(118, 87, 232, 0.2); }
-  :focus-visible { outline: 3px solid #7657E8; outline-offset: 3px; border-radius: 6px; }
-  img { color: #626779; }
+  ::selection { background: rgba(99, 58, 40, 0.2); }
+  :focus-visible { outline: 3px solid #633a28; outline-offset: 3px; border-radius: 6px; }
+  img { color: #895a3e; }
 }
 
 @layer components {
-  .surface { @apply rounded-[1.25rem] border border-line/80 bg-white/80 shadow-depth; backdrop-filter: blur(14px); }
-  .surface-hover { @apply transition duration-200 hover:-translate-y-0.5 hover:border-violet/30 hover:bg-white hover:shadow-glow; }
-  .text-gradient { @apply bg-gradient-to-r from-violet-soft via-violet to-cyan-soft bg-clip-text text-transparent; }
+  .surface { @apply rounded-2xl border border-line/80 bg-white/80 shadow-depth; backdrop-filter: blur(14px); }
+  .surface-hover { @apply transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-1 hover:border-brand/30 hover:bg-white hover:shadow-glow; }
+  .text-gradient { @apply bg-gradient-to-r from-secondary-soft via-brand to-secondary bg-clip-text text-transparent; }
   .bg-aurora {
     background:
-      radial-gradient(54% 76% at 82% 10%, rgba(118, 87, 232, 0.12), transparent 72%),
-      radial-gradient(45% 62% at 4% 8%, rgba(84, 201, 221, 0.14), transparent 72%),
-      linear-gradient(115deg, #FBFBFE 0%, #F2F1FA 58%, #F5FAFC 100%);
+      radial-gradient(54% 76% at 82% 10%, rgba(99, 58, 40, 0.12), transparent 72%),
+      radial-gradient(45% 62% at 4% 8%, rgba(179, 127, 90, 0.14), transparent 72%),
+      linear-gradient(115deg, #fbf4ec 0%, #f1e1d2 58%, #d9b595 100%);
   }
   .hero-title { font-size: clamp(44px, 6.8vw, 84px); letter-spacing: -0.055em; }
   .home-reveal { animation: home-fade-up 520ms ease both; }
   .hero-art {
     background:
-      radial-gradient(70% 80% at 50% 35%, rgba(118,87,232,0.12), transparent 68%),
-      radial-gradient(48% 60% at 100% 100%, rgba(84,201,221,0.14), transparent 74%),
-      linear-gradient(145deg, rgba(255,255,255,.98), rgba(242,243,250,.88));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 32px 70px -48px rgba(64,53,125,.45);
+      radial-gradient(70% 80% at 50% 35%, rgba(99, 58, 40, 0.12), transparent 68%),
+      radial-gradient(48% 60% at 100% 100%, rgba(179, 127, 90, 0.14), transparent 74%),
+      linear-gradient(145deg, rgba(251, 244, 236, .98), rgba(241, 225, 210, .88));
+    box-shadow: inset 0 1px 0 rgba(251, 244, 236, .9), 0 32px 70px -48px rgba(25, 17, 14, .45);
   }
   .control {
     @apply min-h-11 rounded-xl border border-line bg-white text-ink transition;
-    box-shadow: inset 0 1px 2px rgba(23,25,35,.025);
+    box-shadow: inset 0 1px 2px rgba(25, 17, 14, .025);
   }
   .glass-panel { @apply border border-line/80 bg-white/75 shadow-depth; backdrop-filter: blur(16px); }
-  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.18em] text-secondary-soft; }
   .section-heading { @apply text-3xl font-semibold tracking-tight text-ink sm:text-4xl; }
 }
 

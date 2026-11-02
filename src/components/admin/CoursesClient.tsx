@@ -216,12 +216,12 @@ export default function CoursesClient() {
           </Button>
         </div>
         {submitError && <p role="alert" className="text-red-300 mt-2">{submitError}</p>}
-        {submitMessage && <p role="status" className="text-cyan-soft mt-2">{submitMessage}</p>}
+        {submitMessage && <p role="status" className="text-secondary-soft mt-2">{submitMessage}</p>}
       </form>
 
       {/* Courses list */}
       <div className="space-y-4">
-        <p role="status" aria-live="polite" className="text-cyan-soft"></p>
+        <p role="status" aria-live="polite" className="text-secondary-soft"></p>
         <p role="alert" aria-live="polite" className="text-red-300"></p>
         {courses.map((course) => (
           <Card key={course.id}>

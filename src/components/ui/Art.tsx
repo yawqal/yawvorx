@@ -12,7 +12,7 @@ export function Art({ seed = 0, className = "" }: { seed?: number; className?: s
         ))}
       </svg>
       <div className="absolute inset-x-[18%] inset-y-[16%] rounded-[1.25rem] border border-white/90 bg-white/40 shadow-[0_20px_45px_-30px_rgba(64,53,125,.45)] backdrop-blur-sm" />
-      <div className="absolute left-[27%] top-[30%] h-[38%] w-[46%] rounded-[1rem] border border-white/80 bg-gradient-to-br from-white/85 via-violet/10 to-cyan/20 shadow-[0_18px_35px_-28px_rgba(55,49,104,.5)]" />
+      <div className="absolute left-[27%] top-[30%] h-[38%] w-[46%] rounded-[1rem] border border-white/80 bg-gradient-to-br from-white/85 via-brand/10 to-secondary/20 shadow-[0_18px_35px_-28px_rgba(55,49,104,.5)]" />
     </div>
   );
 }

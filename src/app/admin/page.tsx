@@ -84,22 +84,22 @@ export default async function Admin() {
             {[
               ["admin-overview", "Overview"], ["admin-products", "Products"], ["admin-categories", "Categories"], ["admin-orders", "Orders"],
               ["admin-services", "Services"], ["admin-portfolio", "Portfolio"], ["admin-requests", "Requests"], ["admin-support", "Support inbox"],
-            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-violet/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-violet">{label}</a>)}
+            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-brand/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-brand">{label}</a>)}
           </div>
         </nav>
         <div className="min-w-0">
         <nav aria-label="Admin tools" className="mb-8 flex flex-wrap gap-2">
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/audit">Audit log</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/health">Health check</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/reviews">Product reviews</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendors">Vendors and affiliates</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/settings">Marketplace settings</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/vendor-products">Vendor products</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/freelancers">Freelancers</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/courses">Courses</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/directory">Directory</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/freelance-orders">Freelancer orders</Link>
-          <Link className="rounded-xl border border-line px-4 py-3 text-cyan-soft underline" href="/admin/payouts">Payouts and earnings</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/audit">Audit log</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/health">Health check</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/reviews">Product reviews</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/vendors">Vendors and affiliates</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/settings">Marketplace settings</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/vendor-products">Vendor products</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/freelancers">Freelancers</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/courses">Courses</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/directory">Directory</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/freelance-orders">Freelancer orders</Link>
+          <Link className="rounded-xl border border-line px-4 py-3 text-secondary-soft underline" href="/admin/payouts">Payouts and earnings</Link>
         </nav>
         <AdminConsole
           products={productsResult.data ?? []}

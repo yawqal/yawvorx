@@ -24,8 +24,8 @@ export default async function FreelancerApplyPage() {
           <h2 className="mt-3 text-xl font-semibold">{result.data.display_name}</h2>
           <p className="mt-2 text-ink-mute">You already have a freelancer profile.</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <a href="/freelancers/me" className="inline-flex min-h-[44px] items-center rounded-xl border border-line px-4 py-2 font-semibold text-cyan-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet">View my profile</a>
-            {result.data.status === "approved" && <a href={`/freelancers/${encodeURIComponent(result.data.slug)}`} className="inline-flex min-h-[44px] items-center rounded-xl border border-line px-4 py-2 font-semibold text-cyan-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet">Public page</a>}
+            <a href="/freelancers/me" className="inline-flex min-h-[44px] items-center rounded-xl border border-line px-4 py-2 font-semibold text-secondary-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">View my profile</a>
+            {result.data.status === "approved" && <a href={`/freelancers/${encodeURIComponent(result.data.slug)}`} className="inline-flex min-h-[44px] items-center rounded-xl border border-line px-4 py-2 font-semibold text-secondary-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">Public page</a>}
           </div>
         </Card>
           : <FreelancerApplyForm />}

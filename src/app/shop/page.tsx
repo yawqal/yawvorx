@@ -24,7 +24,7 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ q
       <div className="border-b border-line bg-aurora">
         <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_auto] lg:items-end lg:py-20">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">The collection</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">The collection</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl"><TranslatedText value="Shop" /></h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-mute sm:text-lg"><TranslatedText value="Digital and physical products from YAWVOREX. Orders are confirmed by YAWVOREX before processing." /></p>
           </div>

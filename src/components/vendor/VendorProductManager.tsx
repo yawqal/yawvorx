@@ -182,7 +182,7 @@ export function VendorProductManager({ products, categories, vendorUserId }: { p
   return (
     <div className="space-y-6">
       {error && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{error}</p>}
-      {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="rounded-xl border border-brand/30 p-3 text-secondary-soft">{message}</p>}
       <Card>
         <h2 className="text-lg font-semibold">{editingId ? "Edit vendor product" : "Create vendor product"}</h2>
         <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => void save(event)}>

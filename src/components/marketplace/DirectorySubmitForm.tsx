@@ -31,7 +31,7 @@ export function DirectorySubmitForm() {
     <Input label="Website (https:// required)" name="website" type="url" maxLength={2048} required />
     <Input label="Public email (optional)" name="public_email" type="email" maxLength={254} />
     <Input label="Public phone (optional)" name="public_phone" type="tel" maxLength={30} />
-    <p role="status" aria-live="polite" className="text-sm text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="text-sm text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="text-sm text-red-300">{error}</p>
     <Button type="submit" loading={busy}>Submit business for review</Button>
   </form></Card>;

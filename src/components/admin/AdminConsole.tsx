@@ -75,10 +75,10 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
   return (
     <div className="space-y-8">
       {loadError && <p role="alert" className="rounded-xl border border-red-400/40 p-4 text-red-300">{loadError}</p>}
-      {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="rounded-xl border border-brand/30 p-3 text-secondary-soft">{message}</p>}
 
       <section id="admin-overview" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Operations</p><h2 className="mt-2 text-2xl font-semibold">Orders overview</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Operations</p><h2 className="mt-2 text-2xl font-semibold">Orders overview</h2></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           {Object.entries(counts).map(([status, count]) => (
             <Card key={status}><p className="text-sm capitalize text-ink-mute">{status.replace(/_/g, " ")}</p><p className="mt-2 font-display text-2xl">{count}</p></Card>
@@ -87,7 +87,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       </section>
 
       <section id="admin-products" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Catalog</p><h2 className="mt-2 text-2xl font-semibold">Products and stock</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Catalog</p><h2 className="mt-2 text-2xl font-semibold">Products and stock</h2></div>
         <Card>
           <h3 className="text-lg font-semibold">Add product</h3>
           <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} dualPricingAvailable={dualPricingAvailable} digitalFiles={[]} onSave={send} busy={busy} />
@@ -101,7 +101,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
                   <Badge tone={product.stock <= 5 ? "warn" : "ok"}>{product.stock <= 5 ? `Low stock: ${product.stock}` : `Stock: ${product.stock}`}</Badge>
                   <Badge>{product.is_demo ? "Demo" : "Live"}</Badge>
                   <Badge>{product.is_published ? "Active" : "Inactive"}</Badge>
-                  <span className="text-sm text-cyan-soft">Edit product ↓</span>
+                  <span className="text-sm text-secondary-soft">Edit product ↓</span>
                 </summary>
                 <p className="mt-3 text-sm text-ink-mute">
                   {typeof product.price_etb === "number" && Number.isFinite(product.price_etb) &&
@@ -133,7 +133,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       </section>
 
       <section id="admin-categories" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-soft">Organization</p><h2 className="mt-2 text-2xl font-semibold">Categories</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Organization</p><h2 className="mt-2 text-2xl font-semibold">Categories</h2></div>
         <Card><CategoryEditor initial={{ id: "", name: "", slug: "" }} onSave={send} busy={busy} /></Card>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {categories.map((category) => <Card key={category.id}><CategoryEditor initial={{ id: String(category.id), name: category.name, slug: category.slug }} onSave={send} busy={busy} /></Card>)}

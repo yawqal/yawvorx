@@ -67,9 +67,9 @@ export function VendorApplication({
         <p className="mt-2 text-sm text-ink-mute">{application.description}</p>
         {application.admin_note && <p className="mt-3 text-sm text-ink-mute">Owner note: {application.admin_note}</p>}
         {application.status === "approved" && activeReferralCode && (
-          <div className="mt-4 rounded-xl border border-cyan/30 p-4">
+          <div className="mt-4 rounded-xl border border-brand/30 p-4">
             <p className="text-sm text-ink-mute">Your referral code</p>
-            <code className="mt-1 block text-lg font-semibold text-cyan-soft">{activeReferralCode}</code>
+            <code className="mt-1 block text-lg font-semibold text-secondary-soft">{activeReferralCode}</code>
             <p className="mt-2 break-all text-sm text-ink-mute">/?ref={activeReferralCode}</p>
           </div>
         )}
@@ -83,10 +83,10 @@ export function VendorApplication({
         <Input label="Business name" name="business_name" minLength={2} maxLength={120} required />
         <Input label="Contact detail" name="contact_value" minLength={3} maxLength={150} required />
         <Textarea label="Tell us about your business and products" name="description" minLength={20} maxLength={2000} required />
-        {message && <p role="status" className="text-sm text-cyan-soft">{message}</p>}
+        {message && <p role="status" className="text-sm text-secondary-soft">{message}</p>}
         <Button type="submit" loading={busy}>Submit application</Button>
       </form>}
-      {application && message && <p role="status" className="mt-3 text-sm text-cyan-soft">{message}</p>}
+      {application && message && <p role="status" className="mt-3 text-sm text-secondary-soft">{message}</p>}
     </Card>
   );
 }

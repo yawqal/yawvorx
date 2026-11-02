@@ -2,6 +2,29 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { validateVendorApplication } from "@/lib/validation";
+
+export async function GET(request: Request) {
+  const limited = rateLimit(request, "vendor-list", 30, 60_000);
+  if (limited) return limited;
+  const user = await requireUser("/account");
+
+  const supabase = getSupabaseServerClient();
+  if (!supabase) return NextResponse.json({ error: "Vendor applications are not configured." }, { status: 503 });
+
+  // Only authenticated users can see their own application
+  const { data: myApp, error: appError } = await supabase
+    .from("vendor_applications")
+    .select("")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (appError || !myApp) {
+    return NextResponse.json({ application: null }, { status: 200 });
+  }
+
+  return NextResponse.json({ application: myApp }, { status: 200 });
+}
 
 export async function POST(request: Request) {
   const limited = rateLimit(request, "vendor-application-post", 5, 60_000);
@@ -20,30 +43,40 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid application request." }, { status: 400 });
   }
 
-  const record = payload as Record<string, unknown>;
-  const businessName = typeof record.business_name === "string" ? record.business_name.trim() : "";
-  const contact = typeof record.contact_value === "string" ? record.contact_value.trim() : "";
-  const description = typeof record.description === "string" ? record.description.trim() : "";
-  if (businessName.length < 2 || businessName.length > 120 ||
-      contact.length < 3 || contact.length > 150 ||
-      description.length < 20 || description.length > 2000) {
-    return NextResponse.json({ error: "Check your business name, contact detail, and application description." }, { status: 400 });
+  const validation = validateVendorApplication(payload);
+  if (!validation.ok) {
+    return NextResponse.json({ error: validation.error ?? "Invalid vendor application." }, { status: 400 });
   }
 
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Vendor applications are not configured." }, { status: 503 });
-  const { error } = await supabase.from("vendor_applications").insert({
-    user_id: user.id,
-    business_name: businessName,
-    contact_value: contact,
-    description,
-  });
-  if (error?.code === "23505") {
-    return NextResponse.json({ error: "You already have a vendor application on file." }, { status: 409 });
+
+  const { data: existing, error: existingError } = await supabase
+    .from("vendor_applications")
+    .select("id,status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existingError || !existing) {
+    // No prior application → create new pending application
+    const { error: insertError } = await supabase.from("vendor_applications").insert({
+      user_id: user.id,
+      business_name: validation.data.business_name!,
+      contact_value: validation.data.contact_value!,
+      description: validation.data.description!,
+      status: "pending",
+    });
+    if (insertError) {
+      console.error("Vendor application submission failed", { userId: user.id, error: insertError });
+      return NextResponse.json({ error: "Your application could not be saved." }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true }, { status: 201 });
   }
-  if (error) {
-    console.error("Vendor application submission failed", { userId: user.id, error });
-    return NextResponse.json({ error: "Your application could not be saved. Confirm the vendor SQL proposal is installed." }, { status: 500 });
+
+  // Prevent duplicate applications - reset existing one to a withdrawn state or reject the new submission
+  if (existing.status === "pending" || existing.status === "approved" || existing.status === "rejected") {
+    return NextResponse.json({ error: "You already have a pending or reviewed application on file." }, { status: 409 });
   }
+
   return NextResponse.json({ ok: true }, { status: 201 });
 }

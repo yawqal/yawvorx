@@ -44,7 +44,7 @@ export function ReviewsModeration({ reviews }: { reviews: Review[] }) {
 
   return (
     <div className="space-y-4">
-      {message && <p role="status" className="text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="text-secondary-soft">{message}</p>}
       {reviews.map((review) => {
         const product = Array.isArray(review.products) ? review.products[0] : review.products;
         return <Card key={review.id}>

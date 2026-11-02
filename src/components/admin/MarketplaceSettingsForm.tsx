@@ -65,7 +65,7 @@ export function MarketplaceSettingsForm({ settings }: { settings: Settings }) {
         <label className="block text-sm text-ink-mute">Referral cookie days<input className={inputClass} type="number" min="1" max="365" step="1" value={values.referral_cookie_days} onChange={(event) => set("referral_cookie_days", event.target.value)} required /></label>
         <label className="block text-sm text-ink-mute">Minimum payout (ETB)<input className={inputClass} type="number" min="0" step="0.01" value={values.min_payout_etb} onChange={(event) => set("min_payout_etb", event.target.value)} /></label>
         {error && <p role="alert" className="text-red-300">{error}</p>}
-        {message && <p role="status" className="text-cyan-soft">{message}</p>}
+        {message && <p role="status" className="text-secondary-soft">{message}</p>}
         <Button type="submit" loading={busy} disabled={busy}>Save settings</Button>
       </form>
     </Card>

@@ -55,7 +55,7 @@ export function ServiceRequests({ userId, initialName, initialEmail, requests }:
         {requests.map((request) => <Card key={request.id}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-semibold">{request.service_type}</h3>
-            <span className="text-sm capitalize text-cyan-soft">{request.status.replace(/_/g, " ")}</span>
+            <span className="text-sm capitalize text-secondary-soft">{request.status.replace(/_/g, " ")}</span>
           </div>
           <p className="mt-1 text-xs text-ink-mute">{new Date(request.created_at).toLocaleDateString()}</p>
           <p className="mt-2 whitespace-pre-wrap text-sm text-ink-mute">{request.details}</p>

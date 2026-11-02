@@ -64,7 +64,7 @@ export function HireForm({ defaultService = "", availableServices = staticServic
   );
   if (saved) return (
     <div className="space-y-4">
-      <p role="status" className="rounded-xl border border-cyan/30 p-4 text-cyan-soft">Your service request has been saved to your account. We will contact you using the details you provided.</p>
+      <p role="status" className="rounded-xl border border-brand/30 p-4 text-secondary-soft">Your service request has been saved to your account. We will contact you using the details you provided.</p>
       <Button variant="secondary" href="/account#service-requests">View my requests</Button>
       <Button variant="ghost" onClick={() => setSaved(false)}>Submit another request</Button>
     </div>

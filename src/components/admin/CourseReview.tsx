@@ -52,7 +52,7 @@ export function CourseReview({ courses }: { courses: Course[] }) {
 
   return (
     <div className="space-y-4">
-      <p role="status" aria-live="polite" className="text-cyan-soft">{message}</p>
+      <p role="status" aria-live="polite" className="text-secondary-soft">{message}</p>
       <p role="alert" aria-live="polite" className="text-red-300">{error}</p>
       {courses.map((course) => (
         <Card key={course.id}>

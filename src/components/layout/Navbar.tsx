@@ -107,7 +107,7 @@ export function Navbar() {
       {(["ETB", "USD"] as const).map((value, index) => (
         <span key={value} className="inline-flex items-center">
           {index > 0 && <span aria-hidden="true" className="px-1">|</span>}
-          <button type="button" className={`min-h-10 min-w-10 rounded-lg px-2 hover:text-ink ${currency === value ? "text-cyan-soft" : ""}`}
+          <button type="button" className={`min-h-10 min-w-10 rounded-lg px-2 hover:text-ink ${currency === value ? "text-secondary-soft" : ""}`}
             aria-pressed={currency === value} onClick={() => setCurrency(value)}>{value}</button>
         </span>
       ))}
@@ -125,14 +125,14 @@ export function Navbar() {
           {desktopLinks.map((link) => (
             <li key={`${link.label}-${link.href}`}>
               <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${active(link.href) ? "bg-violet/[0.08] text-violet-soft" : "text-ink-mute hover:bg-violet/[0.05] hover:text-ink"}`}>
+                className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${active(link.href) ? "bg-brand/[0.08] text-brand-soft" : "text-ink-mute hover:bg-brand/[0.05] hover:text-ink"}`}>
                 {link.label}
               </Link>
             </li>
           ))}
           <li className="relative">
             <button ref={moreButton} type="button" aria-expanded={moreOpen} aria-controls="more-menu"
-              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-violet/[0.05] hover:text-ink"
+              className="min-h-11 rounded-lg px-3 text-sm font-medium text-ink-mute transition hover:bg-brand/[0.05] hover:text-ink"
               onClick={() => setMoreOpen((value) => !value)}>More
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +148,7 @@ export function Navbar() {
             {moreOpen && <div id="more-menu" onKeyDown={trapTab}
               className="glass-panel absolute right-0 top-full z-50 mt-3 grid w-[min(42rem,90vw)] grid-cols-2 gap-2 rounded-2xl p-4 md:grid-cols-3">
               {moreLinks.map((link) => <Link key={link.label} href={link.href}
-                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-violet/[0.06] hover:text-ink">{link.label}</Link>)}
+                className="flex min-h-11 items-center rounded-xl px-3 text-sm text-ink-mute transition hover:bg-brand/[0.06] hover:text-ink">{link.label}</Link>)}
             </div>}
           </li>
         </ul>
@@ -159,7 +159,7 @@ export function Navbar() {
           {user && <NotificationsBell userId={user.id} />}
           <Button href={accountHref} variant="ghost" className="px-3">{accountLabel}</Button>
         </div>
-        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white text-ink transition hover:border-violet/50 xl:hidden"
+        <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white text-ink transition hover:border-brand/50 xl:hidden"
           aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? "Close menu" : "Open menu"}
           onClick={() => { setMobileOpen((value) => !value); setMobileMore(false); }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -183,7 +183,7 @@ export function Navbar() {
             {(mobileMore ? moreLinks : primaryLinks).map((link) => (
               <li key={`${link.label}-${link.href}`}>
                 <Link href={link.href} aria-current={active(link.href) ? "page" : undefined}
-                  className={`flex min-h-12 items-center rounded-xl px-4 text-lg font-medium transition-colors ${mobileMore ? "border-b border-line" : "border border-line bg-obsidian-900"} ${active(link.href) ? "text-violet-soft" : "text-ink"}`}
+                  className={`flex min-h-12 items-center rounded-xl px-4 text-lg font-medium transition-colors ${mobileMore ? "border-b border-line" : "border border-line bg-obsidian-900"} ${active(link.href) ? "text-brand-soft" : "text-ink"}`}
                   onClick={() => setMobileOpen(false)}>{link.label}</Link>
               </li>
             ))}
