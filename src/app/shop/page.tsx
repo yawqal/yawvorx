@@ -30,7 +30,7 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ q
           </div>
           <div className="flex items-center gap-3">
             {products.some((p) => p.isDemo) && <Badge tone="demo">Demo catalog</Badge>}
-            <span className="text-sm text-ink-mute">{products.length} listed items</span>
+            <span className="text-sm text-ink-mute">{products.length} <TranslatedText value="products" /></span>
           </div>
         </Container>
       </div>

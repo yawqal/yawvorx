@@ -25,6 +25,20 @@ function categoryName(c: CategoryRef): string {
   return first?.name || "General";
 }
 
+// Type Guard for runtime validation
+function isProductRow(data: any): data is ProductRow {
+  return (
+    data &&
+    typeof data.id === 'string' &&
+    typeof data.slug === 'string' &&
+    typeof data.name === 'string' &&
+    (data.description === null || typeof data.description === 'string') &&
+    (typeof data.price === 'number' || typeof data.price === 'string') &&
+    typeof data.currency === 'string' &&
+    (data.categories === null || typeof data.categories === 'object')
+  );
+}
+
 /** Reads published products (and their active options) from the database. Returns [] if anything goes wrong. */
 async function load(slug?: string, filters: { search?: string; categoryId?: string } = {}, vendorId?: string): Promise<Product[]> {
   const supabase = getSupabaseServerClient();
@@ -37,7 +51,7 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
   const queryProducts = (columns: string) => {
     let query = supabase
     .from("products")
-    .select(columns)
+    .select<string, ProductRow>(columns) // Added generic type
     .eq("is_published", true);
     if (vendorId) query = query.eq("vendor_id", vendorId).eq("approval_status", "approved");
     if (slug) query = query.eq("slug", slug);
@@ -54,16 +68,22 @@ async function load(slug?: string, filters: { search?: string; categoryId?: stri
     return [];
   }
 
-  const rows = result.data as unknown as ProductRow[];
+  // Use type guard to validate data
+  const rawData = result.data;
+  if (!Array.isArray(rawData) || !rawData.every(isProductRow)) {
+     console.error("Database query returned unexpected product structure");
+     return [];
+  }
+  const rows = rawData;
   if (rows.length === 0) return [];
 
   const { data: vdata } = await supabase
     .from("product_variants")
-    .select("id, product_id, label, price_delta, stock")
+    .select<string, VariantRow>("id, product_id, label, price_delta, stock") // Added generic type
     .eq("is_active", true)
     .in("product_id", rows.map((r) => r.id))
     .order("sort_order", { ascending: true });
-  const variantRows = (vdata ?? []) as unknown as VariantRow[];
+  const variantRows = (vdata ?? []); // Removed unsafe cast
   const { data: imageRows, error: imagesError } = await supabase
     .from("product_images")
     .select("product_id,storage_path")

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { formatMoney } from "@/lib/format";
+import { TranslatedText, useLanguage } from "@/components/i18n/LanguageProvider";
 
 type Product = {
   id: string; name: string; slug: string; description: string; price: number; currency: string;
@@ -78,7 +79,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       {message && <p role="status" className="rounded-xl border border-brand/30 p-3 text-secondary-soft">{message}</p>}
 
       <section id="admin-overview" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Operations</p><h2 className="mt-2 text-2xl font-semibold">Orders overview</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand"><TranslatedText value="Operations" /></p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Orders overview" /></h2></div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           {Object.entries(counts).map(([status, count]) => (
             <Card key={status}><p className="text-sm capitalize text-ink-mute">{status.replace(/_/g, " ")}</p><p className="mt-2 font-display text-2xl">{count}</p></Card>
@@ -87,9 +88,9 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       </section>
 
       <section id="admin-products" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Catalog</p><h2 className="mt-2 text-2xl font-semibold">Products and stock</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft"><TranslatedText value="Catalog" /></p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Products and stock" /></h2></div>
         <Card>
-          <h3 className="text-lg font-semibold">Add product</h3>
+          <h3 className="text-lg font-semibold"><TranslatedText value="Add product" /></h3>
           <ProductEditor categories={categories} initial={blankProduct(String(categories[0]?.id ?? ""))} dualPricingAvailable={dualPricingAvailable} digitalFiles={[]} onSave={send} busy={busy} />
         </Card>
         <div className="mt-4 space-y-4">
@@ -101,7 +102,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
                   <Badge tone={product.stock <= 5 ? "warn" : "ok"}>{product.stock <= 5 ? `Low stock: ${product.stock}` : `Stock: ${product.stock}`}</Badge>
                   <Badge>{product.is_demo ? "Demo" : "Live"}</Badge>
                   <Badge>{product.is_published ? "Active" : "Inactive"}</Badge>
-                  <span className="text-sm text-secondary-soft">Edit product ↓</span>
+                  <span className="text-sm text-secondary-soft"><TranslatedText value="Edit product" /> ↓</span>
                 </summary>
                 <p className="mt-3 text-sm text-ink-mute">
                   {typeof product.price_etb === "number" && Number.isFinite(product.price_etb) &&
@@ -116,7 +117,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
                 }} dualPricingAvailable={dualPricingAvailable} digitalFiles={digitalFiles.filter((file) => file.product_id === product.id)} onSave={send} busy={busy} />
               {variants.filter((v) => v.product_id === product.id).length > 0 && (
                 <div className="mt-5 border-t border-line pt-4">
-                  <h4 className="font-medium">Variant stock</h4>
+                  <h4 className="font-medium"><TranslatedText value="Variant stock" /></h4>
                   <div className="mt-2 space-y-2">
                     {variants.filter((v) => v.product_id === product.id).map((variant) => (
                       <VariantStock key={variant.id} variant={variant} productId={product.id} onSave={send} busy={busy} />
@@ -124,7 +125,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
                   </div>
                 </div>
               )}
-                {product.is_published && <Button className="mt-4" variant="secondary" disabled={busy} onClick={() => void send({ action: "deactivate_product", id: product.id })}>Deactivate (soft delete)</Button>}
+                {product.is_published && <Button className="mt-4" variant="secondary" disabled={busy} onClick={() => void send({ action: "deactivate_product", id: product.id })}><TranslatedText value="Deactivate (soft delete)" /></Button>}
               </details>
             </Card>
           ))}
@@ -133,7 +134,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
       </section>
 
       <section id="admin-categories" className="scroll-mt-24">
-        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">Organization</p><h2 className="mt-2 text-2xl font-semibold">Categories</h2></div>
+        <div className="mb-4"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft"><TranslatedText value="Organization" /></p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Categories" /></h2></div>
         <Card><CategoryEditor initial={{ id: "", name: "", slug: "" }} onSave={send} busy={busy} /></Card>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {categories.map((category) => <Card key={category.id}><CategoryEditor initial={{ id: String(category.id), name: category.name, slug: category.slug }} onSave={send} busy={busy} /></Card>)}
@@ -142,7 +143,7 @@ export function AdminConsole({ products, dualPricingAvailable, categories, varia
 
       <section id="admin-orders" className="scroll-mt-24">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="text-2xl font-semibold">Orders</h2>
+          <h2 className="text-2xl font-semibold"><TranslatedText value="Orders" /></h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="text-sm text-ink-mute">Filter status
               <select className={inputClass} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
@@ -227,14 +228,14 @@ function ProductEditor({ categories, initial, dualPricingAvailable, digitalFiles
         </fieldset>
         <fieldset className="grid gap-3 rounded-xl border border-line p-4 sm:col-span-2 sm:grid-cols-[1fr_1fr_auto] sm:items-center">
           <legend className="px-2 text-sm font-semibold">Visibility</legend>
-          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> Demo product</label>
-          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> Active / published</label>
-          <Button type="submit" loading={busy}>{values.id ? "Save product" : "Create product"}</Button>
+          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_demo} onChange={(event) => set("is_demo", event.target.checked)} /> <TranslatedText value="Demo product" /></label>
+          <label className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={values.is_published} onChange={(event) => set("is_published", event.target.checked)} /> <TranslatedText value="Active / published" /></label>
+          <Button type="submit" loading={busy}><TranslatedText value={values.id ? "Save product" : "Create product"} /></Button>
         </fieldset>
       </form>
       {values.id && values.product_type === "digital" && (
         <div className="mt-4 space-y-3 border-t border-line pt-4">
-          <p className="text-sm text-ink-mute">Upload the file to the private digital-files bucket separately, then save its relative storage path here.</p>
+          <p className="text-sm text-ink-mute"><TranslatedText value="Upload the file to the private digital-files bucket separately, then save its relative storage path here." /></p>
           {digitalFiles.map((file) => <DigitalFileEditor key={file.id} productId={values.id} file={file} onSave={onSave} busy={busy} />)}
           <DigitalFileEditor productId={values.id} onSave={onSave} busy={busy} />
         </div>
@@ -246,6 +247,7 @@ function ProductEditor({ categories, initial, dualPricingAvailable, digitalFiles
 function DigitalFileEditor({ productId, file, onSave, busy }: {
   productId: string; file?: DigitalFile; onSave: (values: Payload) => Promise<boolean>; busy: boolean;
 }) {
+  const { t } = useLanguage();
   const [fileName, setFileName] = useState(file?.file_name ?? "");
   const [storagePath, setStoragePath] = useState(file?.storage_path ?? "");
   return (
@@ -253,14 +255,15 @@ function DigitalFileEditor({ productId, file, onSave, busy }: {
       event.preventDefault();
       void onSave({ action: "save_digital_file", id: file?.id ?? null, product_id: productId, file_name: fileName, storage_path: storagePath });
     }}>
-      <Input label="File name shown to customer" value={fileName} maxLength={255} onChange={(event) => setFileName(event.target.value)} required />
-      <Input label="Private storage path" value={storagePath} maxLength={500} onChange={(event) => setStoragePath(event.target.value)} placeholder="products/example/file.zip" required />
-      <Button type="submit" variant="secondary" loading={busy}>{file ? "Update file reference" : "Attach file reference"}</Button>
+      <Input label={t("File name shown to customer")} value={fileName} maxLength={255} onChange={(event) => setFileName(event.target.value)} required />
+      <Input label={t("Private storage path")} value={storagePath} maxLength={500} onChange={(event) => setStoragePath(event.target.value)} placeholder="products/example/file.zip" required />
+      <Button type="submit" variant="secondary" loading={busy}>{file ? <TranslatedText value="Update file reference" /> : <TranslatedText value="Attach file reference" />}</Button>
     </form>
   );
 }
 
 function CategoryEditor({ initial, onSave, busy }: { initial: { id: string; name: string; slug: string }; onSave: (values: Payload) => Promise<boolean>; busy: boolean }) {
+  const { t } = useLanguage();
   const [name, setName] = useState(initial.name);
   const [slug, setSlug] = useState(initial.slug);
   return (
@@ -268,36 +271,38 @@ function CategoryEditor({ initial, onSave, busy }: { initial: { id: string; name
       event.preventDefault();
       void onSave({ action: "save_category", id: initial.id || null, name, slug });
     }}>
-      <Input label="Category name" value={name} onChange={(event) => setName(event.target.value)} required />
-      <Input label="Slug" value={slug} onChange={(event) => setSlug(event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
-      <Button type="submit" loading={busy}>{initial.id ? "Update" : "Create category"}</Button>
+      <Input label={t("Category name")} value={name} onChange={(event) => setName(event.target.value)} required />
+      <Input label={t("Slug")} value={slug} onChange={(event) => setSlug(event.target.value)} required pattern="[A-Za-z0-9]+(-[A-Za-z0-9]+)*" />
+      <Button type="submit" loading={busy}>{initial.id ? <TranslatedText value="Update" /> : <TranslatedText value="Create category" />}</Button>
     </form>
   );
 }
 
 function VariantStock({ variant, productId, onSave, busy }: { variant: Variant; productId: string; onSave: (values: Payload) => Promise<boolean>; busy: boolean }) {
+  const { t } = useLanguage();
   const [stock, setStock] = useState(String(variant.stock ?? 0));
   return (
     <form className="grid gap-2 sm:grid-cols-[1fr_10rem_auto] sm:items-end" onSubmit={(event) => {
       event.preventDefault();
       void onSave({ action: "save_variant_stock", id: variant.id, product_id: productId, stock: Number(stock) });
     }}>
-      <p>{variant.label} {Number(stock) <= 5 && <span className="text-amber-300">(low stock)</span>}</p>
-      <Input label="Variant stock" type="number" min="0" step="1" value={stock} onChange={(event) => setStock(event.target.value)} />
-      <Button type="submit" variant="secondary" loading={busy}>Update stock</Button>
+      <p>{variant.label} {Number(stock) <= 5 && <span className="text-amber-300">(<TranslatedText value="low stock" />)</span>}</p>
+      <Input label={t("Variant stock")} type="number" min="0" step="1" value={stock} onChange={(event) => setStock(event.target.value)} />
+      <Button type="submit" variant="secondary" loading={busy}><TranslatedText value="Update stock" /></Button>
     </form>
   );
 }
 
 function OrderNote({ orderId, onSave, busy }: { orderId: string; onSave: (values: Payload) => Promise<boolean>; busy: boolean }) {
+  const { t } = useLanguage();
   const [note, setNote] = useState("");
   return (
     <form className="mt-4 grid gap-2 sm:grid-cols-[1fr_auto]" onSubmit={(event) => {
       event.preventDefault();
       void onSave({ action: "add_order_note", id: orderId, note }).then((ok) => { if (ok) setNote(""); });
     }}>
-      <Input label="Admin note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={2000} required />
-      <Button type="submit" variant="secondary" loading={busy}>Add note</Button>
+      <Input label={t("Admin note")} value={note} onChange={(event) => setNote(event.target.value)} maxLength={2000} required />
+      <Button type="submit" variant="secondary" loading={busy}><TranslatedText value="Add note" /></Button>
     </form>
   );
 }

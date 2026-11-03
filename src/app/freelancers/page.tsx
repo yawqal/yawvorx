@@ -10,6 +10,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatMoney } from "@/lib/format";
 import { getCurrentUser } from "@/lib/auth";
 import { FreelancerAvatar } from "@/components/marketplace/FreelancerAvatar";
+import { TranslatedText } from "@/components/i18n/LanguageProvider";
 
 export const metadata: Metadata = {
   title: "Freelancers",
@@ -69,15 +70,15 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
   });
 
   return <>
-    <PageHeader title="Find a freelancer" intro="Browse approved professionals and connect with the right person for your project." />
+    <PageHeader title={<TranslatedText value="Find a freelancer" />} intro={<TranslatedText value="Browse approved professionals and connect with the right person for your project." />} />
     <Container className="py-8 sm:py-10">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <Button href={user ? ownProfile?.data ? "/freelancers/me" : "/freelancers/apply" : "/login?next=%2Ffreelancers%2Fapply"}>
-          {user ? ownProfile?.data ? "My Profile" : "Add Profile" : "Add Profile"}
+          {user ? ownProfile?.data ? <TranslatedText value="My Profile" /> : <TranslatedText value="Add Profile" /> : <TranslatedText value="Add Profile" />}
         </Button>
       </div>
       <form method="get" className="mb-8 grid gap-3 rounded-2xl border border-line p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
-        <label className="grid gap-2 text-sm font-semibold">Search by name or skill
+        <label className="grid gap-2 text-sm font-semibold"><TranslatedText value="Search by name or skill" />
           <input className="control min-h-[44px] w-full px-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" type="search" name="q" maxLength={80} defaultValue={search} />
         </label>
         <label className="grid gap-2 text-sm font-semibold">Category
@@ -90,17 +91,17 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
             <option value="newest">Newest</option><option value="price">Lowest starting price</option>
           </select>
         </label>
-        <Button type="submit" variant="secondary" className="self-end">Apply filters</Button>
+        <Button type="submit" variant="secondary" className="self-end"><TranslatedText value="Apply filters" /></Button>
       </form>
       {loadError ? <p role="alert" className="text-red-300">{loadError}</p> : filtered.length === 0
-        ? <Card><h2 className="font-semibold">No freelancers yet</h2><p className="mt-2 text-ink-mute">There are no approved freelancer profiles to show right now.</p></Card>
+        ? <Card><h2 className="font-semibold"><TranslatedText value="No freelancers yet" /></h2><p className="mt-2 text-ink-mute"><TranslatedText value="There are no approved freelancer profiles to show right now." /></p></Card>
         : <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-3">{filtered.map((profile) => {
           const startingPrice = profile.freelancer_services?.filter((service) => service.is_active)
             .map((service) => Number(service.price_etb)).filter((price) => Number.isFinite(price) && price >= 0)
             .sort((a, b) => a - b)[0];
           const rating = ratings.get(profile.id);
           return <Card key={profile.id} className="flex min-w-0 flex-col">
-            <div className="flex flex-wrap items-center gap-2"><Badge>{profile.category}</Badge>{profile.is_verified === true && <Badge tone="ok">Verified</Badge>}</div>
+            <div className="flex flex-wrap items-center gap-2"><Badge>{profile.category}</Badge>{profile.is_verified === true && <Badge tone="ok"><TranslatedText value="Verified" /></Badge>}</div>
             <div className="mt-3 flex items-center gap-3">
               <FreelancerAvatar name={profile.display_name} src={profile.avatar_url} size={56} />
               <h2 className="break-words text-xl font-semibold">{profile.display_name}</h2>
@@ -108,8 +109,8 @@ export default async function FreelancersPage({ searchParams }: { searchParams: 
             {profile.headline && <p className="mt-1 break-words text-ink-mute">{profile.headline}</p>}
             {rating && rating.review_count > 0 && <p className="mt-2 text-sm text-ink-mute">{Number(rating.avg_rating).toFixed(1)} / 5 ({rating.review_count} reviews)</p>}
             <div className="mt-4 flex flex-wrap gap-2">{skillsList(profile.skills).map((skill) => skill.trim()).filter(Boolean).slice(0, 10).map((skill) => <span key={skill} className="rounded-full bg-obsidian-800 px-3 py-1 text-xs text-ink-mute">{skill}</span>)}</div>
-            {startingPrice !== undefined && <p className="mt-4 text-sm text-ink-mute">Starting at <span className="font-semibold text-ink">{formatMoney(startingPrice, "ETB")}</span></p>}
-            <Link className="mt-auto inline-flex min-h-[44px] items-center pt-5 font-semibold text-brand-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" href={`/freelancers/${encodeURIComponent(profile.slug)}`}>View Profile <span aria-hidden="true" className="ml-2">↗</span></Link>
+            {startingPrice !== undefined && <p className="mt-4 text-sm text-ink-mute"><TranslatedText value="Starting at" /> <span className="font-semibold text-ink">{formatMoney(startingPrice, "ETB")}</span></p>}
+            <Link className="mt-auto inline-flex min-h-[44px] items-center pt-5 font-semibold text-brand-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" href={`/freelancers/${encodeURIComponent(profile.slug)}`}><TranslatedText value="View Profile" /> <span aria-hidden="true" className="ml-2">↗</span></Link>
           </Card>;
         })}</div>}
     </Container>

@@ -8,6 +8,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { isMissingDualPriceColumns } from "@/lib/products-db";
+import { TranslatedText } from "@/components/i18n/LanguageProvider";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function Admin() {
   const user = await requireAdmin();
   const supabase = getSupabaseServerClient();
   if (!supabase) {
-    return <><PageHeader title="Admin area"><Badge tone="ok">Admin verified</Badge></PageHeader><Container className="py-10"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
+    return <><PageHeader title={<TranslatedText value="Admin area" />}><Badge tone="ok"><TranslatedText value="Admin verified" /></Badge></PageHeader><Container className="py-10"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
   }
 
   const dualProductsResult = await supabase.from("products")
@@ -74,17 +75,17 @@ export default async function Admin() {
 
   return (
     <>
-      <PageHeader title="Admin area" intro={`Signed in as ${user.email ?? "admin"}`}>
-        <Badge tone="ok">Admin verified by the database</Badge>
+      <PageHeader title={<TranslatedText value="Admin area" />} intro={`Signed in as ${user.email ?? "admin"}`}>
+        <Badge tone="ok"><TranslatedText value="Admin verified" /></Badge>
       </PageHeader>
       <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
         <nav aria-label="Admin sections" className="h-fit lg:sticky lg:top-24">
-          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block">Workspace</p>
+          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block"><TranslatedText value="Workspace" /></p>
           <div className="flex gap-2 overflow-x-auto pb-2 lg:grid lg:overflow-visible lg:border-l lg:border-line lg:pb-0">
             {[
               ["admin-overview", "Overview"], ["admin-products", "Products"], ["admin-categories", "Categories"], ["admin-orders", "Orders"],
               ["admin-services", "Services"], ["admin-portfolio", "Portfolio"], ["admin-requests", "Requests"], ["admin-support", "Support inbox"],
-            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-brand/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-brand">{label}</a>)}
+            ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-brand/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-brand"><TranslatedText value={label} /></a>)}
           </div>
         </nav>
         <div className="min-w-0">

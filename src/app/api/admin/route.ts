@@ -443,7 +443,7 @@ export async function POST(request: Request) {
       return fail("A vendor application id and valid review status are required.");
     }
     const { data: application, error: readError } = await supabase.from("vendor_applications")
-      .select("id,user_id,status,referral_code").eq("id", applicationId).maybeSingle();
+      .select("id,user_id,status,referral_code,business_name").eq("id", applicationId).maybeSingle();
     if (readError || !application) return fail("Vendor application could not be found. Confirm the vendor SQL proposal is installed.", readError ? 500 : 404);
     const reviewedAt = new Date().toISOString();
     const { error: updateError } = await supabase.from("vendor_applications").update({
@@ -452,6 +452,26 @@ export async function POST(request: Request) {
     if (updateError) return fail("Vendor application status could not be updated.", 500);
 
     if (status === "approved") {
+      // 1. Create/reactivate vendor_profiles record using business_name as display_name
+      const { error: profileError } = await supabase
+        .from("vendor_profiles")
+        .upsert(
+          { user_id: application.user_id, display_name: application.business_name, status: "active" },
+          { onConflict: "user_id" }
+        );
+      if (profileError) {
+        console.error("Failed to create vendor profile", { applicationId, error: profileError });
+        return fail("Application approved, but vendor profile could not be created. Retry the review.", 500);
+      }
+
+      // 2. Assign vendor role (best-effort; profile creation is the critical step)
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .upsert({ user_id: application.user_id, role: "vendor" }, { onConflict: "user_id" });
+      if (roleError) {
+        console.error("Failed to assign vendor role", { userId: application.user_id, error: roleError });
+      }
+
       let referralCode = application.referral_code as string | null;
       if (referralCode) {
         const { data, error } = await supabase.from("affiliate_codes").select("id").eq("code", referralCode).maybeSingle();

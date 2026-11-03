@@ -9,6 +9,7 @@ import { EmptyState, LoadingState } from "@/components/ui/States";
 import { PreparedMessage } from "./PreparedMessage";
 import { formatMoney } from "@/lib/format";
 import { isConfigured, siteConfig } from "@/config/site";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { BLANK, joinLines, validateCheckout, type CheckoutValues, type Errors } from "@/lib/validation";
 
 const METHODS = ["WhatsApp-assisted ordering", "Manual payment (instructions after review)"];
@@ -52,6 +53,7 @@ function friendly(message: string): string {
 
 export function CheckoutForm() {
   const { items, ready, subtotal, currency, clear } = useCart();
+  const { t } = useLanguage();
   const [v, setV] = useState<CheckoutValues>({ name: "", phone: "", email: "", address: "", city: "", country: "", notes: "", method: METHODS[0] });
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
@@ -69,39 +71,41 @@ export function CheckoutForm() {
     return (
       <div className="space-y-4">
         <Card>
-          <h2 className="text-xl font-semibold">Order received</h2>
-          <p className="mt-2 text-ink-mute">Order reference: <span className="font-display text-ink">{placed.order_ref}</span></p>
-          <p className="text-ink-mute">Total: <span className="font-display text-ink">{formatMoney(placed.total, placed.currency)}</span></p>
-          <p className="mt-2 text-sm text-ink-mute">Your order is waiting for review. It is confirmed only after YAWVOREX verifies your payment.</p>
+          <h2 className="text-xl font-semibold">{t("Order received")}</h2>
+          <p className="mt-2 text-ink-mute">{t("Order reference")}: <span className="font-display text-ink">{placed.order_ref}</span></p>
+          <p className="text-ink-mute">{t("Total")}: <span className="font-display text-ink">{formatMoney(placed.total, placed.currency)}</span></p>
+          <p className="mt-2 text-sm text-ink-mute">{t("Your order is waiting for review. It is confirmed only after YAWVOREX verifies your payment.")}</p>
         </Card>
         {placed.guest_token ? (
           <Card>
-            <h2 className="text-lg font-semibold">Your tracking code</h2>
+            <h2 className="text-lg font-semibold">{t("Your tracking code")}</h2>
             <p className="mt-2 break-all rounded-xl border border-line bg-obsidian-800 p-3 font-mono text-sm">{placed.guest_token}</p>
-            <p className="mt-2 text-sm text-amber-300">Save this code now. It is shown only once. You need it with your order reference to track this order.</p>
+            <p className="mt-2 text-sm text-amber-300">{t("Save this code now. It is shown only once. You need it with your order reference to track this order.")}</p>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              <Button onClick={copyToken}>{copied ? "Copied" : "Copy tracking code"}</Button>
-              <Button variant="secondary" href={`/track?ref=${encodeURIComponent(placed.order_ref)}`}>Track this order</Button>
+              <Button onClick={copyToken}>{copied ? t("Copied") : t("Copy tracking code")}</Button>
+              <Button variant="secondary" href={`/track?ref=${encodeURIComponent(placed.order_ref)}`}>{t("Track this order")}</Button>
             </div>
           </Card>
         ) : (
           <Card>
-            <p className="text-ink-mute">This order was already placed, so the tracking code cannot be shown again. If you saved it, use it on the <Link href={`/track?ref=${encodeURIComponent(placed.order_ref)}`} className="underline">Track order</Link> page, or contact us with your order reference.</p>
+            <p className="text-ink-mute">{t("This order was already placed, so the tracking code cannot be shown again. If you saved it, use it on the")} <Link href={`/track?ref=${encodeURIComponent(placed.order_ref)}`} className="underline">{t("Track order")}</Link> {t("page, or contact us with your order reference.")}</p>
           </Card>
         )}
-        <PreparedMessage title="Send your order to YAWVOREX" message={placed.message} subject={`Order ${placed.order_ref}`} saved />
+        <PreparedMessage title={t("Send your order to YAWVOREX")} message={placed.message} subject={`Order ${placed.order_ref}`} saved />
         {placed.manual && (
-          <Card><h2 className="text-lg font-semibold">Manual payment</h2>
-            <p className="mt-2 text-ink-mute">{isConfigured(pay) ? pay : "Payment instructions will be sent by YAWVOREX after your order is reviewed."}</p>
-            <p className="mt-2 text-sm text-ink-mute">Never send card numbers, CVVs, or passwords.</p></Card>
+          <Card>
+            <h2 className="text-lg font-semibold">{t("Manual payment")}</h2>
+            <p className="mt-2 text-ink-mute">{isConfigured(pay) ? pay : t("Payment instructions will be sent by YAWVOREX after your order is reviewed.")}</p>
+            <p className="mt-2 text-sm text-ink-mute">{t("Never send card numbers, CVVs, or passwords.")}</p>
+          </Card>
         )}
-        <Button variant="ghost" href="/shop">Continue shopping</Button>
+        <Button variant="ghost" href="/shop">{t("Continue shopping")}</Button>
       </div>
     );
   }
 
   if (!ready) return <LoadingState />;
-  if (items.length === 0) return <EmptyState title="Your cart is empty" description="Add products before checking out." action={{ label: "Shop products", href: "/shop" }} />;
+  if (items.length === 0) return <EmptyState title={t("Your cart is empty")} description={t("Add products before checking out.")} action={{ label: t("Shop products"), href: "/shop" }} />;
 
   const needsAddress = items.some((i) => i.type === "physical");
   const change = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -117,7 +121,7 @@ export function CheckoutForm() {
 
     if (!keyRef.current) keyRef.current = newKey();
 
-    // Only product, option and quantity are sent. The server decides prices, stock and totals.
+    // Only product slug, option and quantity are sent. The server decides prices, stock and totals.
     const payload = {
       p_items: items.map((i) => ({ slug: i.slug, variant_id: i.variantId ?? null, qty: i.qty })),
       p_customer: {
@@ -150,41 +154,40 @@ export function CheckoutForm() {
       setPlaced({ ...res, total: Number(res.total), message, manual: v.method.startsWith("Manual") });
       clear();
     } catch {
-      setFail("We could not reach the server. Check your connection and try again.");
+      setFail(t("We could not reach the server. Check your connection and try again."));
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
-      <form onSubmit={submit} noValidate className="surface space-y-5 p-5 sm:p-8">
-        <div className="border-b border-line pb-4"><p className="eyebrow">Delivery &amp; contact</p><h2 className="mt-2 text-xl font-semibold">Your details</h2><p className="mt-1 text-sm text-ink-mute">Your information is used to prepare the order request.</p></div>
-        <Input label="Full name" name="name" autoComplete="name" value={v.name} onChange={change} error={errors.name} />
+    <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+      <form onSubmit={submit} noValidate className="space-y-5">
+        <Input label={t("Full name")} name="name" autoComplete="name" value={v.name} onChange={change} error={errors.name} />
         <div className="grid gap-5 sm:grid-cols-2">
-          <Input label="Phone (with country code)" name="phone" type="tel" autoComplete="tel" value={v.phone} onChange={change} error={errors.phone} />
-          <Input label="Email (optional)" name="email" type="email" autoComplete="email" value={v.email} onChange={change} error={errors.email} />
+          <Input label={t("Phone (with country code)")} name="phone" type="tel" autoComplete="tel" value={v.phone} onChange={change} error={errors.phone} />
+          <Input label={t("Email (optional)")} name="email" type="email" autoComplete="email" value={v.email} onChange={change} error={errors.email} />
         </div>
         {needsAddress && (<>
-          <Input label="Delivery address" name="address" autoComplete="street-address" value={v.address} onChange={change} error={errors.address} />
+          <Input label={t("Delivery address")} name="address" autoComplete="street-address" value={v.address} onChange={change} error={errors.address} />
           <div className="grid gap-5 sm:grid-cols-2">
-            <Input label="City" name="city" autoComplete="address-level2" value={v.city} onChange={change} error={errors.city} />
-            <Input label="Country" name="country" autoComplete="country-name" value={v.country} onChange={change} error={errors.country} />
+            <Input label={t("City")} name="city" autoComplete="address-level2" value={v.city} onChange={change} error={errors.city} />
+            <Input label={t("Country")} name="country" autoComplete="country-name" value={v.country} onChange={change} error={errors.country} />
           </div>
         </>)}
-        <div className="border-t border-line pt-5"><Select label="Ordering method" name="method" value={v.method} onChange={change} error={errors.method}>{METHODS.map((m) => <option key={m}>{m}</option>)}</Select></div>
-        <Textarea label="Notes (optional)" name="notes" rows={3} value={v.notes} onChange={change} />
-        <p className="text-sm text-ink-mute">Never send card numbers, CVVs, or passwords. YAWVOREX does not collect them.</p>
+        <Select label={t("Ordering method")} name="method" value={v.method} onChange={change} error={errors.method}>{METHODS.map((m) => <option key={m}>{m}</option>)}</Select>
+        <Textarea label={t("Notes (optional)")} name="notes" rows={3} value={v.notes} onChange={change} />
+        <p className="text-sm text-ink-mute">{t("Never send card numbers, CVVs, or passwords. YAWVOREX does not collect them.")}</p>
         {fail && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{fail}</p>}
-        <Button type="submit" className="w-full sm:w-auto" loading={busy} disabled={busy}>Place order request</Button>
+        <Button type="submit" className="w-full sm:w-auto" loading={busy} disabled={busy}>{t("Place order request")}</Button>
       </form>
-      <Card className="h-fit bg-ink text-white lg:sticky lg:top-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.17em] text-brand-bright">Final review</p><h2 className="mt-2 text-lg font-semibold text-white">Your items</h2>
+      <Card className="h-fit">
+        <h2 className="text-lg font-semibold">{t("Your items")}</h2>
         <ul className="mt-3 space-y-2 text-sm">
-          {items.map((i) => <li key={i.key} className="flex justify-between gap-3 border-b border-white/10 pb-2"><span className="text-white/80">{i.qty} × {i.name}{i.variantLabel ? ` (${i.variantLabel})` : ""}</span><span className="shrink-0">{formatMoney(i.qty * i.unitPrice, i.currency)}</span></li>)}
+          {items.map((i) => <li key={i.key} className="flex justify-between gap-3"><span>{i.qty} × {i.name}{i.variantLabel ? ` (${i.variantLabel})` : ""}</span><span>{formatMoney(i.qty * i.unitPrice, i.currency)}</span></li>)}
         </ul>
-        <div className="mt-4 flex justify-between border-t border-white/20 pt-3"><span className="text-white/70">Subtotal</span><span className="font-display text-lg">{formatMoney(subtotal, currency ?? undefined)}</span></div>
-        <p className="mt-3 text-xs leading-relaxed text-white/70">Shipping, if any, and the final total are calculated by our server when you place the order.</p>
+        <div className="mt-4 flex justify-between border-t border-line pt-3"><span>{t("Subtotal")}</span><span className="font-display">{formatMoney(subtotal, currency ?? undefined)}</span></div>
+        <p className="mt-2 text-xs text-ink-mute">{t("Shipping, if any, and the final total are calculated by our server when you place the order.")}</p>
       </Card>
     </div>
   );

@@ -107,7 +107,7 @@ export default async function Account() {
             <ProfilePhoto userId={user.id} name={profile?.display_name ?? ""} email={user.email ?? ""} initialUrl={avatarUrl}
               initialPath={avatarPath} configured={photoConfigured} />
             <div className="text-center sm:text-left">
-              {admin && <Badge tone="info">Administrator</Badge>}
+              {admin && <Badge tone="info">{comingSoon}</Badge>}
               <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
                 {profile?.display_name ? `Welcome back, ${profile.display_name}` : "Your account"}
               </h1>
@@ -115,23 +115,23 @@ export default async function Account() {
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-2 lg:justify-end">
-            {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
-            {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary">My Freelancer Profile</Button>}
-            <Button href="/account/freelance-orders" variant="secondary">My freelancer orders</Button>
+            {admin && <Button href="/admin" variant="secondary"><TranslatedText value="Admin area" /></Button>}
+            {freelancerProfileRes.data && <Button href="/freelancers/me" variant="secondary"><TranslatedText value="My Freelancer Profile" /></Button>}
+            <Button href="/account/freelance-orders" variant="secondary"><TranslatedText value="My freelancer orders" /></Button>
             <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>
           </div>
         </Container>
       </div>
       <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
         <nav aria-label="Account sections" className="h-fit lg:sticky lg:top-24">
-          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block">Account menu</p>
+          <p className="hidden pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute lg:block"><TranslatedText value="Account menu" /></p>
           <div className="flex gap-2 overflow-x-auto pb-2 lg:grid lg:overflow-visible lg:border-l lg:border-line lg:pb-0">
             {[
               ["overview", "Overview"], ["orders", "Orders"], ["profile", "Profile"], ["addresses", "Addresses"],
               ["wishlist", "Wishlist"], ["service-requests", "Requests"], ["downloads", "Downloads"], ["support", "Support"],
               ["notifications", "Notifications"], ["vendor", "Vendor"], ["settings", "Settings"], ["language", "Language"], ["security", "Security"],
             ].map(([id, label]) => <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-ink-mute transition hover:border-brand/50 hover:text-ink lg:rounded-none lg:border-0 lg:border-l-2 lg:px-4 lg:py-2 lg:hover:border-brand">
-              {label}
+              <TranslatedText value={label} />
             </a>)}
           </div>
         </nav>
@@ -141,13 +141,13 @@ export default async function Account() {
         </p>}
         <section id="overview">
           <div className="mb-5 flex items-end justify-between gap-3">
-            <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Your dashboard</p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
+            <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand"><TranslatedText value="Your dashboard" /></p><h2 className="mt-2 text-2xl font-semibold"><TranslatedText value="Overview" /></h2></div>
             <span className="hidden text-sm text-ink-mute sm:block">A personal space for everything you do with ZIKA</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <Card className="bg-gradient-to-br from-brand/15 to-obsidian-900"><p className="text-sm text-ink-mute"><TranslatedText value="Orders" /></p><p className="mt-3 font-display text-4xl">{orders.length}</p><a href="#orders" className="mt-4 inline-flex text-sm text-secondary-soft">View order history <span aria-hidden="true" className="ml-2">↗</span></a></Card>
-            <Card><p className="text-sm text-ink-mute">Saved addresses</p><p className="mt-3 font-display text-4xl">{addressesRes.data?.length ?? 0}</p><a href="#addresses" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Manage delivery details ↗</a></Card>
-            <Card><p className="text-sm text-ink-mute">Wishlist items</p><p className="mt-3 font-display text-4xl">{wishlist.length}</p><a href="#wishlist" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink">Browse saved products ↗</a></Card>
+            <Card><p className="text-sm text-ink-mute"><TranslatedText value="Saved addresses" /></p><p className="mt-3 font-display text-4xl">{addressesRes.data?.length ?? 0}</p><a href="#addresses" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink"><TranslatedText value="Manage delivery details" /> ↗</a></Card>
+            <Card><p className="text-sm text-ink-mute"><TranslatedText value="Wishlist" /></p><p className="mt-3 font-display text-4xl">{wishlist.length}</p><a href="#wishlist" className="mt-4 inline-flex text-sm text-ink-mute hover:text-ink"><TranslatedText value="Browse saved products" /> ↗</a></Card>
           </div>
         </section>
 
@@ -247,7 +247,7 @@ export default async function Account() {
         <section id="language"><h2 className="mb-3 text-2xl font-semibold"><TranslatedText value="Language" /></h2><Card className="flex items-center justify-between gap-3"><p>Choose English or Amharic for the navigation, footer, shop filters, and account headings.</p><LanguageToggle /></Card></section>
 
         <div className="flex flex-wrap gap-3 border-t border-line pt-6">
-          {admin && <Button href="/admin" variant="secondary">Admin area</Button>}
+          {admin && <Button href="/admin" variant="secondary"><TranslatedText value="Admin area" /></Button>}
           {vendorProfileRes.data?.status === "active" && <Button href="/vendor/products" variant="secondary">My vendor products</Button>}
           {(vendorProfileRes.data?.status === "active" || vendorApplicationRes.data?.status === "approved") && <Button href="/account/earnings" variant="secondary">My earnings</Button>}
           <Button href="/shop" variant="ghost"><TranslatedText value="Continue shopping" /></Button>

@@ -44,9 +44,10 @@ export async function POST(request: Request) {
   }
 
   const validation = validateVendorApplication(payload);
-  if (!validation.ok) {
+  if (!validation.ok || !validation.data) {
     return NextResponse.json({ error: validation.error ?? "Invalid vendor application." }, { status: 400 });
   }
+  const validatedData = validation.data;
 
   const supabase = getSupabaseServerClient();
   if (!supabase) return NextResponse.json({ error: "Vendor applications are not configured." }, { status: 503 });
@@ -61,9 +62,9 @@ export async function POST(request: Request) {
     // No prior application → create new pending application
     const { error: insertError } = await supabase.from("vendor_applications").insert({
       user_id: user.id,
-      business_name: validation.data.business_name!,
-      contact_value: validation.data.contact_value!,
-      description: validation.data.description!,
+      business_name: validatedData.business_name,
+      contact_value: validatedData.contact_value,
+      description: validatedData.description,
       status: "pending",
     });
     if (insertError) {
