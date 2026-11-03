@@ -502,6 +502,14 @@ export async function POST(request: Request) {
       const { error } = await supabase.from("affiliate_codes").update({ is_active: true }).eq("code", referralCode);
       if (error) return fail("Application approved, but the referral code could not be activated. Retry the review.", 500);
     } else {
+      // If rejected, suspend the vendor profile
+      if (status === "rejected") {
+        await supabase
+          .from("vendor_profiles")
+          .update({ status: "suspended" })
+          .eq("user_id", application.user_id);
+      }
+
       if (application.referral_code) {
         const { error } = await supabase.from("affiliate_codes").update({ is_active: false }).eq("code", application.referral_code);
         if (error) return fail("Application status changed, but its referral code could not be deactivated.", 500);
