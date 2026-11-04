@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { Providers } from "@/components/providers";
+import { Intro } from "@/components/layout/Intro";
+import { ReferralCapture } from "@/components/affiliates/ReferralCapture";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: {
@@ -22,8 +26,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning data-theme="light">
       <body className="min-h-screen bg-bg font-sans antialiased">
         <Providers>
-          {children}
-        </Providers>
+      <Intro />
+      <ReferralCapture />
+      <Navbar />
+      <main id="main">{children}</main>
+      <Footer />
+    </Providers>
       </body>
     </html>
   );
