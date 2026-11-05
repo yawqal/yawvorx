@@ -11,6 +11,12 @@ const config: Config = {
         brand: { DEFAULT: "var(--color-brand)", soft: "var(--color-brand-soft)", bright: "var(--color-brand-bright)" },
         secondary: { DEFAULT: "var(--color-secondary)", soft: "var(--color-secondary-soft)" },
         line: "var(--color-line)",
+        obsidian: {
+          DEFAULT: "var(--color-bg)",
+          700: "var(--color-panel-2)",
+          800: "var(--color-panel)",
+          900: "var(--color-panel)",
+        },
         error: { DEFAULT: "#dc2626", soft: "#fef2f2" },
         success: { DEFAULT: "#059669", soft: "#ecfdf5" },
         warning: { DEFAULT: "#d97706", soft: "#fffbeb" },

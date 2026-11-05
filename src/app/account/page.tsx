@@ -101,7 +101,7 @@ export default async function Account() {
 
   return (
     <>
-      <div className="border-b border-line bg-aurora">
+      <div className="border-b border-line bg-panel">
         <Container className="grid gap-8 py-9 sm:py-12 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="flex flex-col items-center gap-6 sm:flex-row">
             <ProfilePhoto userId={user.id} name={profile?.display_name ?? ""} email={user.email ?? ""} initialUrl={avatarUrl}

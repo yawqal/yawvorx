@@ -84,6 +84,12 @@ export function Navbar() {
     setMobileMore(false);
   }, [pathname]);
 
+  // Lock body scroll while mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   useEffect(() => {
     if (!moreOpen && !mobileOpen) return;
     const onKey = (event: KeyboardEvent) => {
@@ -169,13 +175,13 @@ export function Navbar() {
       </nav>
 
       {mobileOpen && <div ref={mobilePanel} id="mobile-menu" onKeyDown={trapTab}
-        className="bg-aurora fixed inset-0 z-[60] flex h-[100dvh] flex-col overflow-y-auto bg-obsidian px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] xl:hidden">
+        className="fixed inset-0 z-[60] flex h-[100dvh] flex-col overflow-y-auto bg-obsidian px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] xl:hidden">
         <div className="flex min-h-16 items-center justify-between border-b border-line">
           {mobileMore
             ? <button type="button" className="min-h-11 rounded-lg px-3 text-ink" onClick={() => setMobileMore(false)}>← Back</button>
             : <Link href="/" aria-label="ZIKA home"><Logo size={28} /></Link>}
           <button type="button" className="min-h-11 min-w-11 rounded-xl border border-line px-3 text-sm" aria-label="Close menu"
-            onClick={() => { setMobileOpen(false); setMobileMore(false); mobileTrigger.current?.focus(); }}>Close</button>
+            onClick={() => { setMobileOpen(false); setMobileMore(false); mobileTrigger.current?.focus(); }}></button>
         </div>
         <div className="flex-1 py-5">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute">{mobileMore ? "More from ZIKA" : "Explore ZIKA"}</p>

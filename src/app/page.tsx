@@ -51,7 +51,7 @@ export default async function Home() {
         url: canonicalUrl("/"),
         description: siteConfig.description,
       }).replace(/</g, "\\u003c") }} />
-      <div className="bg-aurora relative isolate overflow-hidden border-b border-line">
+      <div className="relative isolate overflow-hidden border-b border-line bg-panel">
         <div aria-hidden="true" className="pointer-events-none absolute -right-36 top-6 h-[30rem] w-[30rem] rounded-full border border-brand/10 sm:right-8">
           <div className="absolute inset-8 rounded-full border border-brand/10" />
           <div className="absolute inset-20 rounded-full border border-brand/15" />
@@ -206,7 +206,7 @@ export default async function Home() {
       </Section>
 
       <Section title="Start a project">
-        <Card className="bg-aurora flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="flex flex-col gap-4 bg-panel sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-2xl font-semibold">Have an idea? Let&apos;s build something extraordinary.</p>
           <div className="flex flex-col gap-3 sm:flex-row"><Button href="/hire">Explore Services</Button><Button href="/contact" variant="secondary">Contact Us</Button></div>
         </Card>

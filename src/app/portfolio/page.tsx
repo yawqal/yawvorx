@@ -13,7 +13,7 @@ export default async function Portfolio() {
   const { items, usingFallback } = await getPublicProjects();
   return (
     <>
-      <div className="bg-aurora border-b border-line">
+      <div className="border-b border-line bg-panel">
         <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_auto] lg:items-end lg:py-20">
           <div>
             <div className="mb-5 flex flex-wrap gap-2">
