@@ -51,11 +51,8 @@ export default async function Home() {
         url: canonicalUrl("/"),
         description: siteConfig.description,
       }).replace(/</g, "\\u003c") }} />
-      <div className="relative isolate overflow-hidden border-b border-line bg-black">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-36 top-6 h-[30rem] w-[30rem] rounded-full border border-brand/10 sm:right-8">
-          <div className="absolute inset-8 rounded-full border border-brand/10" />
-          <div className="absolute inset-20 rounded-full border border-brand/15" />
-        </div>
+      <div className="relative isolate overflow-hidden border-b border-line bg-obsidian">
+        {/* Decorative elements removed */}
         <Container className="home-reveal relative grid items-center gap-10 py-12 sm:py-16 lg:min-h-[660px] lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:py-20">
           <div className="relative z-10 max-w-2xl">
             <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/65 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-mute shadow-sm backdrop-blur">
@@ -63,7 +60,7 @@ export default async function Home() {
               ZIKA <span className="text-line">/</span> YAWVOREX Studio
             </p>
             <h1 className="hero-title max-w-3xl font-semibold leading-[1.02]">
-              Beyond Digital.<br /><span className="text-gradient">Beyond Ordinary.</span>
+              Beyond Digital.<br /><span className="text-gold">Beyond Ordinary.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-mute sm:text-lg">{siteConfig.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -86,7 +83,7 @@ export default async function Home() {
               {projects[0] ? (
                 <Link href={`/portfolio/${projects[0].slug}`} className="group relative block overflow-hidden rounded-[1.2rem]">
                   <ProjectArtwork imageUrl={projects[0].coverImageUrl} title={projects[0].title} seed={projects[0].slug.length} className="!aspect-[5/4] rounded-[1.2rem] border-0 sm:!aspect-[1.18/1]" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/75 to-transparent p-5 pt-20 sm:p-6 sm:pt-24">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-panel via-panel/80 to-transparent p-5 pt-20 sm:p-6 sm:pt-24">
                     {projects[0].isDemo !== false ? <Badge tone="demo">Sample concept</Badge> : <Badge>{projects[0].category}</Badge>}
                     <h2 className="mt-3 text-xl font-semibold sm:text-2xl">{projects[0].title}</h2>
                     <p className="mt-1 line-clamp-2 max-w-lg text-sm leading-relaxed text-ink-mute">{projects[0].summary}</p>
@@ -155,7 +152,7 @@ export default async function Home() {
             {projects.slice(0, 3).map((project, index) => (
               <Link key={project.slug} href={`/portfolio/${project.slug}`} className={`surface surface-hover group relative overflow-hidden p-2 ${index === 0 ? "sm:row-span-2 lg:col-span-8 lg:row-span-2" : "lg:col-span-4"}`}>
                 <Art seed={project.slug.length} className="!aspect-auto h-full min-h-[190px] rounded-2xl border-0 sm:min-h-[210px]" />
-                <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-white/80 p-5 backdrop-blur-sm">
+                <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-panel p-5">
                   <div className="flex flex-wrap gap-2">{project.isDemo !== false && <Badge tone="demo">Sample Concept</Badge>}<Badge>{project.category}</Badge></div>
                   <h3 className="mt-2 text-xl font-semibold sm:text-2xl">{project.title}</h3>
                 </div>
