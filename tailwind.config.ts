@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
 
-// DESIGN TOKENS: change brand colors here (and the matching CSS variables in globals.css).
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
@@ -12,14 +11,24 @@ const config: Config = {
         secondary: { DEFAULT: "var(--color-secondary)", soft: "var(--color-secondary-soft)" },
         line: "var(--color-line)",
         obsidian: {
-          DEFAULT: "var(--color-bg)",
+          DEFAULT: "var(--color-panel)",
           700: "var(--color-panel-2)",
-          800: "var(--color-panel)",
-          900: "var(--color-panel)",
+          800: "#131313",
+          900: "#111111",
         },
-        error: { DEFAULT: "#dc2626", soft: "#fef2f2" },
-        success: { DEFAULT: "#059669", soft: "#ecfdf5" },
-        warning: { DEFAULT: "#d97706", soft: "#fffbeb" },
+        amber: {
+          DEFAULT: "#F59E0B",
+          50: "#FFFBEB",
+          100: "#FEF3C7",
+          200: "#FDE68A",
+          300: "#FCD34D",
+          400: "#FBBF24",
+          500: "#D97706",
+          600: "#B45309",
+          700: "#92400E",
+          800: "#78350F",
+          900: "#451A03",
+        },
       },
       borderRadius: {
         'xl': '1.25rem',
@@ -41,12 +50,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
-        sans: ["var(--font-body)", "system-ui", "sans-serif"],
-      },
-      boxShadow: {
-        glow: "0 12px 30px -18px rgba(99,58,40,0.38)",
-        depth: "0 24px 55px -38px rgba(25,17,14,0.28)",
+        display: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
       },
     },
   },

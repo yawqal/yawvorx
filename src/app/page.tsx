@@ -51,7 +51,7 @@ export default async function Home() {
         url: canonicalUrl("/"),
         description: siteConfig.description,
       }).replace(/</g, "\\u003c") }} />
-      <div className="relative isolate overflow-hidden border-b border-line bg-panel">
+      <div className="relative isolate overflow-hidden border-b border-line bg-black">
         <div aria-hidden="true" className="pointer-events-none absolute -right-36 top-6 h-[30rem] w-[30rem] rounded-full border border-brand/10 sm:right-8">
           <div className="absolute inset-8 rounded-full border border-brand/10" />
           <div className="absolute inset-20 rounded-full border border-brand/15" />

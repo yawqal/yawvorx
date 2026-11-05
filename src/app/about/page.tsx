@@ -25,7 +25,7 @@ export default function About() {
       <PageHeader title={`About ${siteConfig.name}`} intro={siteConfig.description} />
       <Section title="A studio built around the work" intro="ZIKA brings creative and digital work together through a single, considered platform.">
         <div className="grid gap-5 lg:grid-cols-[1.05fr_.95fr]">
-          <Card className="flex flex-col justify-between p-6 sm:p-9 bg-panel">
+          <Card className="flex flex-col justify-between p-6 sm:p-9 bg-panel-2">
             <div><p className="eyebrow">Why we exist</p><h3 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">Make thoughtful digital work feel within reach.</h3>
               <p className="mt-4 max-w-xl leading-relaxed text-ink-mute">{mission}</p></div>
             <Button href="/services" variant="secondary" className="mt-8 w-fit">Explore services <ArrowUpRight size={16} /></Button>

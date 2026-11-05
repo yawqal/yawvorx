@@ -3,32 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #0B0B12;
-  --color-ink: #F8FAFC;
-  --color-ink-mute: #A1A1B5;
-  --color-brand: #8B5CF6;
-  --color-brand-bright: #22D3EE;
-  --color-secondary: #6C3BFF;
-  --color-secondary-soft: #0E7490;
-  --color-line: #2A2A3D;
-  --color-surface-bg: rgba(18, 18, 28, 0.85);
-  --color-panel: #12121C;
-  --color-panel-2: #1A1A28;
+  --color-bg: #050505;
+  --color-ink: #F9FAFB;
+  --color-ink-mute: #9CA3AF;
+  --color-brand: #D97706;
+  --color-brand-bright: #F59E0B;
+  --color-secondary: #B45309;
+  --color-secondary-soft: #FDE68A;
+  --color-line: #262626;
+  --color-surface-bg: rgba(10, 10, 10, 0.85);
+  --color-panel: #111111;
+  --color-panel-2: #171717;
   color-scheme: dark;
 }
 
 [data-theme='dark'] {
-  --color-bg: #0B0B12;
-  --color-ink: #F8FAFC;
-  --color-ink-mute: #A1A1B5;
-  --color-brand: #8B5CF6;
-  --color-brand-bright: #22D3EE;
-  --color-secondary: #6C3BFF;
-  --color-secondary-soft: #0E7490;
-  --color-line: #2A2A3D;
-  --color-surface-bg: rgba(18, 18, 28, 0.85);
-  --color-panel: #12121C;
-  --color-panel-2: #1A1A28;
+  --color-bg: #050505;
+  --color-ink: #F9FAFB;
+  --color-ink-mute: #9CA3AF;
+  --color-brand: #D97706;
+  --color-brand-bright: #F59E0B;
+  --color-secondary: #B45309;
+  --color-secondary-soft: #FDE68A;
+  --color-line: #262626;
+  --color-surface-bg: rgba(10, 10, 10, 0.85);
+  --color-panel: #111111;
+  --color-panel-2: #171717;
   color-scheme: dark;
 }
 
@@ -41,7 +41,7 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-ink);
-  font-family: system-ui, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -52,17 +52,16 @@ html[lang="am"] body {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-brand);
+  outline: 2px solid var(--color-brand);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .surface {
   border-radius: 1rem;
   border: 1px solid var(--color-line);
-  background: var(--color-surface-bg);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  background: var(--color-panel);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .surface-hover {
@@ -72,11 +71,4 @@ html[lang="am"] body {
 .surface-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-}
-
-.text-gradient {
-  background-image: linear-gradient(to right, var(--color-secondary-soft), var(--color-brand), var(--color-secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }

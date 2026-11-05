@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { LogoMark } from "@/components/brand/Logo";
+import { Logo } from "@/components/brand/Logo";
 import { siteConfig } from "@/config/site";
 
 const KEY = "yvx-intro-seen";
@@ -31,7 +31,7 @@ export function Intro() {
 
   return (
     <div className="intro-overlay fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian px-6 text-center" role="dialog" aria-label="YAWVOREX intro">
-      <LogoMark size={96} animated />
+      <Logo size={96} variant="emblem" />
       <p className="rise mt-6 font-display text-2xl font-semibold tracking-[0.3em]" style={{ animationDelay: "0.9s" }}>{siteConfig.name}</p>
       <p className="rise mt-3 text-ink-mute" style={{ animationDelay: "1.3s" }}>{siteConfig.tagline}</p>
       <button

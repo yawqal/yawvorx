@@ -2,7 +2,7 @@ import { Container } from "./Container";
 
 export function PageHeader({ title, intro, children }: { title: React.ReactNode; intro?: React.ReactNode; children?: React.ReactNode }) {
   return (
-    <div className="relative isolate overflow-hidden border-b border-line bg-panel">
+    <div className="relative isolate overflow-hidden border-b border-line bg-black">
       <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-28 h-72 w-72 rounded-full border border-brand/10 sm:right-12 sm:top-[-10rem] sm:h-[26rem] sm:w-[26rem]" />
       <Container className="relative grid gap-6 py-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(14rem,.45fr)] lg:items-end lg:py-[4.5rem]">
         <div>
