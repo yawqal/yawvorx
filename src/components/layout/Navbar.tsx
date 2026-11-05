@@ -124,7 +124,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-line bg-panel pt-[env(safe-area-inset-top)] backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.3)]">
       <nav aria-label="Main" className="mx-auto flex h-[4.5rem] max-w-[1600px] items-center justify-between gap-4 px-4 sm:h-[5rem] sm:px-6 lg:px-8">
         <Link href="/" aria-label="YAWVOREX home" className="flex shrink-0 items-center gap-3">
-          <Logo size={36} variant="horizontal" />
+          <Logo size={36} />
           <span className="hidden border-l border-line pl-3 sm:block"><span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-ink-mute">By YAWVOREX</span><span className="mt-1 block text-[10px] leading-tight tracking-wide text-ink-mute">{siteConfig.tagline}</span></span>
         </Link>
         <ul className="hidden items-center gap-1 xl:flex">
@@ -152,11 +152,11 @@ export function Navbar() {
           </li>
         </ul>
         <div className="hidden items-center gap-2 xl:flex">
-          <Button href="/cart" variant="ghost" className="px-3">{cartLabel}</Button>
+          <Button href="/cart" className="px-3">{cartLabel}</Button>
           <LanguageToggle />
           {currencyPicker}
           {user && <NotificationsBell userId={user.id} />}
-          <Button href={accountHref} variant="ghost" className="px-3">{accountLabel}</Button>
+          <Button href={accountHref} className="px-3">{accountLabel}</Button>
         </div>
         <button ref={mobileTrigger} type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-line text-ink transition hover:border-amber/50 xl:hidden"
           aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -172,7 +172,7 @@ export function Navbar() {
         <div className="flex min-h-16 items-center justify-between border-b border-line">
           {mobileMore
             ? <button type="button" className="min-h-11 rounded-lg px-3 text-ink" onClick={() => setMobileMore(false)}>← Back</button>
-            : <Link href="/" aria-label="YAWVOREX home"><Logo size={28} variant="compact" /></Link>}
+            : <Link href="/" aria-label="YAWVOREX home"><Logo size={28} /></Link>}
           <button type="button" className="min-h-11 min-w-11 rounded-xl border border-line px-3 text-sm text-ink-mute"
             onClick={() => { setMobileOpen(false); setMobileMore(false); mobileTrigger.current?.focus(); }}></button>
         </div>
@@ -191,8 +191,8 @@ export function Navbar() {
             aria-expanded={mobileMore} onClick={() => setMobileMore(true)}>More <span aria-hidden="true">→</span></button>}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-4">
-          <Button href="/cart" variant="secondary">{cartLabel}</Button>
-          <Button href={accountHref} variant="ghost">{accountLabel}</Button>
+          <Button href="/cart">{cartLabel}</Button>
+          <Button href={accountHref}>{accountLabel}</Button>
           <LanguageToggle />
           {currencyPicker}
           {user && <NotificationsBell userId={user.id} />}
