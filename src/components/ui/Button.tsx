@@ -11,11 +11,11 @@ type Props = {
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className">;
 
 const base =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet disabled:pointer-events-none disabled:opacity-50 sm:text-base";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:pointer-events-none disabled:opacity-50 sm:text-base";
 const variants: Record<Variant, string> = {
-  primary: "bg-violet text-white shadow-[0_8px_20px_-12px_rgba(77,52,171,.75)] hover:bg-violet-soft hover:shadow-glow",
-  secondary: "border border-line bg-white text-ink shadow-sm hover:border-violet/40 hover:bg-violet/[0.04]",
-  ghost: "text-ink-mute hover:bg-violet/[0.06] hover:text-ink",
+  primary: "bg-brand text-white shadow-[0_8px_20px_-12px_rgba(77,52,171,.75)] hover:bg-brand-soft hover:shadow-glow",
+  secondary: "border border-line bg-white text-ink shadow-sm hover:border-brand/40 hover:bg-brand/[0.04]",
+  ghost: "text-ink-mute hover:bg-brand/[0.06] hover:text-ink",
 };
 
 /** Pass `href` to render a link, otherwise it renders a <button>. */

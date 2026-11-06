@@ -13,7 +13,7 @@ export default async function Portfolio() {
   const { items, usingFallback } = await getPublicProjects();
   return (
     <>
-      <div className="bg-aurora border-b border-line">
+      <div className="border-b border-line bg-obsidian">
         <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_auto] lg:items-end lg:py-20">
           <div>
             <div className="mb-5 flex flex-wrap gap-2">
@@ -21,7 +21,7 @@ export default async function Portfolio() {
               {usingFallback && <Badge tone="demo">Showing sample fallback</Badge>}
             </div>
             <p className="eyebrow">A view into the studio</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">Selected work<span className="text-violet-soft">.</span></h1>
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl">Selected work<span className="text-brand-soft">.</span></h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-mute sm:text-lg">{usingFallback
               ? "The projects below are sample concepts created to show our approach. They are not completed client work."
               : "Published work and concepts from the studio."}</p>

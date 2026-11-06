@@ -2,7 +2,7 @@ import { siteConfig } from "@/config/site";
 
 type Props = { size?: number; wordmark?: boolean; animated?: boolean; className?: string };
 
-/** YAWVOREX mark: a "Y" built from two beams (cyan + violet) meeting in one stem. Pure SVG, no image file. */
+/** YAWVOREX mark: a "Y" built from two beams (Earth/Obsidian palette) meeting in one stem. Pure SVG, no image file. */
 export function LogoMark({ size = 32, animated = false }: { size?: number; animated?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true" className={animated ? "logo-draw" : undefined}>

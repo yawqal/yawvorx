@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { LogoMark } from "@/components/brand/Logo";
+import { Logo } from "@/components/brand/Logo";
 import { siteConfig } from "@/config/site";
 
 const KEY = "yvx-intro-seen";
@@ -30,14 +30,14 @@ export function Intro() {
   if (!show) return null;
 
   return (
-    <div className="intro-overlay bg-aurora fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian px-6 text-center" role="dialog" aria-label="YAWVOREX intro">
-      <LogoMark size={96} animated />
+    <div className="intro-overlay fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian px-6 text-center" role="dialog" aria-label="YAWVOREX intro">
+      <Logo size={96} />
       <p className="rise mt-6 font-display text-2xl font-semibold tracking-[0.3em]" style={{ animationDelay: "0.9s" }}>{siteConfig.name}</p>
       <p className="rise mt-3 text-ink-mute" style={{ animationDelay: "1.3s" }}>{siteConfig.tagline}</p>
       <button
         type="button"
         onClick={() => { setShow(false); remember(); }}
-        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-sm text-ink hover:border-cyan/50"
+        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-sm text-ink hover:border-brand/50"
       >
         Skip intro
       </button>

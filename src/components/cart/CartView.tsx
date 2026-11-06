@@ -19,7 +19,7 @@ export function CartView() {
           <li key={i.key}>
             <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="min-w-0">
-                <Link href={`/shop/${i.slug}`} className="text-lg font-semibold decoration-violet/40 underline-offset-4 hover:text-violet-soft hover:underline">{i.name}</Link>
+                <Link href={`/shop/${i.slug}`} className="text-lg font-semibold decoration-brand/40 underline-offset-4 hover:text-brand-soft hover:underline">{i.name}</Link>
                 <p className="mt-1 text-sm text-ink-mute">{i.variantLabel ? `${i.variantLabel} · ` : ""}{i.type === "digital" ? "Digital" : "Physical"} · {formatMoney(i.unitPrice, i.currency)} each</p>
               </div>
               <div className="flex items-center justify-between gap-4 sm:justify-end">

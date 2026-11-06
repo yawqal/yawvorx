@@ -20,7 +20,7 @@ export default async function CoursesPage() {
     <PageHeader title="Courses" intro="Explore courses available from our instructors." />
     <Container className="py-8 sm:py-10">
       {result.error ? <p role="alert" className="text-red-300">Courses could not be loaded: {result.error.message}</p>
-        : result.data?.length ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{result.data.map((course) => <Link key={course.id} href={`/courses/${encodeURIComponent(course.slug)}`} className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet"><Card interactive className="h-full">
+        : result.data?.length ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{result.data.map((course) => <Link key={course.id} href={`/courses/${encodeURIComponent(course.slug)}`} className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"><Card interactive className="h-full">
           <Badge>{course.level || "Level not specified"}</Badge><h2 className="mt-3 break-words text-xl font-semibold">{course.title}</h2>
           <p className="mt-2 line-clamp-3 text-ink-mute">{course.description || "No description yet."}</p>
           {course.instructor_name && <p className="mt-4 text-sm text-ink-mute">Instructor: {course.instructor_name}</p>}

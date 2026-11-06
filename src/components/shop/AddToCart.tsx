@@ -49,7 +49,7 @@ export function AddToCart({ product }: { product: Product }) {
         add({ key: `${product.slug}:${variantId}`, slug: product.slug, name: product.name, variantId: variantId || undefined, variantLabel: variant?.label, unitPrice: unit, type: product.type, maxQty, currency }, qty);
         setAdded(true);
       }}>Add to cart</Button>
-      {added && <p role="status" className="text-cyan-soft">Added to cart. <Link href="/cart" className="underline">View cart</Link></p>}
+      {added && <p role="status" className="text-secondary-soft">Added to cart. <Link href="/cart" className="underline">View cart</Link></p>}
     </div>
   );
 }

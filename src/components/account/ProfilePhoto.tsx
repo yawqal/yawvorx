@@ -110,31 +110,31 @@ export function ProfilePhoto({ userId, name, email, initialUrl, initialPath, con
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-obsidian-700 ring-4 ring-violet/10 sm:h-32 sm:w-32">
+      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-obsidian-700 ring-4 ring-brand/10 sm:h-32 sm:w-32">
         {src
           ? <Image src={src} alt={`${label}'s profile photo`} fill sizes="128px" unoptimized className="object-cover" />
-          : <div aria-label="Default profile avatar" className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet/25 to-cyan/15 text-2xl font-semibold text-ink">
+          : <div aria-label="Default profile avatar" className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand/25 to-secondary/15 text-2xl font-semibold text-ink">
             {initialsLabel || <UserRound size={40} strokeWidth={1.4} />}
           </div>}
       </div>
       <div className="min-w-0 text-center sm:text-left">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">Your profile</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Your profile</p>
         <p className="mt-2 break-all text-sm text-ink-mute">{email}</p>
         <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
           <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label="Choose a profile photo"
             onChange={(event) => selectFile(event.target.files?.[0])} />
           <button type="button" disabled={busy} onClick={() => input.current?.click()}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-obsidian-800 px-4 text-sm font-medium transition hover:border-violet/50 disabled:opacity-50">
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-obsidian-800 px-4 text-sm font-medium transition hover:border-brand/50 disabled:opacity-50">
             <Camera size={16} aria-hidden="true" />{src ? "Change photo" : "Upload photo"}
           </button>
           {selected && <button type="button" disabled={busy || !configured} onClick={() => void upload()}
-            className="min-h-11 rounded-xl bg-violet px-4 text-sm font-semibold text-white disabled:opacity-50">
+            className="min-h-11 rounded-xl bg-brand px-4 text-sm font-semibold text-white disabled:opacity-50">
             {busy ? "Uploading…" : "Save photo"}
           </button>}
         </div>
         <p className="mt-2 text-xs text-ink-mute">JPEG, PNG, or WebP · Max 5 MB</p>
         {!configured && <p className="mt-2 max-w-md text-xs text-amber-200">Profile photo storage is not enabled yet. The required Supabase migration must be applied first.</p>}
-        {message && <p role={message.ok ? "status" : "alert"} className={`mt-2 text-sm ${message.ok ? "text-cyan-soft" : "text-red-300"}`}>{message.text}</p>}
+        {message && <p role={message.ok ? "status" : "alert"} className={`mt-2 text-sm ${message.ok ? "text-secondary-soft" : "text-red-300"}`}>{message.text}</p>}
       </div>
     </div>
   );

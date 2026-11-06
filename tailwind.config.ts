@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
 
-// DESIGN TOKENS: change brand colors here (and the matching CSS variables in globals.css).
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
@@ -14,6 +13,11 @@ const config: Config = {
         red: { 300: "#C93C50" },
         amber: { 200: "#8A5608", 300: "#8A5608" },
         emerald: { 300: "#168B64" },
+        brand: { DEFAULT: "#7657E8", soft: "#6245CF", bright: "#247F91" },
+        panel: { DEFAULT: "#FFFFFF", 2: "#EEF0F7" },
+        "panel-2": "#EEF0F7",
+        gold: "#8A5608",
+        "amber-soft": "#8A5608",
       },
       fontFamily: {
         display: ["var(--font-display)", "system-ui", "sans-serif"],

@@ -4,8 +4,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 
 const accents: Record<string, string> = {
-  violet: "text-violet-soft border-violet/30",
-  cyan: "text-cyan-soft border-cyan/30",
+  brand: "text-brand-soft border-brand/30",
+  secondary: "text-secondary-soft border-brand/30",
   green: "text-emerald-300 border-emerald-500/30",
   amber: "text-amber-300 border-amber-500/30",
   pink: "text-fuchsia-700 border-pink-500/30",

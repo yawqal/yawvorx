@@ -45,7 +45,7 @@ export function VendorProductsReview({ products }: { products: VendorProduct[] }
   return (
     <div className="space-y-4">
       {error && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{error}</p>}
-      {message && <p role="status" className="text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="text-secondary-soft">{message}</p>}
       {products.map((product) => <Card key={product.id}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>

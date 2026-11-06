@@ -14,7 +14,7 @@ export function PortfolioBrowser({ projects }: { projects: Project[] }) {
       <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
         {["All", ...categories].map((c) => (
           <button key={c} type="button" aria-pressed={cat === c} onClick={() => setCat(c)}
-            className={`min-h-[44px] rounded-xl border px-4 text-sm transition ${cat === c ? "border-cyan bg-cyan/10 text-cyan-soft" : "border-line text-ink-mute hover:text-ink"}`}>{c}</button>
+            className={`min-h-[44px] rounded-xl border px-4 text-sm transition ${cat === c ? "border-brand bg-brand/10 text-secondary-soft" : "border-line text-ink-mute hover:text-ink"}`}>{c}</button>
         ))}
       </div>
       {shown.length === 0

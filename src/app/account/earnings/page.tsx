@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { TranslatedText } from "@/components/i18n/LanguageProvider";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Container } from "@/components/ui/Container";
 import { requireUser } from "@/lib/auth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { Container } from "@/components/ui/Container";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Card } from "@/components/ui/Card";
 
 export const metadata: Metadata = { title: "My earnings", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export default async function AccountEarningsPage() {
   const user = await requireUser("/account/earnings");
   const supabase = getSupabaseServerClient();
   if (!supabase) {
-    return <><PageHeader title="My earnings" /><Container className="py-10"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
+    return <><PageHeader title={<TranslatedText value="My earnings" />} /><Container className="py-10"><p role="alert" className="text-red-300">Database is not configured.</p></Container></>;
   }
 
   const [balancesResult, ledgerResult, payoutsResult] = await Promise.all([
@@ -35,7 +36,7 @@ export default async function AccountEarningsPage() {
   const empty = balances.length === 0 && ledger.length === 0 && payouts.length === 0;
   return (
     <>
-      <PageHeader title="My earnings" intro="Review your commissions, payable balance, and payout history." />
+      <PageHeader title={<TranslatedText value="My earnings" />} intro={<TranslatedText value="Review your commissions, payable balance, and payout history." />} />
       <Container className="space-y-8 py-10">
         <Card><p className="text-sm text-ink-mute">Pending = not yet payable during the return window. Payable = can be paid. Due = payable minus already paid.</p></Card>
         {empty ? <Card><p className="text-ink-mute">No earnings yet</p></Card> : <>

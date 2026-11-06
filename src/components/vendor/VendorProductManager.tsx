@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { TranslatedText } from "@/components/i18n/LanguageProvider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input, Select, Textarea } from "@/components/ui/Field";
@@ -182,18 +183,18 @@ export function VendorProductManager({ products, categories, vendorUserId }: { p
   return (
     <div className="space-y-6">
       {error && <p role="alert" className="rounded-xl border border-red-400/40 p-3 text-red-300">{error}</p>}
-      {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="rounded-xl border border-brand/30 p-3 text-secondary-soft">{message}</p>}
       <Card>
-        <h2 className="text-lg font-semibold">{editingId ? "Edit vendor product" : "Create vendor product"}</h2>
+        <h2 className="text-lg font-semibold">{editingId ? <TranslatedText value="Edit vendor product" /> : <TranslatedText value="Create vendor product" />}</h2>
         <form className="mt-4 grid gap-3 sm:grid-cols-2" onSubmit={(event) => void save(event)}>
           <Input label="Name" value={values.name} maxLength={120} onChange={(event) => update("name", event.target.value)} required />
           <Input label="Slug" value={values.slug} maxLength={100} pattern="[a-z0-9]+(-[a-z0-9]+)*" onChange={(event) => { setSlugTouched(true); update("slug", event.target.value); }} required />
           <Textarea label="Description" value={values.description} maxLength={5000} onChange={(event) => update("description", event.target.value)} />
           <div className="space-y-2 sm:col-span-2">
-            <label className="block text-sm text-ink-mute">Product image<input className="mt-1 block w-full text-sm" type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={(event) => void uploadImage(event.target.files?.[0])} /></label>
+            <label className="block text-sm text-ink-mute"><TranslatedText value="Product image" /><input className="mt-1 block w-full text-sm" type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={(event) => void uploadImage(event.target.files?.[0])} /></label>
             {values.image_url && <div className="flex items-center gap-3">
               <img src={values.image_url} alt={values.name || "Product image preview"} className="h-16 w-16 rounded-lg object-cover" />
-              <Button type="button" variant="ghost" disabled={busy} onClick={() => update("image_url", "")}>Remove image</Button>
+              <Button type="button" variant="ghost" disabled={busy} onClick={() => update("image_url", "")}><TranslatedText value="Remove image" /></Button>
             </div>}
           </div>
           <Input label="Price" type="number" min="0" max="1000000000000" step="0.01" value={values.price} onChange={(event) => update("price", event.target.value)} required />
@@ -202,16 +203,16 @@ export function VendorProductManager({ products, categories, vendorUserId }: { p
           <Input label="Price in USD (optional)" type="number" min="0" max="9999999999.99" step="0.01" value={values.price_usd} onChange={(event) => update("price_usd", event.target.value)} hint="Enter both dual prices or leave both blank." />
           <Input label="Stock" type="number" min="0" max="1000000000" step="1" value={values.stock} onChange={(event) => update("stock", event.target.value)} required />
           <Select label="Category" value={values.category_id} onChange={(event) => update("category_id", event.target.value)}>
-            <option value="">No category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+            <option value=""><TranslatedText value="No category" /></option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
           </Select>
           <div className="flex flex-wrap gap-3 sm:col-span-2">
-            <Button type="submit" loading={busy} disabled={busy || busyId !== null}>{editingId ? "Save draft" : "Create draft"}</Button>
-            {editingId && <Button type="button" variant="secondary" disabled={busy} onClick={cancelEdit}>Cancel edit</Button>}
+            <Button type="submit" loading={busy} disabled={busy || busyId !== null}>{editingId ? <TranslatedText value="Save draft" /> : <TranslatedText value="Create draft" />}</Button>
+            {editingId && <Button type="button" variant="secondary" disabled={busy} onClick={cancelEdit}><TranslatedText value="Cancel edit" /></Button>}
           </div>
         </form>
       </Card>
       <section className="space-y-4">
-        <h2 className="text-2xl font-semibold">Your products</h2>
+        <h2 className="text-2xl font-semibold"><TranslatedText value="Your products" /></h2>
         {products.map((product) => {
           const editable = product.approval_status === "draft" || product.approval_status === "rejected";
           return <Card key={product.id}>
@@ -221,19 +222,19 @@ export function VendorProductManager({ products, categories, vendorUserId }: { p
                 <div>
                 <h3 className="font-semibold">{product.name}</h3>
                 <p className="text-sm text-ink-mute">/{product.slug} · ETB {product.price_etb ?? "—"} · USD {product.price_usd ?? "—"} · Stock {product.stock}</p>
-                <p className="mt-1 text-sm capitalize">Status: {product.approval_status}</p>
+                <p className="mt-1 text-sm capitalize"><TranslatedText value="Status" />: {product.approval_status}</p>
                 <p className="mt-1 text-sm text-ink-mute">{statusCopy[product.approval_status] ?? "Status information is unavailable."}</p>
                 </div>
               </div>
               {editable && <div className="flex flex-wrap gap-2">
-                <Button variant="secondary" disabled={busy || busyId !== null} onClick={() => edit(product)}>Edit</Button>
-                <Button variant="secondary" disabled={busy || busyId !== null} loading={busyId === product.id} onClick={() => void submit(product)}>Submit for approval</Button>
-                <Button variant="ghost" disabled={busy || busyId !== null} onClick={() => void remove(product)}>Delete</Button>
+                <Button variant="secondary" disabled={busy || busyId !== null} onClick={() => edit(product)}><TranslatedText value="Edit" /></Button>
+                <Button variant="secondary" disabled={busy || busyId !== null} loading={busyId === product.id} onClick={() => void submit(product)}><TranslatedText value="Submit for approval" /></Button>
+                <Button variant="ghost" disabled={busy || busyId !== null} onClick={() => void remove(product)}><TranslatedText value="Delete" /></Button>
               </div>}
             </div>
           </Card>;
         })}
-        {products.length === 0 && <Card><p className="text-ink-mute">You have not created any products yet.</p></Card>}
+        {products.length === 0 && <Card><p className="text-ink-mute"><TranslatedText value="You have not created any products yet." /></p></Card>}
       </section>
     </div>
   );

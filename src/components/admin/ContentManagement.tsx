@@ -54,7 +54,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
     <div className="mt-12 space-y-10">
       <h2 className="text-3xl font-semibold">Services, portfolio, and requests</h2>
       {loadError && <p role="alert" className="rounded-xl border border-red-400/40 p-4 text-red-300">{loadError}</p>}
-      {message && <p role="status" className="rounded-xl border border-cyan/30 p-3 text-cyan-soft">{message}</p>}
+      {message && <p role="status" className="rounded-xl border border-brand/30 p-3 text-secondary-soft">{message}</p>}
 
       <section id="admin-services" className="scroll-mt-24">
         <h3 className="mb-4 text-2xl font-semibold">Services</h3>
@@ -89,7 +89,7 @@ export function ContentManagement({ services, projects, requests, tickets, loadE
                 <p className="mt-2 whitespace-pre-wrap text-sm text-ink-mute">{request.details}</p>
                 <p className="mt-1 text-xs text-ink-mute">{new Date(request.created_at).toLocaleString()}</p>
               </div>
-              <span className="capitalize text-cyan-soft">{request.status.replace(/_/g, " ")}</span>
+              <span className="capitalize text-secondary-soft">{request.status.replace(/_/g, " ")}</span>
             </div>
             {REQUEST_TRANSITIONS[request.status]?.length > 0 && <label className="mt-4 block text-sm text-ink-mute">Update request status
               <select className="mt-1 w-full min-h-[44px] rounded-xl border border-line bg-obsidian-800 px-4 text-ink" defaultValue="" disabled={busy} onChange={(event) => {
@@ -125,7 +125,7 @@ function SupportInboxTicket({ ticket, onSave, busy }: {
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div><h4 className="font-semibold">{ticket.subject}</h4><p className="text-xs text-ink-mute">Customer {ticket.user_id} · {new Date(ticket.created_at).toLocaleString()}</p></div>
-        <span className="capitalize text-cyan-soft">{ticket.status.replace(/_/g, " ")}</span>
+        <span className="capitalize text-secondary-soft">{ticket.status.replace(/_/g, " ")}</span>
       </div>
       <ol className="mt-4 space-y-3">
         {ticket.messages.map((message) => <li key={message.id} className="rounded-xl border border-line p-3">

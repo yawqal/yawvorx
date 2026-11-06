@@ -67,7 +67,7 @@ export function ProductReviews({
           <p className="mt-2 whitespace-pre-wrap text-ink-mute">{review.body}</p>
         </article>)}
       </div>
-      {!signedIn ? <p className="mt-6 text-sm text-ink-mute"><Link className="text-cyan-soft underline" href={`/login?next=${encodeURIComponent(`/shop/${productSlug}`)}`}>Sign in</Link> to review after a verified paid purchase.</p>
+      {!signedIn ? <p className="mt-6 text-sm text-ink-mute"><Link className="text-secondary-soft underline" href={`/login?next=${encodeURIComponent(`/shop/${productSlug}`)}`}>Sign in</Link> to review after a verified paid purchase.</p>
         : <form onSubmit={submit} className="mt-6 max-w-2xl space-y-3">
             <label className="block text-sm text-ink-mute">Rating
               <select value={rating} onChange={(event) => setRating(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-line bg-obsidian-800 px-3 text-ink">
@@ -76,7 +76,7 @@ export function ProductReviews({
             </label>
             <Textarea label="Your review" value={body} onChange={(event) => setBody(event.target.value)} minLength={10} maxLength={2000} required />
             <p className="text-xs text-ink-mute">Reviews are accepted only when Supabase confirms a paid order containing this product.</p>
-            {message && <p role="status" className="text-sm text-cyan-soft">{message}</p>}
+            {message && <p role="status" className="text-sm text-secondary-soft">{message}</p>}
             <Button type="submit" loading={busy}>Submit review</Button>
           </form>}
     </section>

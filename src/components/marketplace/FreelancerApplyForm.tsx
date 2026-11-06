@@ -53,7 +53,7 @@ export function FreelancerApplyForm() {
         <Input label={`${tier} description`} name={`${tier}_description`} maxLength={500} />
       </div>)}
     </fieldset>
-    <p role="status" aria-live="polite" className="text-sm text-cyan-soft">{message}</p>
+    <p role="status" aria-live="polite" className="text-sm text-secondary-soft">{message}</p>
     <p role="alert" aria-live="polite" className="text-sm text-red-300">{error}</p>
     <Button type="submit" loading={busy}>Submit profile for review</Button>
   </form></Card>;

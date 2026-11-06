@@ -12,12 +12,12 @@ import type { Service } from "@/data/services";
 export function ServiceCard({ s, full = false, icon }: { s: Service; full?: boolean; icon?: React.ReactNode }) {
   return (
     <Card interactive className="flex h-full flex-col">
-      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-cyan/20 bg-cyan/10 text-cyan">{icon}</div>}
+      {icon && <div aria-hidden="true" className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand">{icon}</div>}
       <h3 id={s.slug} className="text-lg font-semibold">{s.title}</h3>
       <p className="mt-2 text-ink-mute">{s.description}</p>
       <ul className="mt-4 space-y-1.5 text-sm text-ink-mute">
         {(full ? s.deliverables : s.deliverables.slice(0, 3)).map((d) => (
-          <li key={d} className="flex gap-2"><span aria-hidden="true" className="text-cyan">+</span>{d}</li>
+          <li key={d} className="flex gap-2"><span aria-hidden="true" className="text-brand">+</span>{d}</li>
         ))}
       </ul>
       <div className="mt-auto pt-5">
@@ -41,7 +41,7 @@ export function ProjectCard({ p, featured = false }: { p: Project; featured?: bo
         <h3 className={`mt-3 font-semibold ${featured ? "text-2xl sm:text-3xl" : "text-lg"}`}>{p.title}</h3>
         <p className="mt-2 leading-relaxed text-ink-mute">{p.summary}</p>
         {p.tags.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{p.tags.slice(0, featured ? 4 : 2).map((tag) => <span key={tag} className="rounded-full bg-obsidian-800 px-2.5 py-1 text-xs text-ink-mute">{tag}</span>)}</div>}
-        <span className="mt-auto inline-flex items-center pt-5 text-sm font-semibold text-violet-soft">Explore project <span aria-hidden="true" className="ml-2 transition group-hover:translate-x-1">↗</span></span>
+        <span className="mt-auto inline-flex items-center pt-5 text-sm font-semibold text-brand-soft">Explore project <span aria-hidden="true" className="ml-2 transition group-hover:translate-x-1">↗</span></span>
       </div>
     </Link>
   );

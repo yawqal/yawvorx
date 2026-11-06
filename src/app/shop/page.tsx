@@ -21,16 +21,16 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ q
   ]);
   return (
     <div className="min-h-[70vh]">
-      <div className="border-b border-line bg-aurora">
+      <div className="border-b border-line bg-panel">
         <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_auto] lg:items-end lg:py-20">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">The collection</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">The collection</p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-6xl"><TranslatedText value="Shop" /></h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-mute sm:text-lg"><TranslatedText value="Digital and physical products from YAWVOREX. Orders are confirmed by YAWVOREX before processing." /></p>
           </div>
           <div className="flex items-center gap-3">
             {products.some((p) => p.isDemo) && <Badge tone="demo">Demo catalog</Badge>}
-            <span className="text-sm text-ink-mute">{products.length} listed items</span>
+            <span className="text-sm text-ink-mute">{products.length} <TranslatedText value="products" /></span>
           </div>
         </Container>
       </div>

@@ -43,7 +43,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
         <aside className="glass-panel h-fit rounded-2xl p-5 sm:p-6">
           <p className="eyebrow">Project scope</p><h2 className="mt-2 text-xl font-semibold">Deliverables</h2>
-          <ul className="mt-4 space-y-3 text-sm text-ink-mute">{p.deliverables.map((d) => <li key={d} className="flex gap-3"><span className="text-violet-soft">↗</span><span>{d}</span></li>)}</ul>
+          <ul className="mt-4 space-y-3 text-sm text-ink-mute">{p.deliverables.map((d) => <li key={d} className="flex gap-3"><span className="text-brand-soft">↗</span><span>{d}</span></li>)}</ul>
           {p.liveUrl && <Button href={p.liveUrl} variant="secondary" className="mt-6 w-full">View live project</Button>}
         </aside>
       </div>

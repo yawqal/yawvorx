@@ -35,7 +35,7 @@ export default async function FreelancerInquiriesPage() {
                   <h2 className="break-words text-lg font-semibold">{inquiry.name}</h2>
                   <time className="text-sm text-ink-mute" dateTime={inquiry.created_at}>{new Date(inquiry.created_at).toLocaleDateString()}</time>
                 </div>
-                <a className="mt-1 inline-block min-h-[44px] max-w-full break-all py-2 text-cyan-soft underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet" href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
+                <a className="mt-1 inline-block min-h-[44px] max-w-full break-all py-2 text-secondary-soft underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand" href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
                 <p className="mt-2 whitespace-pre-wrap break-words">{inquiry.message}</p>
                 <dl className="mt-4 grid min-w-0 gap-3 text-sm sm:grid-cols-2">
                   <div className="min-w-0"><dt className="text-ink-mute">Budget</dt><dd className="break-words">{inquiry.budget || "Not specified"}</dd></div>
